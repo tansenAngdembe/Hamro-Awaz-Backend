@@ -1,0 +1,10 @@
+-- liquibase formatted sql
+-- changeset tansen:1
+-- preconditions onFail:CONTINUE onError:HALT
+CREATE TABLE IF NOT EXISTS `application_config`
+(
+    id      BIGINT AUTO_INCREMENT NOT NULL,
+    `key`   VARCHAR(255)          NULL,
+    `value` VARCHAR(255)          NULL,
+    CONSTRAINT pk_application_config PRIMARY KEY (id)
+);
