@@ -1,0 +1,66 @@
+package com.tansen.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "governments")
+public class Municipality extends AbstractEntity{
+    @Column(name = "govrenment_name", nullable = false)
+    private String governmentName;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name ="code", nullable = false, unique = true)
+    private String code;
+
+    @Column(name = "logo_url", nullable = false)
+    private String logoUrl;
+
+    @Column(name = "document_url", nullable = false)
+    private String documentUrl;
+
+    @Column(name = "unique_id", nullable = false)
+    private String uniqueId;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name="province_id", referencedColumnName = "id")
+    private Province province;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name="district_id", referencedColumnName = "id")
+    private District district;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name="local_level_id", referencedColumnName = "id")
+    private LocalLevel localLevel;
+
+    @Column(name = "latitude", nullable = false)
+    private String latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private String longitude;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
+
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+}
