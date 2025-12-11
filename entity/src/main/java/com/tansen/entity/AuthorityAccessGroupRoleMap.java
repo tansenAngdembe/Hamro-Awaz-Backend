@@ -10,15 +10,14 @@ import lombok.Setter;
 @Table(name="authority_access_groups_role_map")
 public class AuthorityAccessGroupRoleMap  extends AbstractEntity{
 
-
-    @JoinColumn(name="vendor_access_groups",referencedColumnName = "id")
     @ManyToOne(optional=false)
+    @JoinColumn(name="authority_access_groups_id",referencedColumnName = "id")
     private AuthorityAccessGroup authorityAccessGroup;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
-    @JoinColumn(name="vendor_user_roles",referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JoinColumn(name="authority_user_roles_id",referencedColumnName = "id")
     private AuthorityUserRole authorityUserRole;
 }

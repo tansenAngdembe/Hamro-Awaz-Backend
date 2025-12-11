@@ -12,7 +12,7 @@ public class Department extends  AbstractEntity {
     @Column(name = "department_name", nullable = false, unique = true)
     private String departmentName;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -9,6 +9,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,8 +26,6 @@ public class Municipality extends AbstractEntity{
     @Column(name ="code", nullable = false, unique = true)
     private String code;
 
-    @Column(name = "logo_url", nullable = false)
-    private String logoUrl;
 
     @Column(name = "document_url", nullable = false)
     private String documentUrl;
@@ -62,5 +62,11 @@ public class Municipality extends AbstractEntity{
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "municipality", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "municipality", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Escalation> escalations = new ArrayList<>();
 
 }

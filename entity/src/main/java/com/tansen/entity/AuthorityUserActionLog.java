@@ -12,6 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name = "authority_user_action_log")
 public class AuthorityUserActionLog  extends AbstractEntity{
+    @Column(name = "remarks")
     private String remarks;
 
     @Column(name="target_type", nullable = false)

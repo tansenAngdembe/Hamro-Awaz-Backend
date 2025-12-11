@@ -12,7 +12,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>government</name>
     <description>government</description>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <url/>
     <licenses>

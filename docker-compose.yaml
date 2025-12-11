@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: hamro-awaz-app
+    ports:
+      - "8888:9081"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/hamro_awaz?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kathmandu
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CHANGELOG: classpath:db/changelog/db.changelog-master.yaml
+
+      SERVER_PORT: 9081
+    restart: always
+    networks:
+      - hamro-awaz-network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3309:3306"  # host:container mapping
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hamro_awaz
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    restart: always
+    networks:
+      - goal-post-network
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    restart: always
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+
+volumes:
+  db_data:
+
+networks:
+  goal-post-network:
+    driver: bridge

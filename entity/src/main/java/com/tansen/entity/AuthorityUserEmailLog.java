@@ -30,8 +30,8 @@ public class AuthorityUserEmailLog  extends AbstractEntity{
     @Column(name="is_expired")
     private Boolean isExpired;
 
-    @Column(name="uuid", nullable = false)
-    private String uuid;
+    @Column(name="unique_id", nullable = false)
+    private String uniqueId;
 
     @Column(name="created_at", nullable = false)
     private LocalDateTime createdAt;

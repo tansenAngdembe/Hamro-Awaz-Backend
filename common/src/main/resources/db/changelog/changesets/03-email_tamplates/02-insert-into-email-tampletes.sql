@@ -1,5 +1,4 @@
 -- liquibase formatted sql
-
 -- changeset tansen:1
 -- preconditions onFail:CONTINUE onError:HALT
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM email_templates WHERE name = 'USER_ACCOUNT_VERIFICATION_AWAZ';

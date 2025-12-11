@@ -20,7 +20,7 @@ public class AuthorityEmailLog  extends AbstractEntity{
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private AuthorityUser authorityUser;
 
-    @Column(name="message", nullable = false)
+    @Column(name="message", nullable = false,columnDefinition = "TEXT")
     private String message;
 
     @Column(name="is_sent")
@@ -29,8 +29,8 @@ public class AuthorityEmailLog  extends AbstractEntity{
     @Column(name="is_expired")
     private Boolean isExpired;
 
-    @Column(name="uuid", nullable = false)
-    private String uuid;
+    @Column(name="unique_id", nullable = false)
+    private String uniqueId;
 
     @Column(name="created_at", nullable = false)
     private LocalDateTime createdAt;

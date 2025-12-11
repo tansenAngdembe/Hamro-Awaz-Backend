@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class AuthorityUser extends AbstractEntity implements UserDetails{
     @ManyToOne(optional = false)
     @JoinColumn(name="municipality_id", referencedColumnName = "id")
-    private Municipality localLevel;
+    private Municipality municipality;
 
     @Column(name="name", nullable = false)
     private String name;
@@ -48,8 +48,7 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
     private LocalDateTime updatedAt;
 
     @Column(name = "password_changed_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date passwordChangeDate;
+    private LocalDateTime passwordChangeDate;
 
     @Column(name = "last_logged_in_time")
     private LocalDateTime lastLoggedInTime;
@@ -72,7 +71,7 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
     @Column(name = "is_authority_admin")
     private boolean isAuthorityAdmin;
 
-    @JoinColumn(name = "authority_access_group", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "authority_access_group_id", nullable = false, referencedColumnName = "id")
     @ManyToOne(optional = false)
     private AuthorityAccessGroup  authorityAccessGroup;
 

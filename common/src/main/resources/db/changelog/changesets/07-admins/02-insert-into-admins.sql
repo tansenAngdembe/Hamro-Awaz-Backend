@@ -1,4 +1,4 @@
--- liquibase-formatted-sql
+-- liquibase formatted sql
 -- changeset tansen:1
 -- preconditions onFail:CONTINUE onError:HALT
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM admins where username='tansena54ang@gmail.com'

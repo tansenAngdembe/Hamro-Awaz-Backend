@@ -1,4 +1,4 @@
--- liquibase-formatted-sql
+-- liquibase formatted sql
 -- changeset tansen:1
 -- preconditions onFail:CONTINUE onError: HALT
 CREATE TABLE IF NOT EXISTS action_logs(

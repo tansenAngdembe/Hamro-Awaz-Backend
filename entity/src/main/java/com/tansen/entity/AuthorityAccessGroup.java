@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 @Getter
@@ -16,20 +17,19 @@ public class AuthorityAccessGroup extends AbstractEntity {
 
     @Column(name="description")
     private String description;
-    @JoinColumn(name="status",referencedColumnName = "id")
+
     @ManyToOne(optional = false)
+    @JoinColumn(name="status",referencedColumnName = "id")
     private Status status;
 
     @Column(name="created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name="updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name="is_authority_admin_group",nullable = false)
-    private boolean isVendorAdminGroup;
+    private boolean isAuthorityAdminGroup;
 
     @Column(name="remarks")
     private String remarks;
