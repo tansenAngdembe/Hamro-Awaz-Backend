@@ -64,33 +64,33 @@ public abstract class ActionLogMapper {
         actionLogService.insertActionLog(resetUserPassword, principal);
     }
 
-    public void createVendor(Long vendorId, Principal loggedInUser, HttpServletRequest request) {
+    public void createMunicipality(Long vendorId, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel createVendor = ActionLogModel.builder()
-                .remarks("Vendor created successfully")
+                .remarks("Municipality created successfully")
                 .actionType(ActionTypeConstant.CREATE)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
         actionLogService.insertActionLog(createVendor, loggedInUser);
     }
 
-    public void updateVendor(Long vendorId, Principal loggedInUser, HttpServletRequest request) {
+    public void updateMunicipality(Long vendorId, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel createVendor = ActionLogModel.builder()
-                .remarks("Vendor created successfully")
+                .remarks("Municipality created successfully")
                 .actionType(ActionTypeConstant.UPDATE)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
         actionLogService.insertActionLog(createVendor, loggedInUser);
     }
 
-    public void createVendorUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public void createAuthorityUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel resetUserPassword = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.CREATE)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(userId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
@@ -101,7 +101,7 @@ public abstract class ActionLogMapper {
         ActionLogModel editVendorUser = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.UPDATE)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(userId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
@@ -112,7 +112,7 @@ public abstract class ActionLogMapper {
         ActionLogModel blockVendor = ActionLogModel.builder()
                 .remarks(remarks)
                 .actionType(ActionTypeConstant.BLOCK)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
@@ -123,7 +123,7 @@ public abstract class ActionLogMapper {
         ActionLogModel blockVendor = ActionLogModel.builder()
                 .remarks(remarks)
                 .actionType(ActionTypeConstant.UNBLOCK)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
@@ -134,7 +134,7 @@ public abstract class ActionLogMapper {
         ActionLogModel blockVendor = ActionLogModel.builder()
                 .remarks(remarks)
                 .actionType(ActionTypeConstant.DELETE)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
@@ -145,7 +145,7 @@ public abstract class ActionLogMapper {
         ActionLogModel blockVendorUser = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.BLOCK)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(userId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
@@ -156,7 +156,7 @@ public abstract class ActionLogMapper {
         ActionLogModel unblockVendorUser = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.UNBLOCK)
-                .targetType(TargetTypeConstant.VENDOR)
+                .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(userId)
                 .ipAddress(request.getRemoteAddr())
                 .build();

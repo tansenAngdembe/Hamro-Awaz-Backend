@@ -5,7 +5,7 @@ spring:
     name: HAMRO AWAZ ADMIN PANEL BACKEND
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: 'jdbc:mysql://localhost:3306/hamro_awaz?serverTimezone=Asia/Kathmandu&zeroDateTimeBehavior=convertToNull'
+    url: 'jdbc:mysql://host.docker.internal:3306/hamro_awaz?serverTimezone=Asia/Kathmandu&zeroDateTimeBehavior=convertToNull'
     username: root
     password: root
   jpa:

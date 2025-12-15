@@ -10,7 +10,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/hamro_awaz?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kathmandu
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/hamro_awaz?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kathmandu
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
 

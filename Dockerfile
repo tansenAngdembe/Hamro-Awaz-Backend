@@ -2,8 +2,8 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-COPY admin/target/  AWAZ_ADMIN.WAR
+COPY admin/target/HAMRO_AWAZ.war app.war
 
-EXPOSE 8888
+EXPOSE 9081
 
-ENTRYPOINT ["java", "-jar", "AWAZ_ADMIN.WAR"]
+ENTRYPOINT ["java", "-jar", "/app/app.war"]

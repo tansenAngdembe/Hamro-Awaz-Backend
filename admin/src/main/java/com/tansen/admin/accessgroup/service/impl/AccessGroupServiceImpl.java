@@ -9,6 +9,7 @@ import com.tansen.common.constant.StatusConstant;
 import com.tansen.common.dto.ApiResponse;
 import com.tansen.common.dto.ResponseUtil;
 import com.tansen.entity.AccessGroup;
+import com.tansen.entity.AccessGroupRoleMap;
 import com.tansen.entity.AdminRole;
 import com.tansen.entity.Status;
 import com.tansen.repository.AccessGroupRepository;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -56,12 +58,27 @@ public class AccessGroupServiceImpl implements AccessGroupService {
             return ResponseUtil.getFailureResponse("Access group already exists with this name.");
         }
         AccessGroup accessGroup = accessGroupMapper.mapToAccessGroupEntity(request,
-                accessGroupRepository,
-                accessGroupRoleMapRepository,
-                statusRepository,
-                adminRolesRepository
+                statusRepository
         );
-        actionLogMapper.createAdminAccessGroup(accessGroup.getId(), loggedInUser,  httpServletRequest);
+        AccessGroup savedAccessGroup = accessGroupRepository.save(accessGroup);
+        List<AccessGroupRoleMap> accessGroupRoleMaps = new ArrayList<>();
+
+        for (String roleName : request.getRoleNames()) {
+            AdminRole adminRole = adminRolesRepository.findByName(roleName);
+            if (adminRole != null) {
+                AccessGroupRoleMap accessGroupRoleMap = new AccessGroupRoleMap();
+                accessGroupRoleMap.setAdminRole(adminRole);
+                accessGroupRoleMap.setAccessGroup(savedAccessGroup);
+                accessGroupRoleMap.setIsActive(true);
+                accessGroupRoleMaps.add(accessGroupRoleMap);
+            } else {
+                LOG.warn("Role not found for name: {}", roleName);
+            }
+        }
+        if (!accessGroupRoleMaps.isEmpty()) {
+            accessGroupRoleMapRepository.saveAll(accessGroupRoleMaps);
+        }
+        actionLogMapper.createAdminAccessGroup(savedAccessGroup.getId(), loggedInUser,  httpServletRequest);
         LOG.info("Access Group Created Successfully with name {}", accessGroup.getName());
         return ResponseUtil.getSuccessfulApiResponse("Access Group Created successfully.");
     }
@@ -77,7 +94,34 @@ public class AccessGroupServiceImpl implements AccessGroupService {
         existingAccessGroup.setUpdatedAt(LocalDateTime.now());
 
         accessGroupRepository.save(existingAccessGroup);
-        accessGroupMapper.updateAccessGroupRoles(existingAccessGroup, request.getRoleNames(), adminRolesRepository, accessGroupRoleMapRepository);
+
+        List<AccessGroupRoleMap> existingRoleMappings = accessGroupRoleMapRepository.findByAccessGroup(existingAccessGroup);
+        List<String> newRoleNames = new ArrayList<>(request.getRoleNames());
+
+        for (AccessGroupRoleMap existingRoleMapping : existingRoleMappings) {
+            AdminRole adminRole = existingRoleMapping.getAdminRole();
+            if (!newRoleNames.contains(adminRole.getName())) {
+                existingRoleMapping.setIsActive(false);
+                accessGroupRoleMapRepository.save(existingRoleMapping);
+            } else {
+                newRoleNames.remove(adminRole.getName());
+            }
+        }
+
+        for (String roleName : newRoleNames) {
+            AdminRole adminRole = adminRolesRepository.findByName(roleName);
+            if (adminRole != null) {
+                AccessGroupRoleMap newAccessGroupRoleMap = new AccessGroupRoleMap();
+                newAccessGroupRoleMap.setAdminRole(adminRole);
+                newAccessGroupRoleMap.setAccessGroup(existingAccessGroup);
+                newAccessGroupRoleMap.setIsActive(true);
+                accessGroupRoleMapRepository.save(newAccessGroupRoleMap);
+            } else {
+                LOG.warn("Failed to update Admin Access Group. Admin Role not found for name: {}", roleName);
+            }
+        }
+
+//        accessGroupMapper.updateAccessGroupRoles(existingAccessGroup, request.getRoleNames(), adminRolesRepository, accessGroupRoleMapRepository);
 
         actionLogMapper.updateAdminAccessGroup(existingAccessGroup.getId(), loggedInUser, httpServletRequest);
         LOG.info("Access Group Updated Successfully with ID {}", existingAccessGroup.getId());

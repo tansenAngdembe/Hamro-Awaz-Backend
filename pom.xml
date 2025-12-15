@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.tansen</groupId>
     <artifactId>awaz</artifactId>
@@ -36,16 +36,11 @@
         <module>common</module>
         <module>entity</module>
         <module>repository</module>
-        <module>admin</module>
         <module>app</module>
+        <module>admin</module>
         <module>government</module>
     </modules>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -102,34 +97,13 @@
             <version>1.5.5.Final</version>
         </dependency>
     </dependencies>
-
-    <!--	<build>-->
-    <!--		<plugins>-->
-    <!--			<plugin>-->
-    <!--				<groupId>org.apache.maven.plugins</groupId>-->
-    <!--				<artifactId>maven-compiler-plugin</artifactId>-->
-    <!--				<configuration>-->
-    <!--					<annotationProcessorPaths>-->
-    <!--						<path>-->
-    <!--							<groupId>org.projectlombok</groupId>-->
-    <!--							<artifactId>lombok</artifactId>-->
-    <!--						</path>-->
-    <!--					</annotationProcessorPaths>-->
-    <!--				</configuration>-->
-    <!--			</plugin>-->
-    <!--			<plugin>-->
-    <!--				<groupId>org.springframework.boot</groupId>-->
-    <!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
-    <!--				<configuration>-->
-    <!--					<excludes>-->
-    <!--						<exclude>-->
-    <!--							<groupId>org.projectlombok</groupId>-->
-    <!--							<artifactId>lombok</artifactId>-->
-    <!--						</exclude>-->
-    <!--					</excludes>-->
-    <!--				</configuration>-->
-    <!--			</plugin>-->
-    <!--		</plugins>-->
-    <!--	</build>-->
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.springframework.boot</groupId>-->
+    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 
 </project>

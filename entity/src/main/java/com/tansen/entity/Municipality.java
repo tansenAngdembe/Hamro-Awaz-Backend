@@ -1,6 +1,8 @@
 package com.tansen.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +35,9 @@ public class Municipality extends AbstractEntity{
     @Column(name = "unique_id", nullable = false)
     private String uniqueId;
 
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
     @ManyToOne(optional = false)
     @JoinColumn(name="province_id", referencedColumnName = "id")
     private Province province;
@@ -44,6 +49,10 @@ public class Municipality extends AbstractEntity{
     @ManyToOne(optional = false)
     @JoinColumn(name="local_level_id", referencedColumnName = "id")
     private LocalLevel localLevel;
+
+    @NotNull(message = "Ward number is required")
+    @Min(value = 1, message = "Ward number must be at least 1")
+    private Integer wardNumber;
 
     @Column(name = "latitude", nullable = false)
     private String latitude;

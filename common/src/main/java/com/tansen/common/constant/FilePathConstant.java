@@ -18,10 +18,10 @@ public class FilePathConstant {
 
     public static final String ADMIN = "/admin/";
     public static final String USER = "/user/";
-    public static final String VENDOR = "/vendor/";
-    public static final String VENDOR_DOCUMENT = "/vendor_document/";
-    public static final String VENDOR_USER = "/vendor_user/";
-    public static final String VENDOR_SERVICE = "/vendor_service/";
-    public static final String VENDOR_LINE = "/vendor_line/";
+    public static final String MUNICIPALITY = "/municipality/";
+    public static final String MUNICIPALITY_DOCUMENT = "/municipality_document/";
+    public static final String AUTHORITY_USER = "/authority_user/";
+    public static final String AUTHORITY_SERVICE = "/authority_service/";
+    public static final String AUTHORITY_LINE = "/authority_line/";
     public static final String ADVERTISEMENT = "/advertisement/";
 }

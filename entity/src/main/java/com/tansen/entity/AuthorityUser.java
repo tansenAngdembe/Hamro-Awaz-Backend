@@ -35,6 +35,12 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
     @Column(name="password")
     private String password;
 
+    @Column(name="phone_number")
+    private String phoneNumber;
+
+    @Column(name="address")
+    private String address;
+
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Status status;
