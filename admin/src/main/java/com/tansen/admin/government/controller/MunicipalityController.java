@@ -1,6 +1,13 @@
 package com.tansen.admin.government.controller;
 
+import com.tansen.admin.government.dto.request.CreateMunicipalityRequest;
+import com.tansen.admin.government.dto.request.EditMunicipalityRequest;
+import com.tansen.admin.government.dto.request.MunicipalityActionRequest;
+import com.tansen.admin.government.dto.request.MunicipalityRequest;
+import com.tansen.admin.government.service.MunicipalityService;
 import com.tansen.common.constant.ApiConstant;
+import com.tansen.common.dto.ApiResponse;
+import com.tansen.common.dto.SearchParam;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,77 +20,71 @@ import java.security.Principal;
 @RestController
 @RequestMapping(ApiConstant.ADMIN_API)
 public class MunicipalityController {
-    private final VendorService vendorService;
+    private final MunicipalityService municipalityService;
 
-    public MunicipalityController(VendorService vendorService) {
-        this.vendorService = vendorService;
+    public MunicipalityController(MunicipalityService vendorService) {
+        this.municipalityService = vendorService;
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.CREATE)
-    @PreAuthorize("hasAuthority('CREATE_VENDOR')")
-    public ApiResponse<?> createVendor(
-            @Valid @RequestPart("vendor") CreateVendorRequest request,
-            @RequestPart(value = "logoFile", required = false) MultipartFile logoFile,
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.CREATE)
+    @PreAuthorize("hasAuthority('CREATE_AUTHORITY')")
+    public ApiResponse<?> createMunicipality(
+            @Valid @RequestPart("municipality") CreateMunicipalityRequest request,
             @RequestPart(value = "documentFile",required = false) MultipartFile documentFile,
             Principal loggedInUser,
             HttpServletRequest httpServletRequest) throws IOException {
-        return vendorService.createVendor(request, logoFile, documentFile, loggedInUser, httpServletRequest);
+        return municipalityService.createMunicipality(request, documentFile, loggedInUser, httpServletRequest);
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.UPDATE)
-    @PreAuthorize("hasAuthority('EDIT_VENDOR')")
-    public ApiResponse<?> editVendor(
-            @Valid @RequestPart("vendor") EditVendorRequest request,
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.UPDATE)
+    @PreAuthorize("hasAuthority('EDIT_AUTHORITY')")
+    public ApiResponse<?> editMunicipality(
+            @Valid @RequestPart("municipality") EditMunicipalityRequest request,
             @RequestPart(value = "logoFile", required = false) MultipartFile logoFile,
             @RequestPart(value = "documentFile", required = false) MultipartFile documentFile,
             Principal loggedInUser,
             HttpServletRequest httpServletRequest) throws IOException {
-        return vendorService.editVendor(request, logoFile, documentFile, loggedInUser, httpServletRequest);
+        return municipalityService.editMunicipality(request, documentFile, loggedInUser, httpServletRequest);
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.LIST)
-    @PreAuthorize("hasAuthority('VIEW_VENDOR')")
-    public ApiResponse<?> listAllVendors(@Valid @RequestBody SearchParam searchParam) {
-        return vendorService.getVendorList(searchParam);
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.LIST)
+    @PreAuthorize("hasAuthority('VIEW_ALL_AUTHORITY')")
+    public ApiResponse<?> listAllMunicipality(@Valid @RequestBody SearchParam searchParam) {
+        return municipalityService.getMunicipalityList(searchParam);
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.VIEW)
-    @PreAuthorize("hasAuthority('VIEW_VENDOR')")
-    public ApiResponse<?> viewVendorDetails(
-            @Valid @RequestBody VendorRequest request) {
-        return vendorService.viewVendorDetails(request);
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.VIEW)
+    @PreAuthorize("hasAuthority('VIEW_AUTHORITY')")
+    public ApiResponse<?> viewMunicipalityDetails(
+            @Valid @RequestBody MunicipalityRequest request) {
+        return municipalityService.viewMunicipalityDetails(request);
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.BLOCK)
-    @PreAuthorize("hasAuthority('BLOCK_VENDOR')")
-    public ApiResponse<?> blockVendor(
-            @Valid @RequestBody VendorActionRequest actionRequest,
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.BLOCK)
+    @PreAuthorize("hasAuthority('BLOCK_AUTHORITY')")
+    public ApiResponse<?> blockMunicipality(
+            @Valid @RequestBody MunicipalityActionRequest actionRequest,
             HttpServletRequest request,
             Principal loggedInUser) {
-        return vendorService.blockVendor(actionRequest, request, loggedInUser);
+        return municipalityService.blockMunicipality(actionRequest, request, loggedInUser);
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.UNBLOCK)
-    @PreAuthorize("hasAuthority('UNBLOCK_VENDOR')")
-    public ApiResponse<?> unblockVendor(
-            @Valid @RequestBody VendorActionRequest actionRequest,
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.UNBLOCK)
+    @PreAuthorize("hasAuthority('UNBLOCK_AUTHORITY')")
+    public ApiResponse<?> unblockMunicipality(
+            @Valid @RequestBody MunicipalityActionRequest actionRequest,
             HttpServletRequest request,
             Principal loggedInUser) {
-        return vendorService.unblockVendor(actionRequest, request, loggedInUser);
+        return municipalityService.unblockMunicipality(actionRequest, request, loggedInUser);
     }
 
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.DELETE)
-    @PreAuthorize("hasAuthority('DELETE_VENDOR')")
-    public ApiResponse<?> deleteVendor(
-            @Valid @RequestBody VendorActionRequest actionRequest,
+    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.DELETE)
+    @PreAuthorize("hasAuthority('DELETE_MUNICIPALITY')")
+    public ApiResponse<?> deleteMunicipality(
+            @Valid @RequestBody MunicipalityActionRequest actionRequest,
             HttpServletRequest request,
             Principal loggedInUser) {
-        return vendorService.deleteVendor(actionRequest, request, loggedInUser);
-    }
-    @PostMapping(ApiConstant.VENDOR + ApiConstant.SLASH + ApiConstant.INCREASE_COMMISSION)
-    @PreAuthorize("hasAuthority('EDIT_VENDOR')")
-    public ApiResponse<?> increaseCommission(@RequestBody VendorCommissionRequest increaseCommissionRequest, HttpServletRequest request, Principal loggedInUser){
-     return vendorService.increaseCommission(increaseCommissionRequest, request, loggedInUser);
+        return municipalityService.deleteMunicipality(actionRequest, request, loggedInUser);
     }
 
 }

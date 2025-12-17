@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.security.Principal;
 
 public interface MunicipalityService {
-    ApiResponse<?> createMunicipality(CreateMunicipalityRequest createMunicipalityRequest, MultipartFile logoFile, MultipartFile documentFile, Principal principal, HttpServletRequest httpServletRequest) throws IOException;
-    ApiResponse<?> editMunicipality(EditMunicipalityRequest editMunicipalityRequest, MultipartFile logoFile, MultipartFile documentFile, Principal loggedInUser, HttpServletRequest httpServletRequest) throws IOException;
+    ApiResponse<?> createMunicipality(CreateMunicipalityRequest createMunicipalityRequest, MultipartFile documentFile, Principal principal, HttpServletRequest httpServletRequest) throws IOException;
+    ApiResponse<?> editMunicipality(EditMunicipalityRequest editMunicipalityRequest, MultipartFile documentFile, Principal loggedInUser, HttpServletRequest httpServletRequest) throws IOException;
     ApiResponse<?> getMunicipalityList(SearchParam searchParam);
     ApiResponse<?> viewMunicipalityDetails(MunicipalityRequest request);
     ApiResponse<?> blockMunicipality(MunicipalityActionRequest  blockMunicipalityRequest, HttpServletRequest request, Principal loggedInUser);

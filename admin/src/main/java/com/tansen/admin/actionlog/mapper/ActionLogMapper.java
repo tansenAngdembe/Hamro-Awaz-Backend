@@ -77,7 +77,7 @@ public abstract class ActionLogMapper {
 
     public void updateMunicipality(Long vendorId, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel createVendor = ActionLogModel.builder()
-                .remarks("Municipality created successfully")
+                .remarks("Municipality Updated successfully")
                 .actionType(ActionTypeConstant.UPDATE)
                 .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
@@ -97,7 +97,7 @@ public abstract class ActionLogMapper {
         actionLogService.insertActionLog(resetUserPassword, loggedInUser);
     }
 
-    public void editVendorUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public void editMunicipalityUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel editVendorUser = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.UPDATE)
@@ -108,37 +108,37 @@ public abstract class ActionLogMapper {
         actionLogService.insertActionLog(editVendorUser, loggedInUser);
     }
 
-    public void blockVendor(Long vendorId, String remarks, Principal loggedInUser, HttpServletRequest request) {
-        ActionLogModel blockVendor = ActionLogModel.builder()
+    public void blockMunicipality(Long municipalityId, String remarks, Principal loggedInUser, HttpServletRequest request) {
+        ActionLogModel blockMunicipality = ActionLogModel.builder()
                 .remarks(remarks)
                 .actionType(ActionTypeConstant.BLOCK)
                 .targetType(TargetTypeConstant.MUNICIPALITY)
-                .targetId(vendorId)
+                .targetId(municipalityId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
-        actionLogService.insertActionLog(blockVendor, loggedInUser);
+        actionLogService.insertActionLog(blockMunicipality, loggedInUser);
     }
 
-    public void unblockVendor(Long vendorId, String remarks, Principal loggedInUser, HttpServletRequest request) {
-        ActionLogModel blockVendor = ActionLogModel.builder()
+    public void unblockMunicipality(Long vendorId, String remarks, Principal loggedInUser, HttpServletRequest request) {
+        ActionLogModel municipality = ActionLogModel.builder()
                 .remarks(remarks)
                 .actionType(ActionTypeConstant.UNBLOCK)
                 .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
-        actionLogService.insertActionLog(blockVendor, loggedInUser);
+        actionLogService.insertActionLog(municipality, loggedInUser);
     }
 
-    public void deleteVendor(Long vendorId, String remarks, Principal loggedInUser, HttpServletRequest request) {
-        ActionLogModel blockVendor = ActionLogModel.builder()
+    public void deleteMunicipality(Long vendorId, String remarks, Principal loggedInUser, HttpServletRequest request) {
+        ActionLogModel municipality = ActionLogModel.builder()
                 .remarks(remarks)
                 .actionType(ActionTypeConstant.DELETE)
                 .targetType(TargetTypeConstant.MUNICIPALITY)
                 .targetId(vendorId)
                 .ipAddress(request.getRemoteAddr())
                 .build();
-        actionLogService.insertActionLog(blockVendor, loggedInUser);
+        actionLogService.insertActionLog(municipality, loggedInUser);
     }
 
     public void blockVendorUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {

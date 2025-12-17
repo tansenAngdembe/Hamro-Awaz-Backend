@@ -1,6 +1,10 @@
 package com.tansen.admin.government.dto.response;
 
 import com.tansen.common.dto.ModelBase;
+import com.tansen.common.dto.response.DistrictResponse;
+import com.tansen.common.dto.response.LocalLevelResponse;
+import com.tansen.common.dto.response.ProvinceResponse;
+import com.tansen.common.dto.response.StatusResponse;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -16,19 +20,18 @@ public class MunicipalityResponse extends ModelBase {
 
     private String uniqueId;
 
-    private String businessName;
+    private String governmentName;
 
-    private String businessOwnerName;
+    private String email;
 
-    private String registrationNumber;
+    private String code;
 
-    private String panNumber;
+    private String description;
 
     private String logoUrl;
 
     private String documentUrl;
 
-    private String description;
 
     private StatusResponse status;
 
@@ -45,17 +48,4 @@ public class MunicipalityResponse extends ModelBase {
     private String longitude;
 
     private String address;
-
-    private LocalTime openingTime;
-
-    private LocalTime closingTime;
-
-    private BigDecimal commissionPercent;
-
-    private boolean verifiedByAdmin;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
 }

@@ -19,17 +19,11 @@ public class EditMunicipalityRequest extends ModelBase {
     @NotBlank(message = "Unique ID is required")
     private String uniqueId;
 
-    @NotBlank(message = "Business name is required")
-    private String businessName;
+    @NotBlank(message = "GovernmentName name is required")
+    private String governmentName;
 
-    @NotBlank(message = "Business owner name is required")
-    private String businessOwnerName;
-
-    @NotBlank(message = "Registration number is required")
-    private String registrationNumber;
-
-    @NotBlank(message = "PAN number is required")
-    private String panNumber;
+    @NotBlank(message = "Code is required")
+    private String code;
 
     @NotBlank(message = "Description is required")
     private String description;
@@ -55,14 +49,4 @@ public class EditMunicipalityRequest extends ModelBase {
 
     @NotBlank(message = "Address is required")
     private String address;
-
-    @NotNull(message = "Opening time is required")
-    private LocalTime openingTime;
-
-    @NotNull(message = "Closing time is required")
-    private LocalTime closingTime;
-
-    @NotNull(message = "Commission percent is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Commission percent must be positive")
-    private BigDecimal commissionPercent;
 }

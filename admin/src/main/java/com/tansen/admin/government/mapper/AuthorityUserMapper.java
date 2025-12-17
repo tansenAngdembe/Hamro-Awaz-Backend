@@ -11,19 +11,17 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class AuthorityUserMapper {
     private static final Logger LOG = LoggerFactory.getLogger(AuthorityUserMapper.class);
-    private final AuthorityAccessGroupRepository authorityAccessGroupRepository;
-    private final StatusRepository statusRepository;
-
-    public AuthorityUserMapper(AuthorityAccessGroupRepository authorityAccessGroupRepository, StatusRepository statusRepository) {
-        this.authorityAccessGroupRepository = authorityAccessGroupRepository;
-        this.statusRepository = statusRepository;
-    }
+    @Autowired
+    private  AuthorityAccessGroupRepository authorityAccessGroupRepository;
+    @Autowired
+    private  StatusRepository statusRepository;
 
 
     public AuthorityUser mapToAuthorityUser(CreateMunicipalityRequest authorityUserRequest, Municipality municipality) {

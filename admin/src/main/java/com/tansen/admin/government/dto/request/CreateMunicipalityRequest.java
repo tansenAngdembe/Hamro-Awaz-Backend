@@ -19,9 +19,6 @@ public class CreateMunicipalityRequest extends ModelBase {
     @NotBlank(message = "Code is required")
     private String code;
 
-    @NotBlank(message = "DocumentUrl  is required")
-    private String documentUrl;
-
     @NotBlank(message = "Description is required")
     private String description;
 
