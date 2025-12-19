@@ -28,6 +28,6 @@ public class CreateMunicipalityUserRequest extends ModelBase {
     private String vendorUniqueId;
 
     @NotBlank(message = "AccessGroupName is required")
-    private String vendorAccessGroupName;
+    private String authorityAccessGroupName;
 
 }

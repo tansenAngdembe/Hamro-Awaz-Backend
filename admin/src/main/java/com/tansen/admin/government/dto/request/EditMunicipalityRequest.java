@@ -28,6 +28,14 @@ public class EditMunicipalityRequest extends ModelBase {
     @NotBlank(message = "Description is required")
     private String description;
 
+    @NotBlank(message = "Email is required")
+    private String email;
+
+    @NotBlank(message = "Phone number is required")
+    private String phoneNumber;
+
+
+
     @NotNull(message = "Province ID is required")
     private Integer provinceId;
 

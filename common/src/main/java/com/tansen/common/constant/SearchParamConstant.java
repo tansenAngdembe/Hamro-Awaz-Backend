@@ -16,8 +16,8 @@ public class SearchParamConstant {
     public static final String MOBILE_NUMBER = "mobileNumber";
     public static final String USERNAME = "username";
     public static final String ADDRESS = "address";
-    public static final String VENDOR = "vendor";
-    public static final String VENDOR_UNIQUE_ID = "vendorUniqueId";
+    public static final String MUNICIPALITY = "municipality";
+    public static final String MUNICIPALITY_UNIQUE_ID = "municipalityUniqueId";
     public static final String DESCRIPTION = "description";
     public static final String TAG = "tag";
     public static final String PROVINCE = "province";

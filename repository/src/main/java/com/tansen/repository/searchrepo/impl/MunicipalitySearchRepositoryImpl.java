@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.tansen.common.constant.SearchParamConstant.STATUS;
+
 @Repository
 @RequiredArgsConstructor
 public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepository {
@@ -21,6 +23,7 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
         return (Long) em.createQuery("""
                 SELECT COUNT(m.id)
                 FROM Municipality m
+                JOIN Status s on s.id=m.status.id
                 JOIN m.province p
                 JOIN m.district d
                 JOIN m.localLevel l
@@ -28,12 +31,14 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
                     (:governmentName IS NULL OR m.governmentName LIKE CONCAT('%', :governmentName, '%')) AND
                     (:code IS NULL OR m.code LIKE CONCAT('%', :code, '%')) AND
                     (:province IS NULL OR p.province = :province) AND
-                    (:district IS NULL OR d.districtName = :district)
+                    (:district IS NULL OR d.districtName = :district) AND 
+                    (:status is null or s.description = :status)
                 """)
                 .setParameter("governmentName", SearchParamUtil.getString(searchParam, "governmentName"))
                 .setParameter("code", SearchParamUtil.getString(searchParam, "code"))
                 .setParameter("province", SearchParamUtil.getString(searchParam, "province"))
                 .setParameter("district", SearchParamUtil.getString(searchParam, "district"))
+                .setParameter("status", SearchParamUtil.getString(searchParam, STATUS))
                 .getSingleResult();
     }
 
@@ -42,6 +47,7 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
         return em.createQuery("""
                 SELECT m
                 FROM Municipality m 
+                JOIN Status s on s.id=m.status.id
                 JOIN m.province p 
                 JOIN m.district d 
                 JOIN m.localLevel l 
@@ -49,12 +55,14 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
                     (:governmentName IS NULL OR m.governmentName LIKE CONCAT('%', :governmentName, '%')) AND
                     (:code IS NULL OR m.code LIKE CONCAT('%', :code, '%')) AND
                     (:province IS NULL OR p.province = :province) AND
-                    (:district IS NULL OR d.districtName = :district) 
+                    (:district IS NULL OR d.districtName = :district) AND 
+                    (:status is null or s.description = :status)
                 """, Municipality.class)
                 .setParameter("governmentName", SearchParamUtil.getString(searchParam, "governmentName"))
                 .setParameter("code", SearchParamUtil.getString(searchParam, "code"))
                 .setParameter("province", SearchParamUtil.getString(searchParam, "province"))
                 .setParameter("district", SearchParamUtil.getString(searchParam, "district"))
+                .setParameter("status", SearchParamUtil.getString(searchParam, STATUS))
                 .setFirstResult(searchParam.getFirstRow())
                 .setMaxResults(searchParam.getPageSize())
                 .getResultList();

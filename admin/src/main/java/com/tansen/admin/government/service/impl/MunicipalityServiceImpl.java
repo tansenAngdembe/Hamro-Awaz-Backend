@@ -135,6 +135,10 @@ public class MunicipalityServiceImpl implements MunicipalityService {
             LOG.error("Failed to block municipality. Municipality with unique ID {} is deleted.", blockMunicipalityRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality is deleted. Cannot block a deleted municipality.");
         }
+        if (Objects.equals(StatusConstant.PENDING.getName(), existingMunicipalityByUniqueId.get().getStatus().getName())) {
+            LOG.error("Failed to block municipality. Municipality with unique ID {} is still pending.", blockMunicipalityRequest.getUniqueId());
+            return ResponseUtil.getFailureResponse("Municipality is still in pending state. Cannot block a pending  municipality.");
+        }
         Municipality municipality = existingMunicipalityByUniqueId.get();
         Municipality updatedMunicipality = municipalityMapper.blockMunicipality(municipality, blockMunicipalityRequest.getRemarks(), loggedInUser, request);
         municipalityRepository.save(updatedMunicipality);

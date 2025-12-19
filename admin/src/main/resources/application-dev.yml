@@ -14,5 +14,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: false
     database: mysql
+  web:
+    resources:
+      static-locations: file:A:/hamroawazfileupload/
+
 jwt:
   secret: rt6yhg56iopkjd42fgYijhGFR56gsjiy23efhiLaq27

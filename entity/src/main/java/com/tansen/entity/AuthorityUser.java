@@ -29,6 +29,9 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
     @Column(name="name", nullable = false)
     private String name;
 
+    @Column(name="unique_id", nullable = false, unique = true)
+    private String uniqueId;
+
     @Column(name ="email", nullable = false, unique = true)
     private String email;
 
@@ -40,6 +43,9 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
 
     @Column(name="address")
     private String address;
+
+    @Column(name="is_active")
+    private Boolean isActive;
 
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -122,5 +128,6 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
 
 }

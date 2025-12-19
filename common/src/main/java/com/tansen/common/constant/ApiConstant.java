@@ -46,6 +46,7 @@ public class ApiConstant {
     public static final String WARDS = "wards";
     public static final String VENDOR_API = "/api/v1/vendor";
     public static final String MUNICIPALITY = "municipality";
+    public static final String AUTHORITY_USER = "authorityUser";
     public static final String TYPE ="type";
     public static final String SERVICE = "service";
     public static final String SERVICE_LINE = "serviceLine";

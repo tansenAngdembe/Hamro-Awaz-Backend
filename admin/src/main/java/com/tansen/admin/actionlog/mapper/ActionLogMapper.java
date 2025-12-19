@@ -141,7 +141,7 @@ public abstract class ActionLogMapper {
         actionLogService.insertActionLog(municipality, loggedInUser);
     }
 
-    public void blockVendorUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public void blockAuthorityUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel blockVendorUser = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.BLOCK)
@@ -152,7 +152,7 @@ public abstract class ActionLogMapper {
         actionLogService.insertActionLog(blockVendorUser, loggedInUser);
     }
 
-    public void unblockVendorUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public void unblockAuthorityUser(Long userId, String remark, Principal loggedInUser, HttpServletRequest request) {
         ActionLogModel unblockVendorUser = ActionLogModel.builder()
                 .remarks(remark)
                 .actionType(ActionTypeConstant.UNBLOCK)
@@ -218,16 +218,6 @@ public abstract class ActionLogMapper {
         actionLogService.insertActionLog(actionLogModel, principal);
     }
 
-    public void increaseCommissionLog(String remarks, Long adId, Principal principal, HttpServletRequest request) {
-        ActionLogModel increaseCommissionLogMapper = ActionLogModel.builder()
-                .remarks(remarks)
-                .actionType(ActionTypeConstant.UPDATE)
-                .targetType(TargetTypeConstant.ADMIN)
-                .targetId(adId)
-                .ipAddress(request.getRemoteAddr())
-                .build();
-        actionLogService.insertActionLog(increaseCommissionLogMapper, principal);
-    }
 
     public void blockPrivacyPolicy(Long id, String remarks, Principal principal, HttpServletRequest request) {
         ActionLogModel actionLogModel = ActionLogModel.builder()

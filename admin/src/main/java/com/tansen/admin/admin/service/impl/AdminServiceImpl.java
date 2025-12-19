@@ -99,6 +99,7 @@ public class AdminServiceImpl implements AdminService {
         LOG.info("Admin created with email :{}", createAdminRequest.getEmail());
         return ResponseUtil.getSuccessfulApiResponse("Admin created successfully");
     }
+
     @Override
     public ApiResponse<?> listAllAdmins(SearchParam searchParam) {
         SearchResponseWithMapperBuilder<Admin, ListAdminResponse> responseBuilder = SearchResponseWithMapperBuilder.<Admin, ListAdminResponse>builder()
@@ -116,29 +117,36 @@ public class AdminServiceImpl implements AdminService {
             LOG.error("Failed to block admin. Admin with uniqueId {} does not exist", blockAdminRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Admin not found");
         }
-        if (Objects.equals(existingAdminByUniqueId.get().getUniqueId(),  blockAdminRequest.getUniqueId())) {
-            LOG.error("Failed to block admin .Admin cannot block themself.");
-            return  ResponseUtil.getFailureResponse("Cannot block yourself.");
+        String loggedInAdminUniqueId = admin.getName();
+
+        if (Objects.equals(loggedInAdminUniqueId, blockAdminRequest.getUniqueId())) {
+            LOG.error("Failed to block admin. Admin cannot block themselves.");
+            return ResponseUtil.getFailureResponse("Cannot block yourself.");
         }
-        if(Objects.equals(StatusConstant.BLOCKED.getName(),existingAdminByUniqueId.get().getStatus().getName())){
+        if (Objects.equals(StatusConstant.BLOCKED.getName(), existingAdminByUniqueId.get().getStatus().getName())) {
             LOG.error("Failed to block admin. Admin is already blocked - {}", blockAdminRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Admin is already blocked");
         }
-        if(Objects.equals(StatusConstant.DELETED.getName(),existingAdminByUniqueId.get().getStatus().getName())){
+        if (Objects.equals(StatusConstant.DELETED.getName(), existingAdminByUniqueId.get().getStatus().getName())) {
             LOG.error("Failed to block admin. Deleted admin cannot be blocked {}", blockAdminRequest.getUniqueId());
-            return  ResponseUtil.getFailureResponse("Deleted admin cannot be blocked");
+            return ResponseUtil.getFailureResponse("Deleted admin cannot be blocked");
+        }
+        if (Objects.equals(StatusConstant.PENDING.getName(), existingAdminByUniqueId.get().getStatus().getName())) {
+            LOG.error("Failed to block admin. Pending admin cannot be blocked {}", blockAdminRequest.getUniqueId());
+            return ResponseUtil.getFailureResponse("Pending admin cannot be blocked");
         }
         if (!existingAdminByUniqueId.get().isSuperAdmin()) {
             adminMapper.blockAdmin(existingAdminByUniqueId.get(), blockAdminRequest, request, admin);
             LOG.info("Admin blocked successfully - {}", blockAdminRequest.getUniqueId());
             return ResponseUtil.getSuccessfulApiResponse("Admin blocked successfully");
         }
-        LOG.error("Failed to block admin. Super admin cannot be blocked - {}",blockAdminRequest.getUniqueId());
+        LOG.error("Failed to block admin. Super admin cannot be blocked - {}", blockAdminRequest.getUniqueId());
         return ResponseUtil.getFailureResponse("Super Admin cannot be blocked");
     }
 
     @Override
-    public ApiResponse<?> updateAdmin(UpdateAdminDetailRequest updateAdminDetailRequest, HttpServletRequest request, Principal loggedInAdmin) {
+    public ApiResponse<?> updateAdmin(UpdateAdminDetailRequest updateAdminDetailRequest, HttpServletRequest
+            request, Principal loggedInAdmin) {
         Optional<Admin> admin = adminRepository.findByUniqueId(updateAdminDetailRequest.getUniqueId());
         if (admin.isEmpty()) {
             LOG.info("Failed to update admin. Admin with uniqueId {} does not exist", updateAdminDetailRequest.getUniqueId());
@@ -149,11 +157,11 @@ public class AdminServiceImpl implements AdminService {
             LOG.info("Failed to update admin. Admin with uniqueId {} is deleted", updateAdminDetailRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Deleted admin cannot be updated");
         }
-        if (Objects.equals(existingAdmin.getUniqueId(),  updateAdminDetailRequest.getUniqueId())) {
+        if (Objects.equals(existingAdmin.getUniqueId(), updateAdminDetailRequest.getUniqueId())) {
             LOG.error("Failed to update admin .Admin cannot update themself.");
-            return  ResponseUtil.getFailureResponse("Cannot update yourself.");
+            return ResponseUtil.getFailureResponse("Cannot update yourself.");
         }
-        if(existingAdmin.getStatus().getName().equals(StatusConstant.BLOCKED.getName())) {
+        if (existingAdmin.getStatus().getName().equals(StatusConstant.BLOCKED.getName())) {
             LOG.info("Failed to update admin. Admin with uniqueId {} is blocked", updateAdminDetailRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Blocked admin cannot be updated");
         }
@@ -163,12 +171,12 @@ public class AdminServiceImpl implements AdminService {
             return ResponseUtil.getFailureResponse("Admin with this mobile number already exists");
         }
         Admin adminFromDbWithSameEmail = adminRepository.findByEmail(updateAdminDetailRequest.getEmail());
-        if(adminFromDbWithSameEmail != null && !adminFromDbWithSameEmail.getUniqueId().equals(existingAdmin.getUniqueId())) {
+        if (adminFromDbWithSameEmail != null && !adminFromDbWithSameEmail.getUniqueId().equals(existingAdmin.getUniqueId())) {
             LOG.error("Failed to update loggedInAdmin. Admin with this email already exists - {}", updateAdminDetailRequest.getEmail());
             return ResponseUtil.getFailureResponse("Admin with this email already exists");
         }
         if (existingAdmin.isSuperAdmin()) {
-            LOG.info("Failed to update admin. Super admin cannot be updated {}",updateAdminDetailRequest.getUniqueId());
+            LOG.info("Failed to update admin. Super admin cannot be updated {}", updateAdminDetailRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Super admin cannot be updated.");
         } else {
             LOG.info("Admin with uniqueId {} has been updated successfully", updateAdminDetailRequest.getUniqueId());
@@ -178,7 +186,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ApiResponse<?> deleteAdmin(DeleteAdminRequest request, Principal principal, HttpServletRequest httpServletRequest) {
+    public ApiResponse<?> deleteAdmin(DeleteAdminRequest request, Principal principal, HttpServletRequest
+            httpServletRequest) {
         Optional<Admin> admin = adminRepository.findByUniqueId(request.getUniqueId());
         if (admin.isEmpty()) {
             LOG.info("Failed to delete admin. Admin not found with uniqueId: {}", request.getUniqueId());
@@ -189,9 +198,10 @@ public class AdminServiceImpl implements AdminService {
             LOG.error("Failed to delete admin. Super admin cannot be deleted : {}", request.getUniqueId());
             return ResponseUtil.getFailureResponse("Super admin cannot be deleted");
         }
-        if (Objects.equals(existingAdmin.getUniqueId(),  request.getUniqueId())) {
+        String loggedInAdminUniqueId = existingAdmin.getUniqueId();
+        if (Objects.equals(loggedInAdminUniqueId, request.getUniqueId())) {
             LOG.error("Failed to delete admin .Admin cannot delete themself.");
-            return  ResponseUtil.getFailureResponse("Cannot delete yourself.");
+            return ResponseUtil.getFailureResponse("Cannot delete yourself.");
         }
         if (Objects.equals(existingAdmin.getStatus().getName(), StatusConstant.DELETED.getName())) {
             LOG.info("Failed to delete admin. Admin with uniqueId: {} is already deleted", request.getUniqueId());
@@ -238,31 +248,30 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ApiResponse<?> setPassword(SetPasswordRequest setPasswordRequest) {
         Optional<AdminEmailLog> emailLog = adminEmailLogRepository.findByUuid(setPasswordRequest.getUuid());
-        if(emailLog.isEmpty()){
+        if (emailLog.isEmpty()) {
             LOG.error("Failed to set password. The link is invalid - {}", setPasswordRequest.getUuid());
             return ResponseUtil.getFailureResponse("The link is invalid. Please request a new link.");
         }
-        if(emailLog.get().getIsExpired()){
-            LOG.error("Failed to set password. The link is expired - {}",setPasswordRequest.getUuid());
+        if (emailLog.get().getIsExpired()) {
+            LOG.error("Failed to set password. The link is expired - {}", setPasswordRequest.getUuid());
             return ResponseUtil.getFailureResponse("The link is expired. Please request a new link.");
         }
         Optional<Admin> adminEntity = emailLog.map(AdminEmailLog::getAdmin);
-        if(adminEntity.isEmpty()){
-            LOG.error("Failed to set password. Admin not found for the email log - {}",setPasswordRequest.getUuid());
+        if (adminEntity.isEmpty()) {
+            LOG.error("Failed to set password. Admin not found for the email log - {}", setPasswordRequest.getUuid());
             return ResponseUtil.getFailureResponse("User not found");
         }
-        if(Objects.equals(setPasswordRequest.getPassword(), setPasswordRequest.getConfirmPassword())){
-            Admin admin = adminMapper.setPassword(adminEntity.get(),setPasswordRequest);
+        if (Objects.equals(setPasswordRequest.getPassword(), setPasswordRequest.getConfirmPassword())) {
+            Admin admin = adminMapper.setPassword(adminEntity.get(), setPasswordRequest);
             adminRepository.save(admin);
             List<AdminEmailLog> emailLogs = adminEmailLogRepository.findAllByAdminAndIsExpiredFalse(admin);
-            for(AdminEmailLog adminEmailLog : emailLogs){
+            for (AdminEmailLog adminEmailLog : emailLogs) {
                 adminEmailLog.setIsExpired(true);
             }
             adminEmailLogRepository.saveAll(emailLogs);
             LOG.info("Password set successfully");
             return ResponseUtil.getSuccessfulApiResponse("Password set successfully");
-        }
-        else{
+        } else {
             LOG.error("Failed to set password. Passwords do not match - {}", setPasswordRequest.getUuid());
             return ResponseUtil.getFailureResponse("Passwords do not match");
         }
@@ -270,14 +279,15 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public ApiResponse<?> editProfile(EditProfileRequest editProfileRequest, MultipartFile profilePicture, Principal principal, HttpServletRequest httpServletRequest)  throws IOException {
+    public ApiResponse<?> editProfile(EditProfileRequest editProfileRequest, MultipartFile
+            profilePicture, Principal principal, HttpServletRequest httpServletRequest) throws IOException {
         Admin adminToEditProfile = adminRepository.findByEmail(principal.getName());
         Optional<Admin> adminFromDbWithSameMobile = adminRepository.findByMobileNumber(editProfileRequest.getMobileNumber());
         if (adminFromDbWithSameMobile.isPresent() && !adminFromDbWithSameMobile.get().getMobileNumber().equals(editProfileRequest.getMobileNumber())) {
             LOG.error("Failed to update profile. Admin with this mobile number already exists - {}", editProfileRequest.getMobileNumber());
             return ResponseUtil.getFailureResponse("Admin with this mobile number already exists");
         }
-        Admin editProfile = adminMapper.editProfile(profilePicture,adminToEditProfile,editProfileRequest,principal,httpServletRequest);
+        Admin editProfile = adminMapper.editProfile(profilePicture, adminToEditProfile, editProfileRequest, principal, httpServletRequest);
         adminRepository.save(editProfile);
         LOG.info("Admin edit profile successfully");
         return ResponseUtil.getSuccessfulApiResponse("Profile edit successfully");
@@ -285,7 +295,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public ApiResponse<?> changePassword(ChangePasswordRequest changePasswordRequest, Principal principal, HttpServletRequest request) {
+    public ApiResponse<?> changePassword(ChangePasswordRequest changePasswordRequest, Principal
+            principal, HttpServletRequest request) {
         Admin admin = adminRepository.findByEmail(principal.getName());
         if (admin == null) {
             LOG.error("Admin not found with email: {}", principal.getName());
@@ -321,7 +332,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ApiResponse<?> sendPasswordResetLink(SendPasswordResetLinkRequest sendPasswordResetLinkRequest, HttpServletRequest request) {
+    public ApiResponse<?> sendPasswordResetLink(SendPasswordResetLinkRequest
+                                                        sendPasswordResetLinkRequest, HttpServletRequest request) {
         Admin admin = adminRepository.findByEmail(sendPasswordResetLinkRequest.getEmail());
         if (admin == null) {
             LOG.error("Failed to send password reset link. Admin not found with email: {}", sendPasswordResetLinkRequest.getEmail());
@@ -342,30 +354,35 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ApiResponse<?> unblockAdmin(UnblockAdminRequest unblockAdminRequest, HttpServletRequest request, Principal loggedIn) {
+    public ApiResponse<?> unblockAdmin(UnblockAdminRequest unblockAdminRequest, HttpServletRequest
+            request, Principal loggedIn) {
         Optional<Admin> admin = adminRepository.findByUniqueId(unblockAdminRequest.getUniqueId());
-        if (admin.isEmpty()){
+        if (admin.isEmpty()) {
             LOG.error("Failed to unblock admin. Admin not found {}", unblockAdminRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Admin not found");
         }
-        if (Objects.equals(admin.get().getUniqueId(),  unblockAdminRequest.getUniqueId())) {
+        String loggedInAdminUniqueId = loggedIn.getName();
+
+
+        if (Objects.equals(loggedInAdminUniqueId, unblockAdminRequest.getUniqueId())) {
             LOG.error("Failed to unblock admin .Admin cannot unblock themself.");
-            return  ResponseUtil.getFailureResponse("Cannot unblock yourself.");
+            return ResponseUtil.getFailureResponse("Cannot unblock yourself.");
         }
-        if(Objects.equals(StatusConstant.ACTIVE.getName(),admin.get().getStatus().getName())){
+        if (Objects.equals(StatusConstant.ACTIVE.getName(), admin.get().getStatus().getName())) {
             LOG.error("Failed to unblock admin. Admin is active {}", unblockAdminRequest.getUniqueId());
-            return  ResponseUtil.getFailureResponse("Admin is already in active state");
+            return ResponseUtil.getFailureResponse("Admin is already in active state");
         }
-        if(Objects.equals(StatusConstant.PENDING.getName(),admin.get().getStatus().getName())){
+        if (Objects.equals(StatusConstant.PENDING.getName(), admin.get().getStatus().getName())) {
             LOG.error("Failed to unblock admin. Pending admin cannot be unblocked {}", unblockAdminRequest.getUniqueId());
-            return  ResponseUtil.getFailureResponse("Pending admin cannot be unblocked");
+            return ResponseUtil.getFailureResponse("Pending admin cannot be unblocked");
         }
-        if(Objects.equals(StatusConstant.DELETED.getName(),admin.get().getStatus().getName())){
+        if (Objects.equals(StatusConstant.DELETED.getName(), admin.get().getStatus().getName())) {
             LOG.error("Failed to unblock admin. Deleted admin cannot be unblocked {}", unblockAdminRequest.getUniqueId());
-            return  ResponseUtil.getFailureResponse("Deleted admin cannot be unblocked");
+            return ResponseUtil.getFailureResponse("Deleted admin cannot be unblocked");
         }
-        adminMapper.unblockAdmin(admin.get(),unblockAdminRequest,request,loggedIn);
-        LOG.info("Admin unblocked successfully - {}",unblockAdminRequest.getUniqueId());
+
+        adminMapper.unblockAdmin(admin.get(), unblockAdminRequest, request, loggedIn);
+        LOG.info("Admin unblocked successfully - {}", unblockAdminRequest.getUniqueId());
         return ResponseUtil.getSuccessfulApiResponse("Admin unblocked successfully");
     }
 

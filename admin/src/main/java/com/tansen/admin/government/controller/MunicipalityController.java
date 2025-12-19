@@ -54,7 +54,7 @@ public class MunicipalityController {
     }
 
     @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.VIEW)
-    @PreAuthorize("hasAuthority('VIEW_AUTHORITY')")
+    @PreAuthorize("hasAuthority('VIEW_ALL_AUTHORITY')")
     public ApiResponse<?> viewMunicipalityDetails(
             @Valid @RequestBody MunicipalityRequest request) {
         return municipalityService.viewMunicipalityDetails(request);

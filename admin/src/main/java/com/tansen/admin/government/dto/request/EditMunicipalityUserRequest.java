@@ -26,6 +26,6 @@ public class EditMunicipalityUserRequest extends ModelBase {
     private String address;
 
     @NotBlank(message = "AccessGroup Name is required")
-    private String vendorAccessGroupName;
+    private String authorityAccessGroupName;
 
 }
