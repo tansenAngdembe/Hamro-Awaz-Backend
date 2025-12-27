@@ -7,10 +7,12 @@ CREATE TABLE IF NOT EXISTS authority_users (
 
                                  municipality_id BIGINT NOT NULL,
                                  `name` VARCHAR(255) NOT NULL,
+                                 unique_id VARCHAR(255) NOT NULL,
                                  email VARCHAR(255) NOT NULL UNIQUE,
                                  password VARCHAR(255),
                                  phone_number VARCHAR(255),
                                  address VARCHAR(255),
+                                 is_active BOOLEAN,
                                  status_id BIGINT NOT NULL,
                                  created_at DATETIME,
                                  updated_at DATETIME,

@@ -31,7 +31,7 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
                     (:governmentName IS NULL OR m.governmentName LIKE CONCAT('%', :governmentName, '%')) AND
                     (:code IS NULL OR m.code LIKE CONCAT('%', :code, '%')) AND
                     (:province IS NULL OR p.province = :province) AND
-                    (:district IS NULL OR d.districtName = :district) AND 
+                    (:district IS NULL OR d.districtName = :district) AND
                     (:status is null or s.description = :status)
                 """)
                 .setParameter("governmentName", SearchParamUtil.getString(searchParam, "governmentName"))
@@ -46,7 +46,7 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
     public List<Municipality> getAll(SearchParam searchParam) {
         return em.createQuery("""
                 SELECT m
-                FROM Municipality m 
+                FROM Municipality m
                 JOIN Status s on s.id=m.status.id
                 JOIN m.province p 
                 JOIN m.district d 

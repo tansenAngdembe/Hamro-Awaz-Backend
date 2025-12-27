@@ -30,16 +30,7 @@
         <java.version>21</java.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.tansen</groupId>
-            <artifactId>common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tansen</groupId>
-            <artifactId>repository</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -109,7 +100,16 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.18.3</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.tansen</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tansen</groupId>
+            <artifactId>repository</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

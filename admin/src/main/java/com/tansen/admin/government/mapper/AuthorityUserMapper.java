@@ -54,6 +54,8 @@ public abstract class AuthorityUserMapper {
         authorityUser.setAuthorityAccessGroup(authorityAccessGroupRepository.findById(1L).orElseThrow(
                 ()-> new RuntimeException("Default Access Group Not Found")
         ));
+        authorityUser.setUniqueId(UuidUtil.generateUuid());
+        authorityUser.setIsActive(false);
         authorityUser.setMunicipality(municipality);
         authorityUser.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
         authorityUser.setCreatedAt(LocalDateTime.now());
@@ -65,7 +67,7 @@ public abstract class AuthorityUserMapper {
         AuthorityUser authorityUser = new AuthorityUser();
         authorityUser.setName(request.getFullName());
         authorityUser.setEmail(request.getEmail());
-        authorityUser.setPhoneNumber(request.getMobileNumber());
+        authorityUser.setPhoneNumber(request.getPhoneNumber());
         authorityUser.setAddress(request.getAddress());
         authorityUser.setAuthorityAccessGroup(authorityAccessGroupRepository.findByName((request.getAuthorityAccessGroupName())).orElseThrow(
                 () -> new RuntimeException("Default Authority Access Group not found")
@@ -90,6 +92,7 @@ public abstract class AuthorityUserMapper {
         authorityUser.setEmail(request.getEmail());
         authorityUser.setPhoneNumber(request.getMobileNumber());
         authorityUser.setAddress(request.getAddress());
+        authorityUser.setUniqueId(UuidUtil.generateUuid());
         authorityUser.setAuthorityAccessGroup(authorityAccessGroupRepository.findByName(request.getAuthorityAccessGroupName()).orElseThrow(
                 () -> new RuntimeException("Authority Access Group not found with ID: " + request.getAuthorityAccessGroupName())
         ));

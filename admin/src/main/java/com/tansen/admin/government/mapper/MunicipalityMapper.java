@@ -65,8 +65,9 @@ public abstract class MunicipalityMapper {
         municipality.setLatitude(createMunicipalityRequest.getLatitude());
         municipality.setLongitude(createMunicipalityRequest.getLongitude());
         municipality.setAddress(createMunicipalityRequest.getAddress());
-        if (documentFile != null) {
-            municipality.setDocumentUrl(uploadFileService.uploadFile(documentFile, FilePathConstant.BASE_PATH, FilePathConstant.MUNICIPALITY, true));
+        if (documentFile != null && !documentFile.isEmpty()) {
+            municipality.setDocumentUrl(uploadFileService.uploadFile(documentFile,
+                    FilePathConstant.BASE_PATH, FilePathConstant.MUNICIPALITY, false));
         }
         return municipality;
 

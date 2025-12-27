@@ -8,9 +8,14 @@ import com.tansen.common.dto.SearchResponseWithMapperBuilder;
 import com.tansen.common.exception.InternalServerErrorException;
 import com.tansen.common.service.SearchResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -36,9 +41,10 @@ public class SearchResponseImpl implements SearchResponse {
         } catch (Exception ex) {
             ex.printStackTrace();
             log.error(ex.getMessage());
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Search failed");
         }
     }
+
 
     @Override
     public <T, R> PageableResponse<R> getSearchResponse(SearchResponseWithMapperBuilder<T, R> responseWithMapperBuilder) {
@@ -55,7 +61,7 @@ public class SearchResponseImpl implements SearchResponse {
             return getSearchResponse(new ArrayList<>(), totalCount.intValue());
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Search failed");
         }
     }
 }

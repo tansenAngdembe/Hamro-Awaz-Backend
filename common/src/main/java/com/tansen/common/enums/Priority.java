@@ -1,7 +1,17 @@
 package com.tansen.common.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Priority {
-    HIGH,
-    MEDIUM,
-    LOW
+    HIGH ("HIGH"),
+    MEDIUM  ("MEDIUM"),
+    LOW ("LOW");
+    private String name;
+
+
+
+
 }

@@ -60,8 +60,8 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
             LOG.error("Failed to create municipality user. Municipality user with email {} already exists", createVendorUserRequest.getEmail());
             return ResponseUtil.getFailureResponse("Municipality user with this email already exists");
         }
-        if (authorityUserRepository.existsByPhoneNumber(createVendorUserRequest.getMobileNumber())) {
-            LOG.error("Failed to create municipality user. Municipality user with mobile number {} already exists", createVendorUserRequest.getMobileNumber());
+        if (authorityUserRepository.existsByPhoneNumber(createVendorUserRequest.getPhoneNumber())) {
+            LOG.error("Failed to create municipality user. Municipality user with mobile number {} already exists", createVendorUserRequest.getPhoneNumber());
             return ResponseUtil.getFailureResponse("Municipality user with this mobile number already exists");
         }
         Optional<Municipality> municipality = municipalityRepository.findByUniqueId(createVendorUserRequest.getVendorUniqueId());
@@ -85,22 +85,22 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
     }
 
     @Override
-    public ApiResponse<?> getAuthorityUserList( SearchParam searchParam) {
+    public ApiResponse<?> getAuthorityUserList(SearchParam searchParam) {
         SearchResponseWithMapperBuilder<AuthorityUser, AuthorityUserResponse> responseBuilder = SearchResponseWithMapperBuilder.<AuthorityUser, AuthorityUserResponse>builder()
                 .count(authorityUserSearchRepository::count).searchData(authorityUserSearchRepository::getAll)
                 .mapperFunction(this.authorityUserMapper::getAuthorityUserResponseList).searchParam(searchParam)
                 .build();
         PageableResponse<AuthorityUserResponse> response = searchResponse.getSearchResponse(responseBuilder);
-        LOG.info("Vendor User list retrieved successfully");
-        return ResponseUtil.getSuccessfulApiResponseWithData(response, "Vendor listed successfully");
+        LOG.info("Authority User list retrieved successfully");
+        return ResponseUtil.getSuccessfulApiResponseWithData(response, "Authority listed successfully");
     }
 
     @Override
     public ApiResponse<?> viewAuthorityUser(MunicipalityUserRequest request) {
         Optional<AuthorityUser> authorityUser = authorityUserRepository.findByUniqueId(request.getUniqueId());
         if (authorityUser.isEmpty()) {
-            LOG.info("Failed to retrieve vendor user. Vendor user with unique ID {} not found", request.getUniqueId());
-            return ResponseUtil.getFailureResponse("Vendor user not found");
+            LOG.info("Failed to retrieve authority user. Authority user with unique ID {} not found", request.getUniqueId());
+            return ResponseUtil.getFailureResponse("Authority user not found");
         }
         AuthorityUserResponse vendorUserResponse = authorityUserMapper.mapAuthorityUserToResponse(authorityUser.get());
         return ResponseUtil.getSuccessfulApiResponseWithData(vendorUserResponse, "Authority user retrieved successfully");
@@ -110,23 +110,23 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
     public ApiResponse<?> editAuthorityUser(EditMunicipalityUserRequest editAuthorityUserRequest, MultipartFile profilePicture, Principal loggedInUser, HttpServletRequest request) throws IOException {
         Optional<AuthorityUser> existingVendorUser = authorityUserRepository.findByUniqueId(editAuthorityUserRequest.getUniqueId());
         if (existingVendorUser.isEmpty()) {
-            LOG.error("Failed to edit vendor user. Authority user with unique ID {} not found", editAuthorityUserRequest.getUniqueId());
+            LOG.error("Failed to edit authority user. Authority user with unique ID {} not found", editAuthorityUserRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Authority user not found");
         }
         AuthorityUser user = existingVendorUser.get();
         Optional<AuthorityUser> userWithEmail = authorityUserRepository.findByEmail(editAuthorityUserRequest.getEmail());
         if (userWithEmail.isPresent() && !userWithEmail.get().getId().equals(user.getId())) {
-            LOG.info("Failed to edit vendor user. Authority user with email {} already exists", editAuthorityUserRequest.getEmail());
+            LOG.info("Failed to edit authority user. Authority user with email {} already exists", editAuthorityUserRequest.getEmail());
             return ResponseUtil.getFailureResponse("Authority user with this email already exists");
         }
         Optional<AuthorityUser> userWithMobile = authorityUserRepository.findByPhoneNumber(editAuthorityUserRequest.getMobileNumber());
         if (userWithMobile.isPresent() && !userWithMobile.get().getId().equals(user.getId())) {
-            LOG.info("Failed to edit vendor user. Authority user with mobile number {} already exists", editAuthorityUserRequest.getMobileNumber());
+            LOG.info("Failed to edit authority user. Authority user with mobile number {} already exists", editAuthorityUserRequest.getMobileNumber());
             return ResponseUtil.getFailureResponse("Authority user with this mobile number already exists");
         }
         AuthorityUser authorityUser = authorityUserMapper.updateAuthorityUser(editAuthorityUserRequest, user, profilePicture, loggedInUser, request);
         authorityUserRepository.save(authorityUser);
-        LOG.info("Vendor user with unique ID {} edited successfully", editAuthorityUserRequest.getUniqueId());
+        LOG.info("Authority user with unique ID {} edited successfully", editAuthorityUserRequest.getUniqueId());
         return ResponseUtil.getSuccessfulApiResponse("Authority user edited successfully");
     }
 

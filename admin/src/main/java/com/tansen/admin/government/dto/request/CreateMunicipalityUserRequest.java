@@ -19,7 +19,7 @@ public class CreateMunicipalityUserRequest extends ModelBase {
     private String email;
 
     @NotBlank(message = "Mobile number is required")
-    private String mobileNumber;
+    private String phoneNumber;
 
     @NotBlank(message = "Address is required")
     private String address;

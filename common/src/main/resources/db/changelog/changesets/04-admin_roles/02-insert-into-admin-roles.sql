@@ -32,7 +32,7 @@ VALUES
     ('Reset Authority Two Factor Authentication', '', 'Reset Authority Two Factor Authentication', '/reset-authority-2fa', 'Authority',
      'RESET_AUTHORITY_TWO_FACTOR_AUTHENTICATION', 8, 'Authority', 0),
     ('Resend Authority Account Activation Link', '', 'Resend Authority Account Activation Link',
-     '/resend-user-account-activation-link', 'Users', 'RESEND_USER_ACCOUNT_ACTIVATION_LINK', 9, 'Users', 0),
+     '/resend-user-account-activation-link', 'Authority', 'RESEND_USER_ACCOUNT_ACTIVATION_LINK', 9, 'Users', 0),
 
     ('Users', 'Users', 'Users', '/users', 'Root', 'USERS', 3, 'NONE', 0),
     ('View User', '', 'View User', '/view', 'Users', 'VIEW_USER', 1, 'Users', 0),
@@ -67,6 +67,4 @@ VALUES
     ('View SMS Template', '', 'View SMS Template', '/view', 'SMS Templates',
      'VIEW_SMS_TEMPLATE', 1, 'SMS Templates', 0),
     ('Modify SMS Template', '', 'Modify SMS Template', '/edit', 'SMS Templates',
-     'MODIFY_SMS_TEMPLATE', 2, 'SMS Templates', 0),
-
-    ('Logout', 'LogOut', 'Logout', '/logout', 'Root', 'LOGOUT', 999, 'COMMON', 0);
+     'MODIFY_SMS_TEMPLATE', 2, 'SMS Templates', 0);

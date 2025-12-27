@@ -15,8 +15,11 @@ public class SearchParam extends ModelBase{
     private Integer firstRow;
     @Schema(description = "The number of rows to fetch per page", defaultValue = "10")
     private Integer pageSize;
-    private List<SearchFieldParam> searchFieldParams;
 
+    private String sortField;
+    private String sortOrder;
+
+    private List<SearchFieldParam> searchFieldParams;
     private Map<String, Object> param = new HashMap<>();
 
 
@@ -32,6 +35,14 @@ public class SearchParam extends ModelBase{
             return 10;
         }
         return pageSize;
+    }
+    public String getSortField() {
+        return (sortOrder == null || sortOrder.isBlank())
+                ? "createdAt" : sortField;
+    }
+    public String getSortOrder() {
+        return (sortOrder == null || sortOrder.isBlank())
+                ? "asc": sortOrder;
     }
 
 }

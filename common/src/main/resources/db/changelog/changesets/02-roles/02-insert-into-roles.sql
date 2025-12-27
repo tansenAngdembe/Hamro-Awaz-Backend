@@ -5,4 +5,4 @@
 INSERT INTO roles (description,name, version) VALUES
                                               ( 'System Administrator','ROLE_ADMIN',0),
                                               ('Municipality / Authority User','ROLE_AUTHORITY', 0),
-                                              ( 'Citizen of HamroAwaz','ROLE_USER', 0);
+                                              ( 'User of HamroAwaz','ROLE_USER', 0);
