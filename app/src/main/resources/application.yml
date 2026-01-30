@@ -1,0 +1,10 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  profiles:
+    active: dev
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.yaml

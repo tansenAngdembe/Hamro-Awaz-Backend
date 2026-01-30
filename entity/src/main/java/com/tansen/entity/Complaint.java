@@ -59,11 +59,8 @@ public class Complaint  extends  AbstractEntity{
     @Column(name = "created_date",nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "updated_date",nullable = false)
+    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
-
-    @Column(name = "resolved_date",nullable = false)
-    private LocalDateTime resolvedDate;
 
     @OneToMany(
             mappedBy = "complaint",

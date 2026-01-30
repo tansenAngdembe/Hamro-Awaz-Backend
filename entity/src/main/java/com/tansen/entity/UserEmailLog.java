@@ -3,6 +3,7 @@ package com.tansen.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -33,6 +34,5 @@ public class UserEmailLog extends AbstractEntity {
     private String uuid;
 
     @Column(name="created_at", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 }

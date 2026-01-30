@@ -28,6 +28,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -72,7 +74,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                     UserAuthenticationResponse userAuthenticationResponse = new UserAuthenticationResponse();
                     userAuthenticationResponse.setAccessToken(userToken.getAccessToken());
                     userAuthenticationResponse.setRefreshToken(userToken.getRefreshToken());
-                    userRepository.updateLastLoggedInTime(authenticateUserRequest.getEmail(), new Date());
+                    userRepository.updateLastLoggedInTime(authenticateUserRequest.getEmail(), LocalDateTime.now());
                     userRepository.updateWrongPasswordAttemptCount(authenticateUserRequest.getEmail(), 0);
 
 

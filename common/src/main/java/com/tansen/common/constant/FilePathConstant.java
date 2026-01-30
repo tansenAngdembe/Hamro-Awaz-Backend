@@ -18,6 +18,7 @@ public class FilePathConstant {
 
     public static final String ADMIN = "/admin/";
     public static final String USER = "/user/";
+    public static final String COMPLAINT = "/complaint/";
     public static final String MUNICIPALITY = "/municipality/";
     public static final String MUNICIPALITY_DOCUMENT = "/municipality_document/";
     public static final String AUTHORITY_USER = "/authority_user/";

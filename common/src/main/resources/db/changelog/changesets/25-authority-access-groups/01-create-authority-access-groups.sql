@@ -11,5 +11,7 @@ CREATE TABLE IF NOT EXISTS authority_access_groups (
     status                BIGINT             NOT NULL,
     is_authority_admin_group BIT(1)             NOT NULL,
     remarks               VARCHAR(255)       NULL,
-    CONSTRAINT fk_authority_access_groups_status FOREIGN KEY (status) REFERENCES status(id)
+    municipality_id BIGINT  NULL,
+    CONSTRAINT fk_authority_access_groups_status FOREIGN KEY (status) REFERENCES status(id),
+    CONSTRAINT fk_authority_access_groups_municipality FOREIGN KEY (municipality_id) REFERENCES municipality(id)
 );

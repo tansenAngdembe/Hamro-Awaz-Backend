@@ -22,13 +22,12 @@ CREATE TABLE IF NOT EXISTS complaints (
                             photo_url VARCHAR(500) NOT NULL,
 
                             created_date DATETIME NOT NULL,
-                            updated_date DATETIME NOT NULL,
-                            resolved_date DATETIME NOT NULL,
+                            updated_date DATETIME,
 
                             CONSTRAINT uq_complaints_unique_id UNIQUE (unique_id),
 
-                            CONSTRAINT fk_complaints_category
-                                FOREIGN KEY (category_id) REFERENCES category(id),
+                            CONSTRAINT fk_complaints_categories
+                                FOREIGN KEY (category_id) REFERENCES categories(id),
 
                             CONSTRAINT fk_complaints_status
                                 FOREIGN KEY (status_id) REFERENCES complaint_status(id),

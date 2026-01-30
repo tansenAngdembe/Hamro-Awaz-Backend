@@ -11,16 +11,19 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "categories")
 public class Category extends AbstractEntity {
-    @Column(name = "category_name", nullable = false, unique = true)
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "created_at")
+    @Column(name = "unique_id", nullable = false)
+    private String uniqueId;
+
+    @Column(name = "create_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "update_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

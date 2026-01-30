@@ -44,6 +44,10 @@ public class User extends AbstractEntity {
     @Column(name = "last_logged_in_time")
     private LocalDateTime lastLoggedInTime;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+
     @Column(name = "wrong_password_attempt_count")
     private Integer wrongPasswordAttemptCount;
 

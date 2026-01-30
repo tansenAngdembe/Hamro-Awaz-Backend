@@ -55,7 +55,7 @@ public class AuthorityUserSearchRepositoryImpl implements AuthorityUserSearchRep
                 WHERE
                     (:name IS NULL OR u.name LIKE CONCAT('%', :name, '%')) AND
                     (:email IS NULL OR u.email LIKE CONCAT('%', :email, '%')) AND
-                    (:mobileNumber IS NULL OR u.phoneNumber LIKE CONCAT('%', :phoneNumber, '%')) AND
+                    (:phoneNumber IS NULL OR u.phoneNumber LIKE CONCAT('%', :phoneNumber, '%')) AND
                     (:address IS NULL OR u.address LIKE CONCAT('%', :address, '%')) AND
                     (:municipality IS NULL OR m.governmentName LIKE CONCAT('%', :municipality, '%')) AND
                     (:municipalityUniqueId IS NULL OR m.uniqueId LIKE CONCAT('%', :municipalityUniqueId, '%'))

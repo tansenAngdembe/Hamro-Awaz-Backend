@@ -38,13 +38,16 @@ public class ApiConstant {
     public static final String CHECK_AUTHENTICATION = "checkAuth";
     public static final String accessGroup = "accessGroup";
     public static final String USERS = "users";
+    public static final String ASSIGNTO = "assignTo";
     public static final String PROPERTY_FINDER = "propertyFinder";
     public static final String PROPERTY_OWNER = "propertyOwner";
     public static final String PROVINCE = "province";
     public static final String DISTRICT = "district";
     public static final String LOCAL_LEVEL = "localLevel";
     public static final String WARDS = "wards";
-    public static final String VENDOR_API = "/api/v1/vendor";
+    public static final String MUNICIPALITY_API = "/api/v1/municipality";
+
+    public static final String COMPLAINT = "complaint";
     public static final String MUNICIPALITY = "municipality";
     public static final String AUTHORITY_USER = "authorityUser";
     public static final String TYPE ="type";
@@ -72,5 +75,10 @@ public class ApiConstant {
     public static final String DASHBOARD = "dashboard";
     public static final String OVERVIEW = "overview";
     public static final String PRIVACY_POLICY  = "privacyPolicy";
+    public static final String CLOSED = "closed" ;
+    public static final String ASSIGNCOMPLAINT = "assignComplaint";
+    public static final String INPROGRESS = "inProgress";
+    public static final String CATEGORY = "category";
+    public static final String ESCALATION = "escalation";
 }
 

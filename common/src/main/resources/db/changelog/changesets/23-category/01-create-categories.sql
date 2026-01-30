@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS categories (
      version  BIGINT NOT NULL DEFAULT 0,
      category_name VARCHAR(255) NOT NULL,
      description VARCHAR(255)  NOT NULL,
+     unique_id VARCHAR(255) NOT NULL,
      create_at  DATETIME,
      update_at DATETIME,
      municipality_id BIGINT NOT NULL,

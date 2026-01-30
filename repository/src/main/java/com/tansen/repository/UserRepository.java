@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.lastLoggedInTime = :time WHERE u.email = :email")
 
-    void updateLastLoggedInTime(@Param("email") String email, @Param("time") Date time);
+    void updateLastLoggedInTime(@Param("email") String email, @Param("time") LocalDateTime time);
 
     @Modifying
     @Query("UPDATE User u SET u.wrongPasswordAttemptCount = :count WHERE u.email = :email")
@@ -25,13 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
-    User findByUniqueId(String uniqueId);
-
-    User findByAuthProviderId(String oauthId);
-
     boolean existsByEmail(String email);
 
     boolean existsByPhoneNumber(String phoneNumber);
 
     User findByEmailOrPhoneNumber(String email, String phoneNumber);
+
 }

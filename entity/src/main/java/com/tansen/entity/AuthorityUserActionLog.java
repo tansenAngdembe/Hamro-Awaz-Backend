@@ -19,7 +19,7 @@ public class AuthorityUserActionLog  extends AbstractEntity{
     private String targetType;
 
     @Column(name="target_id", nullable = false)
-    private Integer targetId;
+    private Long targetId;
 
     @Column(name="action_type", nullable = false)
     private String actionType;

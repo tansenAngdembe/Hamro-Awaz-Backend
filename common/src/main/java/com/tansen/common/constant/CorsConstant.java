@@ -9,7 +9,7 @@ public class CorsConstant {
             "http://192.168.0.111:5174",
             "http://10.91.91.30:5174"
     );
-    public static final List<String> VENDOR_ALLOWED_ORIGINS = List.of(
+    public static final List<String> GOVERNMENT_ALLOWED_ORIGINS = List.of(
             "http://localhost:5173/"
     );
 

@@ -22,9 +22,10 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "authority_users")
 public class AuthorityUser extends AbstractEntity implements UserDetails{
-    @ManyToOne(optional = false)
-    @JoinColumn(name="municipality_id", referencedColumnName = "id")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "municipality_id", nullable = true)
     private Municipality municipality;
+
 
     @Column(name="name", nullable = false)
     private String name;
@@ -105,7 +106,7 @@ public class AuthorityUser extends AbstractEntity implements UserDetails{
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
 

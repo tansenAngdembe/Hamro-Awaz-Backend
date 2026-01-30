@@ -1,6 +1,6 @@
 package com.tansen.app.dto.response;
 
-import com.cosmotech.common.dto.ModelBase;
+import com.tansen.common.dto.ModelBase;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -51,7 +51,7 @@ public abstract class AuthorityUserMapper {
         authorityUser.setEmail(authorityUserRequest.getAuthorityAdminEmail());
         authorityUser.setPhoneNumber(authorityUserRequest.getAuthorityAdminPhoneNumber());
         authorityUser.setAddress(authorityUserRequest.getAuthorityAdminAddress());
-        authorityUser.setAuthorityAccessGroup(authorityAccessGroupRepository.findById(1L).orElseThrow(
+        authorityUser.setAuthorityAccessGroup(authorityAccessGroupRepository.findByName("Authority Admin").orElseThrow(
                 ()-> new RuntimeException("Default Access Group Not Found")
         ));
         authorityUser.setUniqueId(UuidUtil.generateUuid());

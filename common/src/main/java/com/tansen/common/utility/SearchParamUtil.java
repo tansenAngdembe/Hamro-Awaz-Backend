@@ -17,6 +17,40 @@ public class SearchParamUtil {
     public static String getString(SearchParam searchParam, String keyName) {
         return (String) searchParam.getParam().get(keyName);
     }
+    public static <E extends Enum<E>> E getEnum(
+            SearchParam searchParam,
+            String keyName,
+            Class<E> enumClass
+    ) {
+        Object value = searchParam.getParam().get(keyName);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String str && !str.isBlank()) {
+            return Enum.valueOf(enumClass, str);
+        }
+
+        return null;
+    }
+    public static Boolean getBoolean(SearchParam searchParam, String keyName) {
+        Object value = searchParam.getParam().get(keyName);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Boolean b) {
+            return b;
+        }
+
+        if (value instanceof String str && !str.isBlank()) {
+            return Boolean.parseBoolean(str);
+        }
+
+        return null;
+    }
 
     public static Date getDate(SearchParam searchParam, String keyName, String dateFormat) {
         String stringDate = getString(searchParam, keyName);
@@ -61,6 +95,7 @@ public class SearchParamUtil {
             return null;
         }
     }
+
     public static LocalDateTime getDateTime(SearchParam searchParam, String keyName) {
         String stringDate = getString(searchParam, keyName);
         if (stringDate != null && !stringDate.isBlank()) {

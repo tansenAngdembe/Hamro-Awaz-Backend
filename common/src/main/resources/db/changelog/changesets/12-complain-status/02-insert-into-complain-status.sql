@@ -1,7 +1,7 @@
 --liquibase formatted sql
 --changeset tansen:1
 --preconditions onFail:CONTINUE onError:HALT
-INSERT INTO complain_status (description, color, name, version)
+INSERT INTO complaint_status (description, color, name, version)
 VALUES
     ('New complaint registered', '#0D6EFD', 'NEW', 0),                -- Blue
     ('Complaint is under review', '#FFC107', 'IN_REVIEW', 0),        -- Yellow

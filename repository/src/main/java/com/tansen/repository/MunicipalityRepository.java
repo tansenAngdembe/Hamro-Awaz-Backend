@@ -13,5 +13,5 @@ public interface MunicipalityRepository extends JpaRepository<Municipality, Inte
 
     boolean existsByEmail(String email);
 
-    Optional<Municipality> findByUniqueId(@NotBlank(message = "Unique ID is required") String uniqueId);
+   Optional<Municipality> findByUniqueId(@NotBlank(message = "Unique ID is required") String uniqueId);
 }

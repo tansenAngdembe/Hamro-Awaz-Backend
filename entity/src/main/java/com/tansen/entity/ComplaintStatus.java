@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "complain_status")
+@Table(name = "complaint_status")
 public class ComplaintStatus extends AbstractEntity{
     @Column(name = "name", nullable = false, unique = true)
     private String name;
