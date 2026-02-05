@@ -12,5 +12,6 @@ public class EmailTemplateNameConstant {
     public static final String USER_REGISTRATION_OTP ="USER_REGISTRATION";
     public static final String USER_REGISTRATION_VERIFICATION ="USER_REGISTRATION_VERIFICATION";
     public static final String VENDOR_FORGOT_PASSWORD ="VENDOR_FORGOT_PASSWORD";
+    public static final String ESCALATION_EMAIL = "ESCALATION_EMAIL";
 
 }

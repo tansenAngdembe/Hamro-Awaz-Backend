@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS complaints (
 
                             created_date DATETIME NOT NULL,
                             updated_date DATETIME,
+                            escalated_at DATETIME NOT NULL,
+                            escalation_id BIGINT,
 
                             CONSTRAINT uq_complaints_unique_id UNIQUE (unique_id),
 
@@ -39,5 +41,6 @@ CREATE TABLE IF NOT EXISTS complaints (
                                 FOREIGN KEY (municipality_id) REFERENCES municipality(id),
 
                             CONSTRAINT fk_complaints_assigned_to
-                                FOREIGN KEY (assigned_to) REFERENCES authority_users(id)
+                                FOREIGN KEY (assigned_to) REFERENCES authority_users(id),
+                            CONSTRAINT fk_complaints_escalations FOREIGN KEY (escalation_id) REFERENCES escalations(id)
 );

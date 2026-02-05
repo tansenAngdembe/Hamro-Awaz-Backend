@@ -1,12 +1,14 @@
 package com.tansen.repository;
 
 import com.tansen.entity.Complaint;
+import com.tansen.entity.enums.Priority;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,4 +27,6 @@ public interface ComplaintRepository extends JpaRepository<Complaint,Long> {
             @Param("complaintUniqueId") String complaintUniqueId,
             @Param("municipalityUniqueId") String municipalityUniqueId
     );
+
+    List<Complaint> findByPriorityNot(Priority priority);
 }

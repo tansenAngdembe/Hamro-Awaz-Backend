@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum Priority {
     HIGH ("HIGH"),
     MEDIUM  ("MEDIUM"),
-    LOW ("LOW");
+    LOW ("LOW"),
+    ESCALATED("ESCALATED");
     private String name;
 }

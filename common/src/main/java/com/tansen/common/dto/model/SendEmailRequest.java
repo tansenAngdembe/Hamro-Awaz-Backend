@@ -14,4 +14,6 @@ public class SendEmailRequest extends ModelBase {
     private String recipient;
     private String subject;
     private String message;
+
+    private String replyToEmail;
 }

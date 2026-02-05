@@ -4,6 +4,7 @@ import com.tansen.common.constant.FreeMarkerTemplateConstant;
 import com.tansen.entity.EmailTemplate;
 import com.tansen.government.emaillog.dto.UserEmailContent;
 import com.tansen.repository.EmailTemplateRepository;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import java.time.Year;
 import java.util.HashMap;
 import java.util.Map;
+
 
 @Component
 public class UserEmailUtil {
@@ -28,6 +30,9 @@ public class UserEmailUtil {
         model.put(FreeMarkerTemplateConstant.VERIFICATION_LINK, link + emailContent.getUuid());
         model.put(FreeMarkerTemplateConstant.CURRENT_YEAR, String.valueOf(Year.now().getValue()));
         model.put(FreeMarkerTemplateConstant.COMPANY_NAME, "Awaz");
+        return getString(emailTemplate, model, freeMarkerConfig);
+    }
+    static String getString(EmailTemplate emailTemplate, Map<String, Object> model, Configuration freeMarkerConfig) {
         String content;
         try {
             Template template = new Template("emailTemplate", emailTemplate.getTemplate(), freeMarkerConfig);

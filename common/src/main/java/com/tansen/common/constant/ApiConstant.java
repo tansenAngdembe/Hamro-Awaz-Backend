@@ -80,5 +80,6 @@ public class ApiConstant {
     public static final String INPROGRESS = "inProgress";
     public static final String CATEGORY = "category";
     public static final String ESCALATION = "escalation";
+    public static final String MAP = "map";
 }
 

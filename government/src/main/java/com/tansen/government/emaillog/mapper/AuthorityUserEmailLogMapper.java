@@ -3,8 +3,11 @@ package com.tansen.government.emaillog.mapper;
 import com.tansen.common.constant.EmailTemplateNameConstant;
 import com.tansen.common.utility.ExpirationTimeUtil;
 import com.tansen.common.utility.UuidUtil;
+import com.tansen.entity.AuthorityEscalationEmailLog;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.AuthorityUserEmailLog;
+import com.tansen.entity.Complaint;
+import com.tansen.government.emaillog.dto.AuthorityEscalationContent;
 import com.tansen.government.emaillog.dto.AuthorityUserEmailContent;
 import com.tansen.government.emaillog.util.AuthorityUserEmailUtil;
 import com.tansen.repository.AuthorityUserEmailLogRepository;
@@ -69,6 +72,37 @@ public abstract class AuthorityUserEmailLogMapper {
         adminEmailLog.setIsSent(true);
         adminEmailLog.setCreatedAt(LocalDateTime.now());
         return adminEmailLog;
+    }
+
+    public AuthorityEscalationEmailLog mapEscalationEmail(AuthorityUser authorityUser, Complaint complaint){
+        String uuid = UuidUtil.generateUuid();
+
+        AuthorityEscalationContent authorityEscalationContent = getAuthorityEscalationContent(complaint);
+        String content = authorityUserEmailUtil.prepareEscalationEmail(authorityEscalationContent);
+
+        AuthorityEscalationEmailLog authorityEscalationEmailLog = new AuthorityEscalationEmailLog();
+        authorityEscalationEmailLog.setUniqueId(uuid);
+        authorityEscalationEmailLog.setAssignedTo(authorityUser);
+        authorityEscalationEmailLog.setComplaintTitle(authorityEscalationContent.getComplaintTitle());
+        authorityEscalationEmailLog.setCategory(authorityEscalationContent.getCategory());
+        authorityEscalationEmailLog.setCreatedDate(authorityEscalationContent.getCreatedDate());
+        authorityEscalationEmailLog.setComplaintRule(authorityEscalationContent.getComplaintRule());
+        authorityEscalationEmailLog.setEscalationAt(authorityEscalationContent.getEscalationAt());
+        authorityEscalationEmailLog.setMessage(content);
+        authorityEscalationEmailLog.setMetaCreatedAt(LocalDateTime.now());
+        return authorityEscalationEmailLog;
+    }
+
+    private static AuthorityEscalationContent getAuthorityEscalationContent( Complaint complaint) {
+        AuthorityEscalationContent authorityEscalationContent = new AuthorityEscalationContent();
+        authorityEscalationContent.setComplaintTitle(complaint.getComplaintTitle());
+        authorityEscalationContent.setCategory(complaint.getCategory().getCategoryName());
+        authorityEscalationContent.setCreatedDate(complaint.getCreatedDate());
+        authorityEscalationContent.setComplaintRule(complaint.getEscalation().getRuleName());
+        authorityEscalationContent.setEscalationAt(complaint.getEscalatedAt());
+
+        authorityEscalationContent.setTemplate(EmailTemplateNameConstant.ESCALATION_EMAIL);
+        return authorityEscalationContent;
     }
 
 }

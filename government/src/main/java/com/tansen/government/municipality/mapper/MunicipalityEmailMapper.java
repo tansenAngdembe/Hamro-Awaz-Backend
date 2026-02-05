@@ -1,11 +1,13 @@
 package com.tansen.government.municipality.mapper;
 
 import com.tansen.common.constant.EmailTemplateNameConstant;
+import com.tansen.common.utility.ExpirationTimeUtil;
 import com.tansen.common.utility.UuidUtil;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.AuthorityUserEmailLog;
 import com.tansen.entity.ForgotPasswordOtp;
 import com.tansen.government.core.util.EmailContentUtil;
+import com.tansen.government.emaillog.dto.AuthorityUserEmailContent;
 import com.tansen.government.municipality.dto.EmailOtpSendDto;
 import com.tansen.repository.AuthorityEmailLogRepository;
 import com.tansen.repository.AuthorityUserEmailLogRepository;
@@ -14,6 +16,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
@@ -22,6 +25,7 @@ public abstract class MunicipalityEmailMapper {
     private EmailContentUtil emailContentUtil;
     @Autowired
     private AuthorityUserEmailLogRepository authorityEmailLogRepository;
+
 
 
 

@@ -30,6 +30,9 @@ public class MailServiceImpl implements MailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try{
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true);
+            if (request.getReplyToEmail() != null) {
+                helper.setReplyTo(request.getReplyToEmail());
+            }
             helper.setFrom(sender);
             helper.setTo(request.getRecipient());
             helper.setSubject(request.getSubject());

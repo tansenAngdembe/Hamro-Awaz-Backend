@@ -62,6 +62,13 @@ public class Complaint  extends  AbstractEntity{
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "escalation_id", referencedColumnName = "id")
+    private Escalation escalation;
+
+    @Column( name = "escalated_at")
+    private LocalDateTime escalatedAt;
+
     @OneToMany(
             mappedBy = "complaint",
             cascade = CascadeType.ALL,

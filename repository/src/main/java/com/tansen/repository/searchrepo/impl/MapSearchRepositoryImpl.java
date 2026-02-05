@@ -32,35 +32,33 @@ public class MapSearchRepositoryImpl implements MapSearchRepository {
     @Override
     public Long count(SearchParam searchParam, Long municipalityId) {
         return (Long) em.createQuery("""
-            SELECT COUNT(m.id)
-            FROM ComplaintCoordinates m
-            JOIN m.complaint c
-            WHERE
-                c.id = :municipality AND
-                (:latitude IS NULL OR m.latitude LIKE CONCAT('%', :latitude, '%')) AND
-                (:complaintTitle IS NULL OR c.complaintTitle LIKE CONCAT('%', :complaintTitle, '%'))
-            """)
-                .setParameter("municipality", municipalityId)
-                .setParameter("latitude", SearchParamUtil.getBigDecimal(searchParam, "latitude"))
+        SELECT COUNT(cc.id)
+        FROM ComplaintCoordinates cc
+        JOIN cc.complaint c
+        JOIN c.municipality mu
+        WHERE
+            mu.id = :municipalityId
+            AND (:complaintTitle IS NULL OR LOWER(c.complaintTitle) LIKE LOWER(CONCAT('%', :complaintTitle, '%')))
+        """)
+                .setParameter("municipalityId", municipalityId)
                 .setParameter("complaintTitle", SearchParamUtil.getString(searchParam, "complaintTitle"))
                 .getSingleResult();
     }
 
-
     @Override
     public List<ComplaintCoordinates> getAll(SearchParam searchParam, Long municipalityId) {
         return em.createQuery("""
-            SELECT c
-            FROM ComplaintCoordinates c
-            JOIN c.municipality m
-            WHERE
-                m.id = :municipalityId AND
-                (:latitude IS NULL OR c.latitude LIKE CONCAT('%', :latitude, '%')) AND
-            """, ComplaintCoordinates.class)
+        SELECT cc
+        FROM ComplaintCoordinates cc
+        JOIN cc.complaint c
+        JOIN c.municipality mu
+        WHERE
+            mu.id = :municipalityId
+        """, ComplaintCoordinates.class)
                 .setParameter("municipalityId", municipalityId)
-                .setParameter("uniqueId", SearchParamUtil.getString(searchParam, "uniqueId"))
                 .setFirstResult(searchParam.getFirstRow())
                 .setMaxResults(searchParam.getPageSize())
                 .getResultList();
     }
+
 }
