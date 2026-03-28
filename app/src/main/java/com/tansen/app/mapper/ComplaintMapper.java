@@ -2,6 +2,7 @@ package com.tansen.app.mapper;
 
 import com.tansen.app.dto.request.CreateComplaintRequest;
 import com.tansen.app.dto.request.UpdateComplaintRequest;
+import com.tansen.app.dto.response.ListNearByComplainsResponse;
 import com.tansen.common.constant.FilePathConstant;
 import com.tansen.common.service.UploadFileService;
 import com.tansen.entity.*;
@@ -15,12 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.IIOException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class ComplaintMapper {
     @Autowired
     private UploadFileService uploadFileService;
+
+    public abstract ListNearByComplainsResponse entityToResponse(Complaint complaint);
+    public List<ListNearByComplainsResponse> listNearByComplainsResponses(List<Complaint> actionLog) {
+        return actionLog.stream().map(this::entityToResponse).collect(Collectors.toList());
+    }
 
 
 

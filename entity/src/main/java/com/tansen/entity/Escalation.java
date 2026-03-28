@@ -33,9 +33,6 @@ public class Escalation extends AbstractEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "escalated_at")
-    private LocalDateTime escalatedAt;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

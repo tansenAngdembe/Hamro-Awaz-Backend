@@ -1,22 +1,16 @@
 package com.tansen.government.complaints.mapper;
 
 import com.tansen.common.constant.ComplaintStatusConstant;
-import com.tansen.common.dto.ComplaintUniqueIdDto;
-import com.tansen.entity.ActionLog;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.Complaint;
-import com.tansen.government.complaints.dto.request.UpdateComplaintRequest;
 import com.tansen.government.complaints.dto.response.ListComplainsResponse;
 import com.tansen.government.municipality.dto.AssignToListResponse;
 import com.tansen.repository.ComplainStatusRepository;
-import com.tansen.repository.ComplaintRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +35,4 @@ public abstract class ComplaintMapper {
       complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.ASSIGNED.getName()));
       return complaint;
   }
-
-
 }

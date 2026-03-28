@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
@@ -11,10 +12,10 @@ import lombok.Setter;
 public class ComplaintCoordinates extends AbstractEntity {
 
     @Column(name = "latitude", nullable = false, precision = 10, scale = 7)
-    private Double latitude;
+    private BigDecimal latitude;
 
     @Column(name = "longitude", nullable = false, precision = 10, scale = 7)
-    private Double longitude;
+    private BigDecimal longitude;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(

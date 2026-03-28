@@ -1,5 +1,6 @@
 package com.tansen.government.complaints.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tansen.common.constant.ApiConstant;
 import com.tansen.common.dto.ApiResponse;
 import com.tansen.common.dto.ComplaintUniqueIdDto;
@@ -24,7 +25,7 @@ public class ComplaintController {
 
     @PostMapping(ApiConstant.LIST)
     @PreAuthorize("hasAuthority('VIEW_COMPLAINTS')")
-    public ApiResponse<?> listComplains(SearchParam searchParam, Principal loggedInAdmin) {
+    public ApiResponse<?> listComplains(SearchParam searchParam, Principal loggedInAdmin) throws JsonProcessingException {
         return complaintService.listComplains(searchParam, loggedInAdmin);
     }
     @PostMapping(ApiConstant.VIEW)

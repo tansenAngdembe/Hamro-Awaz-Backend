@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS complaints (
 
                             created_date DATETIME NOT NULL,
                             updated_date DATETIME,
-                            escalated_at DATETIME NOT NULL,
+                            escalated_at DATETIME,
                             escalation_id BIGINT,
 
                             CONSTRAINT uq_complaints_unique_id UNIQUE (unique_id),

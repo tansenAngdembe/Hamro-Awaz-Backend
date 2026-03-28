@@ -45,6 +45,6 @@ public class CreateUserRequest extends ModelBase {
     )
     private String confirmPassword;
 
-    private String fcmToken;
+
 
 }

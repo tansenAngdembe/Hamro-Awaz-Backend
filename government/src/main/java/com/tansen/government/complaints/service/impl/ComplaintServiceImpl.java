@@ -1,5 +1,8 @@
 package com.tansen.government.complaints.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tansen.common.constant.ComplaintStatusConstant;
 import com.tansen.common.dto.*;
 import com.tansen.common.service.SearchResponse;
@@ -12,14 +15,17 @@ import com.tansen.government.complaints.dto.response.ListComplainsResponse;
 import com.tansen.government.complaints.mapper.ComplaintMapper;
 import com.tansen.government.complaints.service.ComplaintService;
 import com.tansen.government.municipality.dto.AssignToListResponse;
+import com.tansen.government.util.redisutil.RedisHelper;
 import com.tansen.repository.*;
 import com.tansen.repository.searchrepo.AuthorityUserSearchRepository;
 import com.tansen.repository.searchrepo.ComplaintSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,8 +43,10 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplainStatusRepository complainStatusRepository;
 
     private final AuthorityUserSearchRepository authorityUserSearchRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, AuthorityUserRepository authorityUserRepository, ComplaintSearchRepository complaintSearchRepository, ComplaintMapper complaintMapper, SearchResponse searchResponse, StatusRepository statusRepository, ComplainStatusRepository complainStatusRepository, AuthorityUserSearchRepository authorityUserSearchRepository) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, AuthorityUserRepository authorityUserRepository, ComplaintSearchRepository complaintSearchRepository, ComplaintMapper complaintMapper, SearchResponse searchResponse, StatusRepository statusRepository, ComplainStatusRepository complainStatusRepository, AuthorityUserSearchRepository authorityUserSearchRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.complaintRepository = complaintRepository;
         this.authorityUserRepository = authorityUserRepository;
         this.complaintSearchRepository = complaintSearchRepository;
@@ -47,10 +55,12 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.statusRepository = statusRepository;
         this.complainStatusRepository = complainStatusRepository;
         this.authorityUserSearchRepository = authorityUserSearchRepository;
+        this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public ApiResponse<?> listComplains(SearchParam searchParam, Principal loggedInAdmin) {
+    public ApiResponse<?> listComplains(SearchParam searchParam, Principal loggedInAdmin) throws JsonProcessingException {
 
         Optional<AuthorityUser> authorityUserOpt =
                 authorityUserRepository.findByEmail(loggedInAdmin.getName());
@@ -68,7 +78,26 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
 
         Long municipalityId = municipality.getId();
+        // REDIS CACHE KEY
+        String cacheKey = RedisHelper.buildCacheKey(municipalityId, searchParam);
 
+        String cachedJson =
+                (String) redisTemplate.opsForValue().get(cacheKey);
+
+        if (cachedJson != null) {
+            PageableResponse<ListComplainsResponse> cached =
+                    objectMapper.readValue(
+                            cachedJson,
+                            new TypeReference<PageableResponse<ListComplainsResponse>>() {}
+                    );
+        LOG.info("Complaints fetched from redis for key {}", cacheKey);
+
+            return ResponseUtil.getSuccessfulApiResponse(
+                    cached, "Complaints listed successfully");
+        }
+
+
+        // fetch from db
         SearchResponseWithMapperBuilder<Complaint, ListComplainsResponse> responseBuilder =
                 SearchResponseWithMapperBuilder
                         .<Complaint, ListComplainsResponse>builder()
@@ -80,8 +109,10 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         PageableResponse<ListComplainsResponse> response =
                 searchResponse.getSearchResponse(responseBuilder);
+        // save to redis (TTL is important)
+        redisTemplate.opsForValue().set(cacheKey,objectMapper.writeValueAsString(response), Duration.ofMinutes(2));
 
-        LOG.info("Complaints listed successfully");
+        LOG.info("Complaints fetched from DB & cache for key {}", cacheKey);
         return ResponseUtil.getSuccessfulApiResponse(response, "Complaints listed successfully");
     }
 

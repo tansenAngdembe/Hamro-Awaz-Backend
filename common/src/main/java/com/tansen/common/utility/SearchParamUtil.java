@@ -107,4 +107,38 @@ public class SearchParamUtil {
         }
         return null;
     }
+    public static Long getLong(SearchParam searchParam, String key) {
+        if (searchParam == null || searchParam.getParam() == null) {
+            return null;
+        }
+
+        Object value = searchParam.getParam().get(key);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Long) {
+            return (Long) value;
+        }
+
+        if (value instanceof Integer) {
+            return ((Integer) value).longValue();
+        }
+
+        if (value instanceof String) {
+            String str = ((String) value).trim();
+            if (str.isEmpty()) {
+                return null;
+            }
+            try {
+                return Long.valueOf(str);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
 }

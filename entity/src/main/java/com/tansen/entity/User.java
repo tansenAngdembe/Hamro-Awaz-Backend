@@ -63,24 +63,15 @@ public class User extends AbstractEntity {
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "municipality_id", nullable = false)
+    @JoinColumn(name = "municipality_id")
     private Municipality municipality;
 
-    @Column(name = "ward_no")
-    private Integer wardNo;
 
 //    ---- validation check
     @Column(name = "is_user_verified", nullable = false)
     private Boolean isUserVerified = false;
 
-    @Column(name = "citizenship_card_front")
-    private String citizenshipCardFront;
 
-    @Column(name = "citizenship_card_back")
-    private String citizenshipCardBack;
-
-    @Column(name = "national_identity_number")
-    private String nationalIdentityNumber;
 
 }
 

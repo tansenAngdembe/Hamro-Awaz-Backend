@@ -81,5 +81,7 @@ public class ApiConstant {
     public static final String CATEGORY = "category";
     public static final String ESCALATION = "escalation";
     public static final String MAP = "map";
+    public static final String COMMENT = "comment";
+    public static final String DOC = "document";
 }
 

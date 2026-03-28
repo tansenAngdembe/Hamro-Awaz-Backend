@@ -23,12 +23,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 
     wrong_password_attempt_count INT,
     profile_picture_link VARCHAR(255),
-    municipality_id BIGINT NOT NULL,
-    ward_no INT,
+    municipality_id BIGINT,
     is_user_verified BOOLEAN NOT NULL,
-    citizenship_card_front VARCHAR(255),
-    citizenship_card_back VARCHAR(255),
-    national_identity_number VARCHAR(255),
+
 
     CONSTRAINT  fk_users_roles FOREIGN KEY (`role`) REFERENCES roles(id),
     CONSTRAINT  fk_users_municipality FOREIGN KEY (municipality_id) REFERENCES municipality(id),

@@ -25,4 +25,6 @@ public class FilePathConstant {
     public static final String AUTHORITY_SERVICE = "/authority_service/";
     public static final String AUTHORITY_LINE = "/authority_line/";
     public static final String ADVERTISEMENT = "/advertisement/";
+    public static final String CITIZENSHIPCARDFRONT = "/citizenshipCardFront/";
+    public static final String CITIZENSHIPCARDBACK = "/citizenshipCardBack/";
 }

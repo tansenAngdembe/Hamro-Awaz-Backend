@@ -1,5 +1,6 @@
 package com.tansen.government.category.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tansen.common.dto.*;
 import com.tansen.common.service.SearchResponse;
 import com.tansen.entity.AuthorityUser;
@@ -33,13 +34,15 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
     private final SearchResponse searchResponse;
     private final CategorySearchRepository categorySearchRepository;
+    private final ObjectMapper objectMapper;
 
-    public CategoryServiceImpl(AuthorityUserRepository authorityUserRepository, CategoryRepository categoryRepository, CategoryMapper categoryMapper, SearchResponse searchResponse, CategorySearchRepository categorySearchRepository) {
+    public CategoryServiceImpl(AuthorityUserRepository authorityUserRepository, CategoryRepository categoryRepository, CategoryMapper categoryMapper, SearchResponse searchResponse, CategorySearchRepository categorySearchRepository, ObjectMapper objectMapper) {
         this.authorityUserRepository = authorityUserRepository;
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
         this.searchResponse = searchResponse;
         this.categorySearchRepository = categorySearchRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override

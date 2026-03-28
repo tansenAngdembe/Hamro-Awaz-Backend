@@ -18,7 +18,12 @@ spring:
   web:
     resources:
       static-locations: file:D:/hamroawazfileupload/
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
 jwt:
   secret: rt6yhg56iopkjd42fgYijhGFR56gsjiy23efhiLaq23
 
