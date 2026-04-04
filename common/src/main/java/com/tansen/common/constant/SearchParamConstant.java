@@ -54,5 +54,8 @@ public class SearchParamConstant {
     public static final String ACTION_TYPE = "actionType";
     public static final String IP_ADDRESS = "ipAddress";
     public static final String ACTION_BY = "actionBy";
+    // Add these to wherever your search key constants are defined
+    public static final String IS_ACTIVE = "isActive";
+    public static final String IS_USER_VERIFIED = "isUserVerified";
 }
 

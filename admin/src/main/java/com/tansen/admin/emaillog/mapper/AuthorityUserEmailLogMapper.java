@@ -26,7 +26,7 @@ public abstract class AuthorityUserEmailLogMapper {
     private AuthorityUserEmailLogRepository authorityUserEmailLogRepository;
 
 
-    public AuthorityUserEmailLog mapToVendor(AuthorityUser authorityUser){
+    public AuthorityUserEmailLog mapToAuthorityUser(AuthorityUser authorityUser){
         String uuid = UuidUtil.generateUuid();
         Date expirationTime = ExpirationTimeUtil.getExpirationTime(60*24);
 

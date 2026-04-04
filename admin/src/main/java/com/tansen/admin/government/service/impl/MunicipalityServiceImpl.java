@@ -1,6 +1,7 @@
 package com.tansen.admin.government.service.impl;
 
 import com.tansen.admin.actionlog.mapper.ActionLogMapper;
+import com.tansen.admin.emaillog.mapper.AuthorityUserEmailLogMapper;
 import com.tansen.admin.government.controller.MunicipalityController;
 import com.tansen.admin.government.dto.request.CreateMunicipalityRequest;
 import com.tansen.admin.government.dto.request.EditMunicipalityRequest;
@@ -10,10 +11,14 @@ import com.tansen.admin.government.dto.response.MunicipalityResponse;
 import com.tansen.admin.government.mapper.AuthorityUserMapper;
 import com.tansen.admin.government.mapper.MunicipalityMapper;
 import com.tansen.admin.government.service.MunicipalityService;
+import com.tansen.common.constant.EmailSubjectConstant;
 import com.tansen.common.constant.StatusConstant;
 import com.tansen.common.dto.*;
+import com.tansen.common.dto.model.SendEmailRequest;
+import com.tansen.common.service.MailService;
 import com.tansen.common.service.SearchResponse;
 import com.tansen.entity.AuthorityUser;
+import com.tansen.entity.AuthorityUserEmailLog;
 import com.tansen.entity.Municipality;
 import com.tansen.repository.AuthorityUserRepository;
 import com.tansen.repository.MunicipalityRepository;
@@ -42,8 +47,10 @@ public class MunicipalityServiceImpl implements MunicipalityService {
     private final ActionLogMapper actionLogMapper;
     private final MunicipalitySearchRepository municipalitySearchRepository;
     private final SearchResponse searchResponse;
+    private final AuthorityUserEmailLogMapper authorityUserEmailLogMapper;
+    private final MailService mailService;
 
-    public MunicipalityServiceImpl(MunicipalityRepository municipalityRepository, AuthorityUserRepository authorityUserRepository, MunicipalityMapper municipalityMapper, AuthorityUserMapper authorityUserMapper, ActionLogMapper actionLogMapper, MunicipalitySearchRepositoryImpl municipalitySearchRepository, SearchResponse searchResponse) {
+    public MunicipalityServiceImpl(MunicipalityRepository municipalityRepository, AuthorityUserRepository authorityUserRepository, MunicipalityMapper municipalityMapper, AuthorityUserMapper authorityUserMapper, ActionLogMapper actionLogMapper, MunicipalitySearchRepositoryImpl municipalitySearchRepository, SearchResponse searchResponse, AuthorityUserEmailLogMapper authorityUserEmailLogMapper, MailService mailService) {
         this.municipalityRepository = municipalityRepository;
         this.authorityUserRepository = authorityUserRepository;
         this.municipalityMapper = municipalityMapper;
@@ -51,6 +58,8 @@ public class MunicipalityServiceImpl implements MunicipalityService {
         this.actionLogMapper = actionLogMapper;
         this.municipalitySearchRepository = municipalitySearchRepository;
         this.searchResponse = searchResponse;
+        this.authorityUserEmailLogMapper = authorityUserEmailLogMapper;
+        this.mailService = mailService;
     }
 
     @Override
@@ -72,6 +81,15 @@ public class MunicipalityServiceImpl implements MunicipalityService {
         LOG.info("Saved Municipality {}", savedMunicipality.getId());
         AuthorityUser authorityUser = authorityUserMapper.mapToAuthorityUser(createMunicipalityRequest, savedMunicipality);
         AuthorityUser savedAuthorityUser = authorityUserRepository.save(authorityUser);
+
+
+        AuthorityUserEmailLog authorityUserEmailLog = authorityUserEmailLogMapper.mapToAuthorityUser(savedAuthorityUser);
+        SendEmailRequest sendEmailRequest = new SendEmailRequest();
+        sendEmailRequest.setRecipient(savedAuthorityUser.getEmail());
+        sendEmailRequest.setSubject(EmailSubjectConstant.AUTHORITY_USER_ACCOUNT_VERIFICATION_SUBJECT);
+        sendEmailRequest.setMessage(authorityUserEmailLog.getMessage());
+        mailService.sendEmail(sendEmailRequest);
+
 
         actionLogMapper.createMunicipality(municipality.getId(), principal, httpServletRequest);
         actionLogMapper.createAuthorityUser(authorityUser.getId(), "Created Admin for Municipality", principal, httpServletRequest);

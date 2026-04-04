@@ -22,10 +22,10 @@ public class User extends AbstractEntity {
     @Column(name="email", nullable = false)
     private String email;
 
-    @Column(name="phone_number", nullable = true)
+    @Column(name="phone_number")
     private String phoneNumber;
 
-    @Column(name="password", nullable = true)
+    @Column(name="password")
     private String password;
 
     @Column(name = "address")

@@ -66,7 +66,7 @@ public abstract class UserMapper {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setUniqueId(UuidUtil.generateUuid());
         user.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
-        user.setRole( roleRepository.findByName("USER"));
+        user.setRole( roleRepository.findByName("ROLE_USER"));
         user.setWrongPasswordAttemptCount(0);
         user.setRegisteredDate(LocalDateTime.now());
         User savedUser = userRepository.save(user);

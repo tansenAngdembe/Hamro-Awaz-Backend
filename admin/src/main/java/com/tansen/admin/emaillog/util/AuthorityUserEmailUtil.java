@@ -24,8 +24,8 @@ public class AuthorityUserEmailUtil {
     public String prepareAdminEmail(AuthorityUserEmailContent emailContent, String link) {
         EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName(emailContent.getTemplate());
         Map<String, Object> model = new HashMap<>();
-        model.put(FreeMarkerTemplateConstant.NAME, emailContent.getName());
-        model.put(FreeMarkerTemplateConstant.EXPIRATION_TIME, emailContent.getExpirationTime());
+        model.put(FreeMarkerTemplateConstant.USERNAME, emailContent.getName());
+//        model.put(FreeMarkerTemplateConstant.EXPIRATION_TIME, emailContent.getExpirationTime());
         model.put(FreeMarkerTemplateConstant.VERIFICATION_LINK,link+emailContent.getUuid());
         model.put(FreeMarkerTemplateConstant.CURRENT_YEAR, Year.now().getValue());
         String content;

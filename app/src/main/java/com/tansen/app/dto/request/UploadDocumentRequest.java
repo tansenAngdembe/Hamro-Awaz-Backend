@@ -8,7 +8,7 @@ import lombok.Setter;
 public class UploadDocumentRequest {
     private String nationalIdentityNumber;
     private String municipalityUniqueId;
-    private String provinceUniqueId;
-    private String districtUniqueId;
+    private Long provinceUniqueId;
+    private Long districtUniqueId;
 
 }

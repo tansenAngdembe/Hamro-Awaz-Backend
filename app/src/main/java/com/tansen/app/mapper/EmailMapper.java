@@ -66,7 +66,7 @@ public abstract class EmailMapper {
         emailOtpSendDto.setUserFullName(user.getFullName());
         emailOtpSendDto.setOtp(Integer.parseInt(otp.getOtp()));
         emailOtpSendDto.setExpirationTime(expirationTime);
-        emailOtpSendDto.setTemplateName(EmailTemplateNameConstant.USER_REGISTRATION_OTP);
+        emailOtpSendDto.setTemplateName(EmailTemplateNameConstant.USER_ACCOUNT_VERIFICATION);
 
         String emailContent = emailContentUtil.prepareOtpEmailContent(emailOtpSendDto);
 

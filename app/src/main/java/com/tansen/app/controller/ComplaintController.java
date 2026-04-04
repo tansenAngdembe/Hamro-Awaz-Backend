@@ -27,27 +27,27 @@ public class ComplaintController {
         this.complaintService = complaintService;
     }
 
-//    @PostMapping(ApiConstant.CREATE)
-//    public ApiResponse<?> createComplaint(
-//            @Valid @RequestPart("data") CreateComplaintRequest createComplaint,
-//            @RequestPart(value = "photos", required = false) MultipartFile photos,
-//            Principal loggedUser,
-//            HttpServletRequest httpServletRequest) throws IOException {
-//
-//        return complaintService.createComplaint(createComplaint, photos, loggedUser, httpServletRequest);
-//    }
     @PostMapping(ApiConstant.CREATE)
     public ApiResponse<?> createComplaint(
-            @Valid @RequestPart("data") String createComplaintJson,
+            @Valid @RequestPart("data") CreateComplaintRequest createComplaint,
             @RequestPart(value = "photos", required = false) MultipartFile photos,
             Principal loggedUser,
             HttpServletRequest httpServletRequest) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        CreateComplaintRequest createComplaint =
-                mapper.readValue(createComplaintJson, CreateComplaintRequest.class);
 
         return complaintService.createComplaint(createComplaint, photos, loggedUser, httpServletRequest);
     }
+//    @PostMapping(ApiConstant.CREATE)
+//    public ApiResponse<?> createComplaint(
+//            @Valid @RequestPart("data") String createComplaintJson,
+//            @RequestPart(value = "photos", required = false) MultipartFile photos,
+//            Principal loggedUser,
+//            HttpServletRequest httpServletRequest) throws IOException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        CreateComplaintRequest createComplaint =
+//                mapper.readValue(createComplaintJson, CreateComplaintRequest.class);
+//
+//        return complaintService.createComplaint(createComplaint, photos, loggedUser, httpServletRequest);
+//    }
     @PostMapping(ApiConstant.UPDATE)
    public  ApiResponse<?> updateComplaint(@RequestBody UpdateComplaintRequest updateComplaintRequest, MultipartFile photos, Principal loggedUser, HttpServletRequest httpServletRequest ) throws IOException{
        return  complaintService.updateComplaint(updateComplaintRequest,photos,loggedUser,httpServletRequest);

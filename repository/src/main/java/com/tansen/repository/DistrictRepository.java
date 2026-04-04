@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface DistrictRepository  extends JpaRepository<District,Long> {
     List<District> findDistrictsByProvinceId(@NotNull(message = "Province id is required") Long provinceId);
-    Optional<District> findByUniqueId(@NotBlank(message = "Unique ID is required") String uniqueId);
+//    Optional<District> findByUniqueId(@NotBlank(message = "Unique ID is required") String uniqueId);
 
 }

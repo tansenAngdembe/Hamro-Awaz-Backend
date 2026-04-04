@@ -70,11 +70,11 @@ public class UserDocumentServiceImpl implements UserDocumentService {
                     .orElseThrow(() -> new RuntimeException("Municipality not found"));
 
             Province province = provinceRepository
-                    .findByUniqueId(uploadDocumentRequest.getProvinceUniqueId())
+                    .findById(uploadDocumentRequest.getProvinceUniqueId())
                     .orElseThrow(() -> new RuntimeException("Province not found"));
 
             District district = districtRepository
-                    .findByUniqueId(uploadDocumentRequest.getDistrictUniqueId())
+                    .findById(uploadDocumentRequest.getDistrictUniqueId())
                     .orElseThrow(() -> new RuntimeException("District not found"));
 
             // 3️⃣ Check if document already exists

@@ -11,6 +11,5 @@ import java.util.Optional;
 @Repository
 public interface ProvinceRepository extends JpaRepository<Province, Long> {
 
-    Optional<Province> findByUniqueId(@NotBlank(message = "Unique ID is required") String uniqueId);
 
 }

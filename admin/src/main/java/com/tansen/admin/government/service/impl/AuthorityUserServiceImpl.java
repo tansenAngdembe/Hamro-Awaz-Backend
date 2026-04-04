@@ -73,7 +73,7 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
         AuthorityUser saveAuthorityUser = authorityUserRepository.save(authorityUser);
         LOG.info("Municipality user with email {} created successfully", createVendorUserRequest.getEmail());
 
-        AuthorityUserEmailLog vendorUserEmailLog = authorityUserEmailLogMapper.mapToVendor(saveAuthorityUser);
+        AuthorityUserEmailLog vendorUserEmailLog = authorityUserEmailLogMapper.mapToAuthorityUser(saveAuthorityUser);
         SendEmailRequest sendEmailRequest = new SendEmailRequest();
         sendEmailRequest.setRecipient(saveAuthorityUser.getEmail());
         sendEmailRequest.setSubject(EmailSubjectConstant.AUTHORITY_USER_ACCOUNT_VERIFICATION_SUBJECT);

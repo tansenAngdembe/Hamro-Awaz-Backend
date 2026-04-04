@@ -132,4 +132,44 @@ VALUES
         </html>',
         NOW(),
         0
+    ),
+    (
+        'GOVERNMENT_USER_ACCOUNT_VERIFICATION',
+        '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Account Verification</title>
+        </head>
+        <body style="font-family: Arial, sans-serif; background-co  lor: #f4f4f4; margin: 0; padding: 0;">
+        <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border-radius: 8px;">
+
+            <div style="text-align: center; padding: 15px 0; background-color: #1a73e8; color: #ffffff; border-radius: 8px 8px 0 0;">
+                <h1 style="margin: 0; font-size: 24px;">Admin Verification</h1>
+            </div>
+
+            <div style="padding: 25px; line-height: 1.6; color: #333333;">
+                <p>Dear ${userName},</p>
+                <p>HAMRO AWAZ admin account has been created successfully. To complete your registration, please verify your email address by clicking the button below:</p>
+
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="${verificationLink}" style="display: inline-block; background-color: #1a73e8; color: #ffffff; padding: 12px 25px; font-weight: bold; text-decoration: none; border-radius: 6px;">Verify Admin Account</a>
+                </p>
+
+                <p>If the button above does not work, copy and paste the following link into your browser:</p>
+                <p style="word-break: break-all;"><a href="${verificationLink}" style="color: #1a73e8;">${verificationLink}</a></p>
+
+                <p>If you did not request an admin account, please ignore this email or contact support immediately.</p>
+
+                <p>Best regards,<br/><strong>The HAMRO AWAZ Team</strong></p>
+            </div>
+
+            <div style="text-align: center; padding: 15px 0; color: #888888; font-size: 12px; border-top: 1px solid #eeeeee;">
+                <p>&copy; {currentYear} HAMRO AWAZ. All rights reserved.</p>
+            </div>
+        </div>
+        </body>
+        </html>',
+        NOW(),
+        0
     );

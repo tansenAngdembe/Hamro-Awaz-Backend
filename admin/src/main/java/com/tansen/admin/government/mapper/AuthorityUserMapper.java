@@ -2,6 +2,7 @@ package com.tansen.admin.government.mapper;
 
 import com.tansen.admin.actionlog.mapper.ActionLogMapper;
 import com.tansen.admin.core.util.AuthorityUserTokenUtil;
+import com.tansen.admin.emaillog.mapper.AuthorityUserEmailLogMapper;
 import com.tansen.admin.government.dto.request.CreateMunicipalityRequest;
 import com.tansen.admin.government.dto.request.CreateMunicipalityUserRequest;
 import com.tansen.admin.government.dto.request.EditMunicipalityUserRequest;
@@ -11,6 +12,7 @@ import com.tansen.common.constant.StatusConstant;
 import com.tansen.common.service.UploadFileService;
 import com.tansen.common.utility.UuidUtil;
 import com.tansen.entity.AuthorityUser;
+import com.tansen.entity.AuthorityUserEmailLog;
 import com.tansen.entity.AuthorityUserToken;
 import com.tansen.entity.Municipality;
 import com.tansen.repository.AuthorityAccessGroupRepository;
@@ -43,6 +45,8 @@ public abstract class AuthorityUserMapper {
     private ActionLogMapper actionLogMapper;
     @Autowired
     private AuthorityUserTokenRepository authorityUserTokenRepository;
+    @Autowired
+    private AuthorityUserEmailLogMapper authorityUserEmailLogMapper;
 
 
     public AuthorityUser mapToAuthorityUser(CreateMunicipalityRequest authorityUserRequest, Municipality municipality) {
@@ -60,6 +64,9 @@ public abstract class AuthorityUserMapper {
         authorityUser.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
         authorityUser.setCreatedAt(LocalDateTime.now());
         authorityUser.setAuthorityAdmin(true);
+
+//        AuthorityUserEmailLog authorityUserEmailLog = authorityUserEmailLogMapper.mapToAuthorityUser()
+
         return authorityUser;
     }
 

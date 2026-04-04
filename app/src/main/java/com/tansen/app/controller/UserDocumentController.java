@@ -26,7 +26,7 @@ public class UserDocumentController{
     }
 
 
-    @PostMapping("/")
+    @PostMapping(ApiConstant.SLASH + ApiConstant.UPLOAD)
     public ApiResponse<?> uploadDocuments(
             @RequestPart("data") UploadDocumentRequest request,
             @RequestPart(value = "citizenshipFront", required = false) MultipartFile citizenshipFront,

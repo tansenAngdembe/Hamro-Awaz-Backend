@@ -3,6 +3,7 @@ package com.tansen.common.constant;
 public class ApiConstant {
     public static final String API = "/api/v1";
     public static final String ADMIN_API = "/api/v1/admin";
+    public static final String USERS_API = "/api/v1/users";
     public static final String LOGIN = "login";
     public static final String REFRESH_TOKEN = "refreshToken";
     public static final String LOGOUT = "logout";
@@ -83,5 +84,7 @@ public class ApiConstant {
     public static final String MAP = "map";
     public static final String COMMENT = "comment";
     public static final String DOC = "document";
+    public static final String UPLOAD = "UPLOAD";
+    public static final String CITIZEN = "CITIZEN" ;
 }
 
