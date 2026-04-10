@@ -27,14 +27,14 @@ public class ComplaintController {
         this.complaintService = complaintService;
     }
 
-    @PostMapping(ApiConstant.CREATE)
+    @PostMapping(value = ApiConstant.CREATE)
     public ApiResponse<?> createComplaint(
             @Valid @RequestPart("data") CreateComplaintRequest createComplaint,
-            @RequestPart(value = "photos", required = false) MultipartFile photos,
+//            @RequestPart(value = "photos", required = false) MultipartFile photos,
             Principal loggedUser,
             HttpServletRequest httpServletRequest) throws IOException {
 
-        return complaintService.createComplaint(createComplaint, photos, loggedUser, httpServletRequest);
+        return complaintService.createComplaint(createComplaint, loggedUser, httpServletRequest);
     }
 //    @PostMapping(ApiConstant.CREATE)
 //    public ApiResponse<?> createComplaint(

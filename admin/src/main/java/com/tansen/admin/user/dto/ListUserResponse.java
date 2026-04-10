@@ -19,8 +19,6 @@ public class ListUserResponse extends ModelBase {
 
     private String phoneNumber;
 
-    private String password;
-
     private String address;
 
     private LocalDateTime registeredDate;

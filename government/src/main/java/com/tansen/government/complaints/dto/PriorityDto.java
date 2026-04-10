@@ -6,6 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PriorityDto {
-     private String code;
-     private String label;
+     private String name;
 }

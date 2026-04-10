@@ -80,7 +80,7 @@ public class MapServiceImpl implements MapService {
         PageableResponse<ListMapResponse> response =
                 searchResponse.getSearchResponse(responseBuilder);
 
-        LOG.info("Complaints listed successfully");
+        LOG.info("Map coordinates listed successfully");
         return ResponseUtil.getSuccessfulApiResponse(response, "Complaints listed successfully");
     }
 

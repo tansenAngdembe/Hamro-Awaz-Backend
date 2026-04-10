@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tansen.common.constant.ComplaintStatusConstant;
+import com.tansen.common.constant.EmailSubjectConstant;
 import com.tansen.common.dto.*;
+import com.tansen.common.dto.model.SendEmailRequest;
+import com.tansen.common.service.MailService;
 import com.tansen.common.service.SearchResponse;
-import com.tansen.entity.AuthorityUser;
-import com.tansen.entity.Complaint;
-import com.tansen.entity.ComplaintStatus;
-import com.tansen.entity.Municipality;
+import com.tansen.entity.*;
 import com.tansen.government.complaints.dto.request.ComplaintAssignRequest;
 import com.tansen.government.complaints.dto.response.ListComplainsResponse;
 import com.tansen.government.complaints.mapper.ComplaintMapper;
@@ -45,8 +45,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final AuthorityUserSearchRepository authorityUserSearchRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
+    private final MailService mailService;
 
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, AuthorityUserRepository authorityUserRepository, ComplaintSearchRepository complaintSearchRepository, ComplaintMapper complaintMapper, SearchResponse searchResponse, StatusRepository statusRepository, ComplainStatusRepository complainStatusRepository, AuthorityUserSearchRepository authorityUserSearchRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, AuthorityUserRepository authorityUserRepository, ComplaintSearchRepository complaintSearchRepository, ComplaintMapper complaintMapper, SearchResponse searchResponse, StatusRepository statusRepository, ComplainStatusRepository complainStatusRepository, AuthorityUserSearchRepository authorityUserSearchRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, MailService mailService) {
         this.complaintRepository = complaintRepository;
         this.authorityUserRepository = authorityUserRepository;
         this.complaintSearchRepository = complaintSearchRepository;
@@ -57,6 +58,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.authorityUserSearchRepository = authorityUserSearchRepository;
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
+        this.mailService = mailService;
     }
 
     @Override
@@ -181,7 +183,12 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
         if((complaint.getAssignedTo() == null)){
             Complaint toBeAssgnedComplaint = complaintMapper.assignedTo(complaint,assignToAuthorityUserOpt.get());
-
+            AuthorityUserEmailLog  userEmailLog = complaintMapper.assignedEmailContent(assignToAuthorityUserOpt.get(),complaint);
+            SendEmailRequest sendEmailRequest = new SendEmailRequest();
+            sendEmailRequest.setRecipient(assignToAuthorityUserOpt.get().getEmail());
+            sendEmailRequest.setSubject(EmailSubjectConstant.ASSIGN_ESCALATION_TO_STAFF);
+            sendEmailRequest.setMessage(userEmailLog.getMessage());
+            mailService.sendEmail(sendEmailRequest);
             complaintRepository.save(toBeAssgnedComplaint);
 
         }else {

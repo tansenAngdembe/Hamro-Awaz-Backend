@@ -2,6 +2,7 @@ package com.tansen.government.core.util;
 
 import com.tansen.common.constant.FreeMarkerTemplateConstant;
 import com.tansen.entity.EmailTemplate;
+import com.tansen.government.complaints.dto.EmailEscalationDto;
 import com.tansen.government.municipality.dto.EmailOtpSendDto;
 import com.tansen.repository.EmailTemplateRepository;
 import freemarker.template.Configuration;
@@ -39,5 +40,26 @@ public class EmailContentUtil {
         }
         return emailContent;
     }
+    public String prepareAssignToEmailContent(EmailEscalationDto emailEscalationDto) {
+        EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName(emailEscalationDto.getTemplateName());
+
+        Map<String, Object> model = new HashMap<>();
+        model.put(FreeMarkerTemplateConstant.ASSIGNEDTO, emailEscalationDto.getAssignedTo());
+        model.put(FreeMarkerTemplateConstant.COMPLAINTTITLE, emailEscalationDto.getComplaintTitle());
+        model.put(FreeMarkerTemplateConstant.COMPLAINTRULE, emailEscalationDto.getComplaintRule());
+        model.put(FreeMarkerTemplateConstant.CATEGORY, emailEscalationDto.getCategory());
+        model.put(FreeMarkerTemplateConstant.CREATEDON,emailEscalationDto.getCreatedDate());
+        model.put(FreeMarkerTemplateConstant.PRIORITY, emailEscalationDto.getPriority());
+
+        String emailContent;
+        try{
+            Template template = new Template("emailTemplate", emailTemplate.getTemplate(), configuration);
+            emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing email template: " + e.getMessage());
+        }
+        return emailContent;
+    }
+
 
 }

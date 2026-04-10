@@ -22,21 +22,31 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
         String currentDateAndTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String originalFileName = file.getOriginalFilename();
-        assert originalFileName != null;
-        String fileExtension = originalFileName.contains(".")
-                ? originalFileName.substring(originalFileName.lastIndexOf("."))
-                : "";
-        String refactoredFileName = originalFileName.replace(" ", "-");
-        if (isImage) {
-            if (!fileExtension.equalsIgnoreCase(".jpg") &&
-                    !fileExtension.equalsIgnoreCase(".jpeg") &&
-                    !fileExtension.equalsIgnoreCase(".png")) {
-                throw new InvalidFileFormatException("Unsupported file format. Only jpg, jpeg and png images are supported" + fileExtension.toLowerCase());
+        if (originalFileName == null || originalFileName.isBlank()) {
+            throw new InvalidFileFormatException("File name is missing.");
+        }
 
+// Safer extension extraction
+        int dotIndex = originalFileName.lastIndexOf(".");
+        String fileExtension = (dotIndex != -1) ? originalFileName.substring(dotIndex).toLowerCase() : "";
+
+        System.out.println("DEBUG - filename: " + originalFileName + ", ext: " + fileExtension);
+
+        String refactoredFileName = originalFileName.replace(" ", "-");
+
+        if (isImage) {
+            if (!fileExtension.equals(".jpg") &&
+                    !fileExtension.equals(".jpeg") &&
+                    !fileExtension.equals(".png")) {
+                throw new InvalidFileFormatException(
+                        "Unsupported file format. Only jpg, jpeg and png are supported. Got: " + fileExtension
+                );
             }
         } else {
-            if (!fileExtension.equalsIgnoreCase(".pdf")) {
-                throw new InvalidFileFormatException("Only pdf document are supported." + fileExtension.toLowerCase());
+            if (!fileExtension.equals(".pdf")) {
+                throw new InvalidFileFormatException(
+                        "Only pdf documents are supported. Got: " + fileExtension
+                );
             }
         }
         String finalFileName = currentDateAndTime + "-"+ refactoredFileName;

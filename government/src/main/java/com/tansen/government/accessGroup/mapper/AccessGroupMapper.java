@@ -36,7 +36,7 @@ public abstract class AccessGroupMapper {
                                                        AuthorityAccessGroupRoleMapRepository accessGroupRoleMapRepository,
                                                        StatusRepository statusRepository,
                                                        AuthorityUserRoleRepository vendorUserRoleRepository,
-                                                       Municipality vendor) {
+                                                       Municipality municipality) {
         AuthorityAccessGroup accessGroup = new AuthorityAccessGroup();
         accessGroup.setName(request.getName());
         accessGroup.setDescription(request.getDescription());
@@ -45,7 +45,7 @@ public abstract class AccessGroupMapper {
         accessGroup.setCreatedAt(LocalDateTime.now());
         accessGroup.setUpdatedAt(LocalDateTime.now());
         accessGroup.setAuthorityAdminGroup(false);
-//        accessGroup.setMunicipality(vendor);
+        accessGroup.setMunicipality(municipality);
 
         AuthorityAccessGroup savedAccessGroup = accessGroupRepository.save(accessGroup);
         List<AuthorityAccessGroupRoleMap> accessGroupRoleMaps = new ArrayList<>();

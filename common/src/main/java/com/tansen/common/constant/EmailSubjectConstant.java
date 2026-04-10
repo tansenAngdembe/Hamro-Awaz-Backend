@@ -9,6 +9,7 @@ public class EmailSubjectConstant {
     public static final String AUTHORITY_USER_ACCOUNT_VERIFICATION_SUBJECT = "Hamro Awaz Authority Admin Account Verification";
     public static final String USER_FORGOT_PASSWORD = "Hamro Awaz Forgot Password";
     public static final String USER_ACCOUNT_REGISTRATION = "Hamro Awaz User Account Registration";
+    public static final String ASSIGN_ESCALATION_TO_STAFF = "Complaint assign.";
 
 
 }

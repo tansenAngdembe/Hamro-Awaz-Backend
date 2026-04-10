@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 
 public interface ComplaintService {
-    ApiResponse<?> createComplaint(CreateComplaintRequest createComplaint, MultipartFile photos, Principal loggedUser, HttpServletRequest httpServletRequest ) throws IOException;
+    ApiResponse<?> createComplaint(CreateComplaintRequest createComplaint, Principal loggedUser, HttpServletRequest httpServletRequest ) throws IOException;
     ApiResponse<?> updateComplaint(UpdateComplaintRequest updateComplaintRequest,MultipartFile photos, Principal loggedUser, HttpServletRequest httpServletRequest ) throws IOException;
     ApiResponse<?> listNearByComplains(
             SearchParam searchParam,
