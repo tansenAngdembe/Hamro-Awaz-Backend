@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tansen.common.dto.ApiResponse;
 import com.tansen.common.dto.ComplaintUniqueIdDto;
 import com.tansen.common.dto.SearchParam;
+import com.tansen.government.complaints.dto.ComplaintUniqueDto;
 import com.tansen.government.complaints.dto.request.ComplaintAssignRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.security.Principal;
 
@@ -13,9 +15,9 @@ public interface ComplaintService {
 
     ApiResponse<?> assignComplaintToAuthorityUser(ComplaintAssignRequest complaintAssignRequest, Principal loggedInAdmin);
 
-    ApiResponse<?> getComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin);
+    ApiResponse<?> getComplaint(ComplaintUniqueDto complaintUniqueIdDto, Principal loggedInAdmin);
 
-    ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin);
+    ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest);
     ApiResponse<?> inProgressComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin);
     ApiResponse<?>  listAssignTo(SearchParam searchParam, Principal loggedInUser);
 

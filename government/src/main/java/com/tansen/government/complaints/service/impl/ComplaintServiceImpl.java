@@ -10,6 +10,8 @@ import com.tansen.common.dto.model.SendEmailRequest;
 import com.tansen.common.service.MailService;
 import com.tansen.common.service.SearchResponse;
 import com.tansen.entity.*;
+import com.tansen.government.actionlog.mapper.ActionLogMapper;
+import com.tansen.government.complaints.dto.ComplaintUniqueDto;
 import com.tansen.government.complaints.dto.request.ComplaintAssignRequest;
 import com.tansen.government.complaints.dto.response.ListComplainsResponse;
 import com.tansen.government.complaints.mapper.ComplaintMapper;
@@ -19,6 +21,7 @@ import com.tansen.government.util.redisutil.RedisHelper;
 import com.tansen.repository.*;
 import com.tansen.repository.searchrepo.AuthorityUserSearchRepository;
 import com.tansen.repository.searchrepo.ComplaintSearchRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -46,8 +49,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final MailService mailService;
+    private final ActionLogMapper actionLogMapper;
 
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, AuthorityUserRepository authorityUserRepository, ComplaintSearchRepository complaintSearchRepository, ComplaintMapper complaintMapper, SearchResponse searchResponse, StatusRepository statusRepository, ComplainStatusRepository complainStatusRepository, AuthorityUserSearchRepository authorityUserSearchRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, MailService mailService) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, AuthorityUserRepository authorityUserRepository, ComplaintSearchRepository complaintSearchRepository, ComplaintMapper complaintMapper, SearchResponse searchResponse, StatusRepository statusRepository, ComplainStatusRepository complainStatusRepository, AuthorityUserSearchRepository authorityUserSearchRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, MailService mailService, ActionLogMapper actionLogMapper) {
         this.complaintRepository = complaintRepository;
         this.authorityUserRepository = authorityUserRepository;
         this.complaintSearchRepository = complaintSearchRepository;
@@ -59,6 +63,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
         this.mailService = mailService;
+        this.actionLogMapper = actionLogMapper;
     }
 
     @Override
@@ -201,7 +206,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public ApiResponse<?> getComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> getComplaint(ComplaintUniqueDto complaintUniqueIdDto, Principal loggedInAdmin) {
         Optional<AuthorityUser> authorityUserOpt =
                 authorityUserRepository.findByEmail(loggedInAdmin.getName());
 
@@ -244,7 +249,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 
     @Override
-    public ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest) {
         Optional<AuthorityUser> authorityUserOpt =
                 authorityUserRepository.findByEmail(loggedInAdmin.getName());
 
@@ -267,10 +272,12 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setActive(false);
         complaint.setUpdatedDate(LocalDateTime.now());
         complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.CLOSED.getName()));
+        actionLogMapper.closedComplaintMapper(authorityUser.getId(), loggedInAdmin, httpServletRequest,complaintUniqueIdDto.getRemarks());
+
 
         complaintRepository.save(complaint);
 
-        return ResponseUtil.getSuccessfulApiResponse("Complaint blocked successfully");
+        return ResponseUtil.getSuccessfulApiResponse("Complaint Closed successfully");
     }
 
     @Override
@@ -293,6 +300,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint Resolved. It cannot be update to progress.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
+            return ResponseUtil.getFailureResponse("Closed Complaint cannot be update to inProgress.");
         }
         complaint.setResolvedAt(LocalDateTime.now());
         complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.IN_PROGRESS.getName()));

@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class ComplaintUniqueIdDto extends ModelBase{
     private String uniqueId;
+    private String remarks;
 
 }

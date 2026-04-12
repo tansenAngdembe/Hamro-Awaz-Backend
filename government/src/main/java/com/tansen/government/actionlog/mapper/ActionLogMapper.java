@@ -181,5 +181,17 @@ public abstract class ActionLogMapper {
                 .build();
         actionLogService.insertActionLog(actionLogModel, loggedInUser);
     }
+
+    public void closedComplaintMapper(Long id, Principal loggedInUser, HttpServletRequest httpServletRequest, String complaintRemarks) {
+        ActionLogModel actionLogModel = ActionLogModel.builder()
+                .remarks(complaintRemarks)
+//                .actionType(ActionTypeConstant.CLOSED)// should be add on database as enum "CLOSED"
+                .actionType(ActionTypeConstant.DELETE)
+                .targetType(TargetTypeConstant.AUTHORITY)
+                .targetId(id)
+                .ipAddress(httpServletRequest.getRemoteAddr())
+                .build();
+        actionLogService.insertActionLog(actionLogModel, loggedInUser);
+    }
 }
 

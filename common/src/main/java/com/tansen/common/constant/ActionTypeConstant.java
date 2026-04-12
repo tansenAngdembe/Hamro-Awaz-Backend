@@ -10,4 +10,5 @@ public class ActionTypeConstant {
     public static final String SET_PASSWORD = "SET PASSWORD";
     public static final String CHANGE_PASSWORD = "CHANGE PASSWORD";
     public static final String RESET_PASSWORD = "RESET PASSWORD";
+    public static final String CLOSED = "CLOSED";
 }

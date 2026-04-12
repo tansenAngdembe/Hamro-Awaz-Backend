@@ -1,15 +1,11 @@
 package com.tansen.government.complaints.dto;
 
+import com.tansen.common.dto.ModelBase;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
-public class AuthorityUserDto {
-    private String name;
-    private String email;
+public class ComplaintUniqueDto  extends ModelBase {
     private String uniqueId;
-
 }
