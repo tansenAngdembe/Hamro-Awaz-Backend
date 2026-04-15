@@ -13,6 +13,7 @@ import com.tansen.entity.*;
 import com.tansen.government.actionlog.mapper.ActionLogMapper;
 import com.tansen.government.complaints.dto.ComplaintUniqueDto;
 import com.tansen.government.complaints.dto.request.ComplaintAssignRequest;
+import com.tansen.government.complaints.dto.response.ComplaintResponse;
 import com.tansen.government.complaints.dto.response.ListComplainsResponse;
 import com.tansen.government.complaints.mapper.ComplaintMapper;
 import com.tansen.government.complaints.service.ComplaintService;
@@ -220,8 +221,8 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint complaint = complaintRepository
                 .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
                 .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
-
-        return ResponseUtil.getSuccessfulApiResponse(complaint, "Complaint fetched");
+        ComplaintResponse complaintResponse = complaintMapper.entityToComplaintResponse(complaint);
+        return ResponseUtil.getSuccessfulApiResponse(complaintResponse, "Complaint fetched by Id");
     }
 
 

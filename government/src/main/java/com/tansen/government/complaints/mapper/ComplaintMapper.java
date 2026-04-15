@@ -7,6 +7,7 @@ import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.AuthorityUserEmailLog;
 import com.tansen.entity.Complaint;
 import com.tansen.government.complaints.dto.EmailEscalationDto;
+import com.tansen.government.complaints.dto.response.ComplaintResponse;
 import com.tansen.government.complaints.dto.response.ListComplainsResponse;
 import com.tansen.government.core.util.EmailContentUtil;
 import com.tansen.government.municipality.dto.AssignToListResponse;
@@ -39,6 +40,8 @@ public abstract class ComplaintMapper {
     public List<ListComplainsResponse> listComplainsResponses(List<Complaint> actionLog) {
         return actionLog.stream().map(this::entityToResponse).collect(Collectors.toList());
     }
+
+    public abstract ComplaintResponse entityToComplaintResponse(Complaint complaint);
 
     public abstract AssignToListResponse entityToAssignUser(AuthorityUser authorityUser);
     public List<AssignToListResponse> listAllAssignTo(List<AuthorityUser> authorityUsers) {
