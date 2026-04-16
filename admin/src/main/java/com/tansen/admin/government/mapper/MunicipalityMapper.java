@@ -63,7 +63,6 @@ public abstract class MunicipalityMapper {
                 () -> new RuntimeException("Local level repository not  found with id {}" + createMunicipalityRequest.getLocalLevelId())));
         municipality.setLatitude(createMunicipalityRequest.getLatitude());
         municipality.setLongitude(createMunicipalityRequest.getLongitude());
-        municipality.setAddress(createMunicipalityRequest.getAddress());
         if (documentFile != null && !documentFile.isEmpty()) {
             municipality.setDocumentUrl(uploadFileService.uploadFile(documentFile,
                     FilePathConstant.BASE_PATH, FilePathConstant.MUNICIPALITY, false));
@@ -88,7 +87,6 @@ public abstract class MunicipalityMapper {
 
         municipality.setLatitude(request.getLatitude());
         municipality.setLongitude(request.getLongitude());
-        municipality.setAddress(request.getAddress());
 
         municipality.setDocumentUrl(
                 uploadFileService.uploadFile(documentFile, FilePathConstant.BASE_PATH, FilePathConstant.MUNICIPALITY, true)

@@ -37,9 +37,6 @@ public class CreateMunicipalityRequest extends ModelBase {
     @NotBlank(message = "Longitude is required")
     private String longitude;
 
-    @NotBlank(message = "Address is required")
-    private String address;
-
 
     @NotBlank(message = "Full name is required")
     private String authorityAdminFullName;

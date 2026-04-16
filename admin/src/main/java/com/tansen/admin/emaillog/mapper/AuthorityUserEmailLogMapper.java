@@ -35,7 +35,7 @@ public abstract class AuthorityUserEmailLogMapper {
         adminRegistrationEmailContent.setUuid(uuid);
         adminRegistrationEmailContent.setExpirationTime(expirationTime);
         adminRegistrationEmailContent.setTemplate(EmailTemplateNameConstant.GOVERNMENT_USER_ACCOUNT_VERIFICATION);
-        String content = vendorUserEmailUtil.prepareAdminEmail(adminRegistrationEmailContent,"http://localhost:5174/setPassword/");
+        String content = vendorUserEmailUtil.prepareAdminEmail(adminRegistrationEmailContent,"http://localhost:5173/setPassword/");
 
         AuthorityUserEmailLog authorityUserEmailLog = new AuthorityUserEmailLog();
         authorityUserEmailLog.setUniqueId(uuid);

@@ -53,7 +53,7 @@ public class Complaint  extends  AbstractEntity{
     @Column(name = "priority", nullable = false)
     private Priority priority;
 
-    @Column(name = "photoUrl",nullable = false)
+    @Column(name = "photoUrl")
     private String photoUrl;
 
     @Column(name = "created_date",nullable = false)

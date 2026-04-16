@@ -59,10 +59,6 @@ public class Municipality extends AbstractEntity{
     @Column(name = "longitude", nullable = false)
     private String longitude;
 
-    @Column(name = "address", nullable = false)
-    private String address;
-
-
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;

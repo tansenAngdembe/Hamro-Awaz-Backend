@@ -43,13 +43,26 @@ VALUES
     ('Filter by Category', '', 'Filter by Category', '/filter-category', 'Map View', 'FILTER_MAP_CATEGORY', 3, 'Map View', 0),
     ('View Complaint Details', '', 'View Complaint Details', '/details', 'Map View', 'VIEW_MAP_COMPLAINT_DETAILS', 4, 'Map View', 0),
 
-    ('Reports', 'BarChart', 'Reports', '/reports', 'Root', 'REPORTS', 5, 'NONE', 0),
+    ('Users', 'Users', 'Users', '/users', 'Root', 'USERS', 5, 'NONE', 0),
+    ('View User', '', 'View User', '/view', 'Users', 'VIEW_USER', 1, 'Users', 0),
+    ('Edit User', '', 'Edit User', '/edit', 'Users', 'EDIT_USER', 2, 'Users', 0),
+    ('Block User', '', 'Block User', '/block', 'Users', 'BLOCK_USER', 3, 'Users', 0),
+    ('Unblock User', '', 'Unblock User', '/unblock-user', 'Users', 'UNBLOCK_USER', 4, 'Users', 0),
+    ('Delete User', '', 'Delete User', '/delete-user', 'Users', 'DELETE_USER', 5, 'Users', 0),
+    ('Send User Password Reset Link', '', 'Send User Password Reset Link', '/send-user-password-reset-link', 'Users',
+     'SEND_USER_PASSWORD_RESET_LINK', 5, 'Users', 0),
+    ('Reset User Two Factor Authentication', '', 'Reset User Two Factor Authentication', '/reset-user-2fa', 'Users',
+     'RESET_USER_TWO_FACTOR_AUTHENTICATION', 6, 'Users', 0),
+    ('Resend User Account Activation Link', '', 'Resend User Account Activation Link',
+     '/resend-user-account-activation-link', 'Users', 'RESEND_USER_ACCOUNT_ACTIVATION_LINK', 7, 'Users', 0),
 
-    ('Settings', 'Settings', 'Settings', '/setting', 'Root', 'SETTING', 6, 'NONE', 0),
+    ('Reports', 'BarChart', 'Reports', '/reports', 'Root', 'REPORTS', 6, 'NONE', 0),
+
+
+    ('Settings', 'Settings', 'Settings', '/setting', 'Root', 'SETTING', 7, 'NONE', 0),
     ('Access Groups', 'Users', 'Access Groups', '/access-group', 'Settings',
-     'ACCESS_GROUPS', 7, 'Settings', 0),
-
+     'ACCESS_GROUPS', 1, 'Settings', 0),
     ('System Configuration', 'MonitorCog', 'System Configuration', '/system-configuration', 'Settings',
-     'SYSTEM_CONFIGURATION', 8, 'Settings', 0),
+     'SYSTEM_CONFIGURATION', 2, 'Settings', 0),
     ('Terms & Conditions', 'ReceiptText', 'Terms & Conditions', '/terms-and-conditions', 'Settings',
-     'TERMS_&_CONDITIONS', 9, 'Settings', 0);
+     'TERMS_&_CONDITIONS', 3, 'Settings', 0);

@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS municipality (
     local_level_id  BIGINT NOT NULL,
     latitude        VARCHAR(255) NOT NULL,
     longitude       VARCHAR(255) NOT NULL,
-    address         VARCHAR(255) NOT NULL,
     created_at      DATETIME,
     updated_at      DATETIME,
     status_id       BIGINT NOT NULL,

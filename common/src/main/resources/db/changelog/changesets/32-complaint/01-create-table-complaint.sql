@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS complaints (
                             active BOOLEAN NOT NULL DEFAULT TRUE,
                             priority VARCHAR(50) NOT NULL,
 
-                            photo_url VARCHAR(500) NOT NULL,
+                            photo_url VARCHAR(500),
 
                             created_date DATETIME NOT NULL,
                             updated_date DATETIME,
