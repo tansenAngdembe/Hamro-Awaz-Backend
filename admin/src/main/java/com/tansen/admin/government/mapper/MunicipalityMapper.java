@@ -61,7 +61,6 @@ public abstract class MunicipalityMapper {
                 () -> new RuntimeException("District not found with id {}" + createMunicipalityRequest.getDistrictId())));
         municipality.setLocalLevel(localLevelRepository.findById(Long.valueOf(createMunicipalityRequest.getLocalLevelId())).orElseThrow(
                 () -> new RuntimeException("Local level repository not  found with id {}" + createMunicipalityRequest.getLocalLevelId())));
-        municipality.setWardNumber(createMunicipalityRequest.getWardNumber());
         municipality.setLatitude(createMunicipalityRequest.getLatitude());
         municipality.setLongitude(createMunicipalityRequest.getLongitude());
         municipality.setAddress(createMunicipalityRequest.getAddress());
@@ -87,7 +86,6 @@ public abstract class MunicipalityMapper {
         municipality.setLocalLevel(localLevelRepository.findById(Long.valueOf(request.getLocalLevelId()))
                 .orElseThrow(() -> new RuntimeException("Failed to update government. Local Level not found with id: " + request.getLocalLevelId())));
 
-        municipality.setWardNumber(request.getWardNumber());
         municipality.setLatitude(request.getLatitude());
         municipality.setLongitude(request.getLongitude());
         municipality.setAddress(request.getAddress());

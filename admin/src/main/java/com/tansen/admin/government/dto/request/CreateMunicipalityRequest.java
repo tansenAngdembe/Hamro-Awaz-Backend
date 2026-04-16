@@ -31,10 +31,6 @@ public class CreateMunicipalityRequest extends ModelBase {
     @NotNull(message = "Local level ID is required")
     private Integer localLevelId;
 
-    @NotNull(message = "Ward number is required")
-    @Min(value = 1, message = "Ward number must be at least 1")
-    private Integer wardNumber;
-
     @NotBlank(message = "Latitude is required")
     private String latitude;
 

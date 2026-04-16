@@ -32,7 +32,7 @@ public abstract class ComplaintMapper {
 
 
 
-    public Complaint mapToComplaint(CreateComplaintRequest createComplaint,  ComplaintStatus status, Category category, Municipality municipality, User user) throws IOException {
+    public Complaint mapToComplaint(CreateComplaintRequest createComplaint,  ComplaintStatus status, Category category, Municipality municipality, User user, MultipartFile photos) throws IOException {
         Complaint newComplaint = new Complaint();
         newComplaint.setUniqueId(UUID.randomUUID().toString());
 
@@ -48,11 +48,11 @@ public abstract class ComplaintMapper {
 
         newComplaint.setPriority(Priority.MEDIUM); // default priority
 
-//        if (photos != null && !photos.isEmpty()) {
-//            newComplaint.setPhotoUrl(
-//                    uploadFileService.uploadFile(photos, FilePathConstant.BASE_PATH, FilePathConstant.COMPLAINT, true)
-//            );
-//        }
+        if (photos != null && !photos.isEmpty()) {
+            newComplaint.setPhotoUrl(
+                    uploadFileService.uploadFile(photos, FilePathConstant.BASE_PATH, FilePathConstant.COMPLAINT, true)
+            );
+        }
 
         LocalDateTime now = LocalDateTime.now();
         newComplaint.setCreatedDate(now);

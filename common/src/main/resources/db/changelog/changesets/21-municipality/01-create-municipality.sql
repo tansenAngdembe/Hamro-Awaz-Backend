@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS municipality (
     province_id     BIGINT NOT NULL,
     district_id     BIGINT NOT NULL,
     local_level_id  BIGINT NOT NULL,
-    ward_number     INT NOT NULL,
     latitude        VARCHAR(255) NOT NULL,
     longitude       VARCHAR(255) NOT NULL,
     address         VARCHAR(255) NOT NULL,

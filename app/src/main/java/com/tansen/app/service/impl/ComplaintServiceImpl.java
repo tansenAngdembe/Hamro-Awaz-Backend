@@ -137,7 +137,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 
     @Override
-    public ApiResponse<?> createComplaint(CreateComplaintRequest createComplaint,  Principal loggedUser, HttpServletRequest httpServletRequest) throws IOException {
+    public ApiResponse<?> createComplaint(CreateComplaintRequest createComplaint,  Principal loggedUser, HttpServletRequest httpServletRequest, MultipartFile phots) throws IOException {
         User user = userRepository.findByEmail(loggedUser.getName());
         if(!user.getIsUserVerified()){
             LOG.error("User is not verified");
@@ -174,7 +174,7 @@ public class ComplaintServiceImpl implements ComplaintService {
             return ResponseUtil.getFailureResponse("ComplaintStatus Not Found");
         }
 
-        Complaint complaint = complaintMapper.mapToComplaint(createComplaint, complaintStatus, category, municipality.get(), user);
+        Complaint complaint = complaintMapper.mapToComplaint(createComplaint, complaintStatus, category, municipality.get(), user, phots);
         complaintRepository.save(complaint);
 
         ComplaintCoordinates complaintCoordinates = new ComplaintCoordinates();

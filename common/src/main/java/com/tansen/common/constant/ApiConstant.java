@@ -86,5 +86,9 @@ public class ApiConstant {
     public static final String DOC = "document";
     public static final String UPLOAD = "UPLOAD";
     public static final String CITIZEN = "citizen" ;
+
+    public static final String VOTE      = "vote";
+    public static final String VOTES     = "votes";
+    public static final String CAST      = "cast";
 }
 

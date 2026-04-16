@@ -53,11 +53,6 @@ public class Municipality extends AbstractEntity{
     @JoinColumn(name="local_level_id", referencedColumnName = "id")
     private LocalLevel localLevel;
 
-    @NotNull(message = "Ward number is required")
-    @Min(value = 1, message = "Ward number must be at least 1")
-    @Column(name = "ward_number", nullable = false)
-    private Integer wardNumber;
-
     @Column(name = "latitude", nullable = false)
     private String latitude;
 
