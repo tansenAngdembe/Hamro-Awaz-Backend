@@ -313,6 +313,70 @@ public class ComplaintServiceImpl implements ComplaintService {
         return ResponseUtil.getSuccessfulApiResponse("Complaint update to PROGRESS status.");
     }
 
+    @Override
+    public ApiResponse<?> resolveComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+        Optional<AuthorityUser> authorityUserOpt =
+                authorityUserRepository.findByEmail(loggedInAdmin.getName());
 
+        if (authorityUserOpt.isEmpty()) {
+            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
+            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
+        }
+        AuthorityUser authorityUser = authorityUserOpt.get();
+        String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
+
+        Complaint complaint = complaintRepository
+                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
+                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
+
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint is already rejected. It cannot be resolved.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint is already resolved.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
+            return ResponseUtil.getFailureResponse("Closed complaint cannot be resolved.");
+        }
+        complaint.setResolvedAt(LocalDateTime.now());
+        complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.RESOLVED.getName()));
+
+        complaintRepository.save(complaint);
+
+        return ResponseUtil.getSuccessfulApiResponse("Complaint updated to RESOLVED status.");
+    }
+
+    @Override
+    public ApiResponse<?> rejectComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+        Optional<AuthorityUser> authorityUserOpt =
+                authorityUserRepository.findByEmail(loggedInAdmin.getName());
+
+        if (authorityUserOpt.isEmpty()) {
+            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
+            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
+        }
+        AuthorityUser authorityUser = authorityUserOpt.get();
+        String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
+
+        Complaint complaint = complaintRepository
+                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
+                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
+
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint is already rejected.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
+            return ResponseUtil.getFailureResponse("Resolved complaint cannot be rejected.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
+            return ResponseUtil.getFailureResponse("Closed complaint cannot be rejected.");
+        }
+
+        complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.REJECTED.getName()));
+
+        complaintRepository.save(complaint);
+
+        return ResponseUtil.getSuccessfulApiResponse("Complaint updated to REJECTED status.");
+    }
 
 }

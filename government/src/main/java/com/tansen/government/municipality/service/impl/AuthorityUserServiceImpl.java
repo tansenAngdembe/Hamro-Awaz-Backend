@@ -9,6 +9,7 @@ import com.tansen.common.service.SearchResponse;
 import com.tansen.entity.*;
 import com.tansen.government.core.util.AuthorityTokenUtil;
 import com.tansen.government.emaillog.mapper.AuthorityUserEmailLogMapper;
+import com.tansen.government.municipality.ViewAuthorityProfileRequest;
 import com.tansen.government.municipality.dto.*;
 import com.tansen.government.municipality.mapper.MunicipalityEmailMapper;
 import com.tansen.government.municipality.mapper.MunicipalityForgetPasswordOptMapper;
@@ -199,8 +200,8 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
             LOG.error("Failed to view profile. Admin not found: {}", loggedInVendor.getName());
             return ResponseUtil.getFailureResponse("Admin not found");
         }
-        ViewProfileResponse viewProfileResponse = municipalityUserMapper.viewProfile(user.get());
-        LOG.info("Profile viewed successfully - {}", viewProfileResponse.getFullName());
+        ViewAuthorityProfileRequest viewProfileResponse = municipalityUserMapper.viewProfile(user.get());
+        LOG.info("Profile viewed successfully - {}", viewProfileResponse.getName());
         return ResponseUtil.getSuccessfulApiResponseWithData(viewProfileResponse, "Profile viewed successfully");
     }
 

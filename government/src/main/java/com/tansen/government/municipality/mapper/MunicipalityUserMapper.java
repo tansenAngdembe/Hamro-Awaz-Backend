@@ -12,6 +12,7 @@ import com.tansen.entity.Municipality;
 import com.tansen.government.actionlog.constant.TargetTypeConstant;
 import com.tansen.government.actionlog.service.ActionLogService;
 import com.tansen.government.emaillog.mapper.AuthorityUserEmailLogMapper;
+import com.tansen.government.municipality.ViewAuthorityProfileRequest;
 import com.tansen.government.municipality.dto.*;
 import com.tansen.repository.AuthorityAccessGroupRepository;
 import com.tansen.repository.AuthorityUserRepository;
@@ -157,7 +158,7 @@ public abstract class MunicipalityUserMapper {
         return   existingUser;
 
     }
-    public abstract ViewProfileResponse viewProfile(AuthorityUser vendorUsers);
+    public abstract ViewAuthorityProfileRequest viewProfile(AuthorityUser vendorUsers);
 
     public AuthorityUser editProfile(AuthorityUser VendorUsers, EditProfileRequest editProfileRequest, Principal principal, HttpServletRequest httpServletRequest) {
         VendorUsers.setName(editProfileRequest.getName());

@@ -90,5 +90,7 @@ public class ApiConstant {
     public static final String VOTE      = "vote";
     public static final String VOTES     = "votes";
     public static final String CAST      = "cast";
+    public static final String REJECT    = "reject";
+    public static final String RESOLVE   = "resolve";
 }
 

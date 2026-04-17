@@ -57,5 +57,14 @@ public class ComplaintController {
     public ApiResponse<?> listAssignTo(@RequestBody @Valid SearchParam searchParam, Principal loggedInUser) {
         return complaintService.listAssignTo(searchParam, loggedInUser);
     }
+    @PostMapping(ApiConstant.RESOLVE)
+   public  ApiResponse<?> resolveComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
+        return complaintService.resolveComplaint(complaintUniqueIdDto, loggedInAdmin);
+   }
+    @PostMapping(ApiConstant.REJECT)
+    public ApiResponse<?> rejectComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
+        return complaintService.rejectComplaint(complaintUniqueIdDto, loggedInAdmin);
+   }
+
 
 }
