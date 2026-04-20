@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface UserDocumentsRepository extends JpaRepository<UserDocuments, Long> {
     Optional<UserDocuments> findByUser(User user);
+
+    Optional<UserDocuments> findByUniqueId(String uniqueId);
 }

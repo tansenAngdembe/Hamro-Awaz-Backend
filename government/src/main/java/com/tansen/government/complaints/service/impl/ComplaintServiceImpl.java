@@ -25,14 +25,15 @@ import com.tansen.repository.searchrepo.ComplaintSearchRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
@@ -67,6 +68,10 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.actionLogMapper = actionLogMapper;
     }
 
+    // ─────────────────────────────────────────────
+    // LIST
+    // ─────────────────────────────────────────────
+
     @Override
     public ApiResponse<?> listComplains(SearchParam searchParam, Principal loggedInAdmin) throws JsonProcessingException {
 
@@ -86,26 +91,18 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
 
         Long municipalityId = municipality.getId();
-        // REDIS CACHE KEY
         String cacheKey = RedisHelper.buildCacheKey(municipalityId, searchParam);
-
-        String cachedJson =
-                (String) redisTemplate.opsForValue().get(cacheKey);
+        String cachedJson = (String) redisTemplate.opsForValue().get(cacheKey);
 
         if (cachedJson != null) {
             PageableResponse<ListComplainsResponse> cached =
                     objectMapper.readValue(
                             cachedJson,
-                            new TypeReference<PageableResponse<ListComplainsResponse>>() {}
-                    );
-        LOG.info("Complaints fetched from redis for key {}", cacheKey);
-
-            return ResponseUtil.getSuccessfulApiResponse(
-                    cached, "Complaints listed successfully");
+                            new TypeReference<PageableResponse<ListComplainsResponse>>() {});
+            LOG.info("Complaints fetched from Redis for key {}", cacheKey);
+            return ResponseUtil.getSuccessfulApiResponse(cached, "Complaints listed successfully");
         }
 
-
-        // fetch from db
         SearchResponseWithMapperBuilder<Complaint, ListComplainsResponse> responseBuilder =
                 SearchResponseWithMapperBuilder
                         .<Complaint, ListComplainsResponse>builder()
@@ -117,13 +114,16 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         PageableResponse<ListComplainsResponse> response =
                 searchResponse.getSearchResponse(responseBuilder);
-        // save to redis (TTL is important)
-        redisTemplate.opsForValue().set(cacheKey,objectMapper.writeValueAsString(response), Duration.ofMinutes(2));
 
-        LOG.info("Complaints fetched from DB & cache for key {}", cacheKey);
+        redisTemplate.opsForValue().set(
+                cacheKey,
+                objectMapper.writeValueAsString(response),
+                Duration.ofMinutes(2)
+        );
+
+        LOG.info("Complaints fetched from DB and cached for key {}", cacheKey);
         return ResponseUtil.getSuccessfulApiResponse(response, "Complaints listed successfully");
     }
-
     @Override
     public ApiResponse<?>  listAssignTo(SearchParam searchParam, Principal loggedInAdmin) {
         Optional<AuthorityUser> authorityUserOpt =
@@ -226,108 +226,22 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
 
-//    public ApiResponse<?> updateComplaint(UpdateComplaintRequest req, Principal loggedInAdmin) {
-//        Optional<AuthorityUser> authorityUserOpt =
-//                authorityUserRepository.findByEmail(loggedInAdmin.getName());
-//
-//        if (authorityUserOpt.isEmpty()) {
-//            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
-//            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
-//        }
-//        AuthorityUser authorityUser = authorityUserOpt.get();
-//        String municipalityId = authorityUser.getMunicipality().getUniqueId();
-//
-//        Complaint complaint = complaintRepository
-//                .findByIdAndMunicipalityId(req.getUniqueId, municipalityId)
-//                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
-//
-//
-//
-//        complaintRepository.save(complaint);
-//
-//        return ResponseUtil.getSuccessfulApiResponse(null, "Complaint updated successfully");
-//    }
 
 
-    @Override
-    public ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest) {
-        Optional<AuthorityUser> authorityUserOpt =
-                authorityUserRepository.findByEmail(loggedInAdmin.getName());
-
-        if (authorityUserOpt.isEmpty()) {
-            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
-            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
-        }
-        AuthorityUser authorityUser = authorityUserOpt.get();
-        String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
-
-        Complaint complaint = complaintRepository
-                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
-                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
-        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
-            return ResponseUtil.getFailureResponse("Complaint rejected. It cannot be blocked.");
-        }
-        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
-            return ResponseUtil.getFailureResponse("Complaint Resolved. It cannot be blocked.");
-        }
-        complaint.setActive(false);
-        complaint.setUpdatedDate(LocalDateTime.now());
-        complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.CLOSED.getName()));
-        actionLogMapper.closedComplaintMapper(authorityUser.getId(), loggedInAdmin, httpServletRequest,complaintUniqueIdDto.getRemarks());
 
 
-        complaintRepository.save(complaint);
-
-        return ResponseUtil.getSuccessfulApiResponse("Complaint Closed successfully");
-    }
-
-    @Override
-    public ApiResponse<?> inProgressComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
-        Optional<AuthorityUser> authorityUserOpt =
-                authorityUserRepository.findByEmail(loggedInAdmin.getName());
-
-        if (authorityUserOpt.isEmpty()) {
-            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
-            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
-        }
-        AuthorityUser authorityUser = authorityUserOpt.get();
-        String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
-
-        Complaint complaint = complaintRepository
-                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
-                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
-        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
-            return ResponseUtil.getFailureResponse("Complaint rejected. It cannot be update to progress.");
-        }
-        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
-            return ResponseUtil.getFailureResponse("Complaint Resolved. It cannot be update to progress.");
-        }
-        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
-            return ResponseUtil.getFailureResponse("Closed Complaint cannot be update to inProgress.");
-        }
-        complaint.setResolvedAt(LocalDateTime.now());
-        complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.IN_PROGRESS.getName()));
-
-        complaintRepository.save(complaint);
-
-        return ResponseUtil.getSuccessfulApiResponse("Complaint update to PROGRESS status.");
-    }
+    // ─────────────────────────────────────────────
+    // RESOLVE
+    // ─────────────────────────────────────────────
 
     @Override
     public ApiResponse<?> resolveComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
-        Optional<AuthorityUser> authorityUserOpt =
-                authorityUserRepository.findByEmail(loggedInAdmin.getName());
 
-        if (authorityUserOpt.isEmpty()) {
-            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
-            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
-        }
-        AuthorityUser authorityUser = authorityUserOpt.get();
-        String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
+        AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
+        if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
-        Complaint complaint = complaintRepository
-                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
-                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
+        Municipality municipality = authorityUser.getMunicipality();
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint is already rejected. It cannot be resolved.");
@@ -338,29 +252,27 @@ public class ComplaintServiceImpl implements ComplaintService {
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
             return ResponseUtil.getFailureResponse("Closed complaint cannot be resolved.");
         }
+
         complaint.setResolvedAt(LocalDateTime.now());
         complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.RESOLVED.getName()));
 
-        complaintRepository.save(complaint);
+        saveAndInvalidateCache(complaint, municipality.getId());
 
         return ResponseUtil.getSuccessfulApiResponse("Complaint updated to RESOLVED status.");
     }
 
+    // ─────────────────────────────────────────────
+    // REJECT
+    // ─────────────────────────────────────────────
+
     @Override
     public ApiResponse<?> rejectComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
-        Optional<AuthorityUser> authorityUserOpt =
-                authorityUserRepository.findByEmail(loggedInAdmin.getName());
 
-        if (authorityUserOpt.isEmpty()) {
-            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
-            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
-        }
-        AuthorityUser authorityUser = authorityUserOpt.get();
-        String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
+        AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
+        if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
-        Complaint complaint = complaintRepository
-                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
-                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
+        Municipality municipality = authorityUser.getMunicipality();
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint is already rejected.");
@@ -372,11 +284,136 @@ public class ComplaintServiceImpl implements ComplaintService {
             return ResponseUtil.getFailureResponse("Closed complaint cannot be rejected.");
         }
 
+        complaint.setUpdatedDate(LocalDateTime.now());
         complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.REJECTED.getName()));
 
-        complaintRepository.save(complaint);
+        saveAndInvalidateCache(complaint, municipality.getId());
 
         return ResponseUtil.getSuccessfulApiResponse("Complaint updated to REJECTED status.");
     }
 
+    // ─────────────────────────────────────────────
+    // CLOSE
+    // ─────────────────────────────────────────────
+
+    @Override
+    public ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest) {
+
+        AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
+        if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
+
+        Municipality municipality = authorityUser.getMunicipality();
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
+
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint rejected. It cannot be closed.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint resolved. It cannot be closed.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint is already closed.");
+        }
+
+        complaint.setActive(false);
+        complaint.setUpdatedDate(LocalDateTime.now());
+        complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.CLOSED.getName()));
+        actionLogMapper.closedComplaintMapper(
+                authorityUser.getId(), loggedInAdmin, httpServletRequest, complaintUniqueIdDto.getRemarks());
+
+        saveAndInvalidateCache(complaint, municipality.getId());
+
+        return ResponseUtil.getSuccessfulApiResponse("Complaint closed successfully.");
+    }
+
+    // ─────────────────────────────────────────────
+    // IN PROGRESS
+    // ─────────────────────────────────────────────
+
+    @Override
+    public ApiResponse<?> inProgressComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+
+        AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
+        if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
+
+        Municipality municipality = authorityUser.getMunicipality();
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
+
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
+            return ResponseUtil.getFailureResponse("Rejected complaint cannot be moved to In Progress.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.RESOLVED.getName())) {
+            return ResponseUtil.getFailureResponse("Resolved complaint cannot be moved to In Progress.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.CLOSED.getName())) {
+            return ResponseUtil.getFailureResponse("Closed complaint cannot be moved to In Progress.");
+        }
+        if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.IN_PROGRESS.getName())) {
+            return ResponseUtil.getFailureResponse("Complaint is already In Progress.");
+        }
+
+        complaint.setUpdatedDate(LocalDateTime.now());
+        complaint.setStatus(complainStatusRepository.findByName(ComplaintStatusConstant.IN_PROGRESS.getName()));
+
+        saveAndInvalidateCache(complaint, municipality.getId());
+
+        return ResponseUtil.getSuccessfulApiResponse("Complaint updated to IN PROGRESS status.");
+    }
+
+    // ─────────────────────────────────────────────
+    // PRIVATE HELPERS
+    // ─────────────────────────────────────────────
+
+    /**
+     * Saves the complaint and immediately invalidates all cached
+     * complaint list pages for the municipality.
+     */
+    private void saveAndInvalidateCache(Complaint complaint, Long municipalityId) {
+        complaintRepository.save(complaint);
+        invalidateComplaintCache(municipalityId);
+    }
+
+    /**
+     * Deletes all Redis cache entries matching the municipality complaint pattern.
+     * Uses SCAN to avoid blocking Redis on large keyspaces.
+     */
+    private void invalidateComplaintCache(Long municipalityId) {
+        String pattern = RedisHelper.buildCacheKeyPattern(municipalityId);
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).count(100).build();
+        List<String> keys = new ArrayList<>();
+
+        try (Cursor<String> cursor = redisTemplate.scan(options)) {
+            cursor.forEachRemaining(keys::add);
+        }
+
+        if (!keys.isEmpty()) {
+            redisTemplate.delete(keys);
+            LOG.info("Invalidated {} Redis cache entries for municipalityId {}", keys.size(), municipalityId);
+        } else {
+            LOG.info("No Redis cache entries found for municipalityId {}", municipalityId);
+        }
+    }
+
+    /**
+     * Fetches authority user by email from Principal.
+     * Returns null if not found (caller should return failure response).
+     */
+    private AuthorityUser getAuthorityUser(Principal loggedInAdmin) {
+        Optional<AuthorityUser> opt = authorityUserRepository.findByEmail(loggedInAdmin.getName());
+        if (opt.isEmpty()) {
+            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
+            return null;
+        }
+        return opt.get();
+    }
+
+    /**
+     * Fetches complaint by uniqueId scoped to the municipality.
+     * Throws RuntimeException if not found or access denied.
+     */
+    private Complaint getComplaint(String uniqueId, String municipalityUniqueId) {
+        return complaintRepository
+                .findByIdAndMunicipalityId(uniqueId, municipalityUniqueId)
+                .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
+    }
 }

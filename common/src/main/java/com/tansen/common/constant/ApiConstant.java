@@ -47,6 +47,7 @@ public class ApiConstant {
     public static final String LOCAL_LEVEL = "localLevel";
     public static final String WARDS = "wards";
     public static final String MUNICIPALITY_API = "/api/v1/municipality";
+    public static final String USERDOCUMENT = "document";
 
     public static final String COMPLAINT = "complaint";
     public static final String MUNICIPALITY = "municipality";
@@ -92,5 +93,6 @@ public class ApiConstant {
     public static final String CAST      = "cast";
     public static final String REJECT    = "reject";
     public static final String RESOLVE   = "resolve";
+    public static final String USER = "user" ;
 }
 

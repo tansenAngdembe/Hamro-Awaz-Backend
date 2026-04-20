@@ -98,7 +98,9 @@ public abstract class AuthorityUserEmailLogMapper {
         authorityEscalationContent.setComplaintTitle(complaint.getComplaintTitle());
         authorityEscalationContent.setCategory(complaint.getCategory().getCategoryName());
         authorityEscalationContent.setCreatedDate(complaint.getCreatedDate());
-        authorityEscalationContent.setComplaintRule(complaint.getEscalation().getRuleName());
+        if (complaint.getEscalation() != null && complaint.getEscalation().getRuleName() != null) {
+            authorityEscalationContent.setComplaintRule(complaint.getEscalation().getRuleName());
+        }
         authorityEscalationContent.setEscalationAt(complaint.getEscalatedAt());
 
         authorityEscalationContent.setTemplate(EmailTemplateNameConstant.ESCALATION_EMAIL);

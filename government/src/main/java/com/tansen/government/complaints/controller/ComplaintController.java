@@ -58,11 +58,13 @@ public class ComplaintController {
         return complaintService.listAssignTo(searchParam, loggedInUser);
     }
     @PostMapping(ApiConstant.RESOLVE)
-   public  ApiResponse<?> resolveComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
+    @PreAuthorize("hasAuthority('UPDATE_COMPLAINT_STATUS')")
+    public  ApiResponse<?> resolveComplaint(@RequestBody  ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
         return complaintService.resolveComplaint(complaintUniqueIdDto, loggedInAdmin);
    }
     @PostMapping(ApiConstant.REJECT)
-    public ApiResponse<?> rejectComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
+    @PreAuthorize("hasAuthority('REJECT_COMPLAINT')")
+    public ApiResponse<?> rejectComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
         return complaintService.rejectComplaint(complaintUniqueIdDto, loggedInAdmin);
    }
 
