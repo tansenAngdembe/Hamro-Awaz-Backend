@@ -1,16 +1,16 @@
-package com.tansen.government.complaints.dto.response;
+package com.tansen.admin.complaints.dto.response;
 
-import com.tansen.entity.Escalation;
-import com.tansen.government.complaints.dto.*;
+import com.tansen.admin.complaints.dto.*;
+import com.tansen.common.dto.ModelBase;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-public class ListComplainsResponse {
-    private String uniqueId;
+public class ComplaintResponse extends ModelBase {
     private String complaintTitle;
     private CategoryDto category;
     private ComplaintStatusDto status;
@@ -19,6 +19,6 @@ public class ListComplainsResponse {
     private LocalDateTime resolvedAt;
     private PriorityDto priority;
     private LocalDateTime createdDate;
-    private EscalationDto escalation;
+    private List<CommentDto> comments;
 
 }

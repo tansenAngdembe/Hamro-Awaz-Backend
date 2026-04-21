@@ -292,5 +292,19 @@ public abstract class ActionLogMapper {
                 .build();
         actionLogService.insertActionLog(actionLogModel, principal);
     }
+
+
+
+    public void resolveComplaint(Long complaintId, Principal loggedInAdmin, HttpServletRequest request) {
+        ActionLogModel resolve = ActionLogModel.builder()
+                .remarks("Complaint Resolved Successful.")
+                .actionType(ActionTypeConstant.RESOLVED)
+                .targetType(TargetTypeConstant.ADMIN)
+                .targetId(complaintId)
+                .ipAddress(request.getRemoteAddr())
+                .build();
+        actionLogService.insertActionLog(resolve, loggedInAdmin);
+    }
+
 }
 

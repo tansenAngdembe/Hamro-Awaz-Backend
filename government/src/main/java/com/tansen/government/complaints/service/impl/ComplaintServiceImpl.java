@@ -124,24 +124,11 @@ public class ComplaintServiceImpl implements ComplaintService {
         LOG.info("Complaints fetched from DB and cached for key {}", cacheKey);
         return ResponseUtil.getSuccessfulApiResponse(response, "Complaints listed successfully");
     }
+
     @Override
-    public ApiResponse<?>  listAssignTo(SearchParam searchParam, Principal loggedInAdmin) {
-        Optional<AuthorityUser> authorityUserOpt =
-                authorityUserRepository.findByEmail(loggedInAdmin.getName());
-
-        if (authorityUserOpt.isEmpty()) {
-            LOG.error("Failed to find authority user by email {}", loggedInAdmin.getName());
+    public ApiResponse<?> listAssignTo(SearchParam searchParam, Principal loggedInUser) {
+        if (findAuthorityUser(searchParam, loggedInUser))
             return ResponseUtil.getFailureResponse("Logged in User Not Found.");
-        }
-
-        AuthorityUser authorityUser = authorityUserOpt.get();
-        Municipality municipality = authorityUser.getMunicipality();
-
-        if (municipality == null) {
-            return ResponseUtil.getFailureResponse("Authority user is not assigned to any municipality.");
-        }
-
-        Long municipalityId = municipality.getId();
 
         SearchResponseWithMapperBuilder<AuthorityUser, AssignToListResponse> responseBuilder =
                 SearchResponseWithMapperBuilder.<AuthorityUser, AssignToListResponse>builder()
@@ -156,7 +143,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         LOG.info("Authority User listed successfully");
         return ResponseUtil.getSuccessfulApiResponse(response, "Authority User listed Successfully");
     }
-
 
     @Override
     public ApiResponse<?> assignComplaintToAuthorityUser(ComplaintAssignRequest complaintAssignRequest, Principal loggedInAdmin) {
@@ -415,5 +401,21 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository
                 .findByIdAndMunicipalityId(uniqueId, municipalityUniqueId)
                 .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
+    }
+
+    private boolean findAuthorityUser(SearchParam searchParam, Principal loggedInUser) {
+        Optional<AuthorityUser> byEmail = authorityUserRepository.findByEmail(loggedInUser.getName());
+        if (byEmail.isEmpty()) {
+            LOG.error("Failed to find municipality Users by email {}", loggedInUser.getName());
+            return true;
+        }
+
+        Municipality municipality = byEmail.get().getMunicipality();
+
+        if (municipality != null) {
+            searchParam.getParam().put("municipality", municipality.getGovernmentName());
+            searchParam.getParam().put("municipalityUniqueId", municipality.getUniqueId());
+        }
+        return false;
     }
 }

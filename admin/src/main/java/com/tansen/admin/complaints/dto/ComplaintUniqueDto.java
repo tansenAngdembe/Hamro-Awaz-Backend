@@ -1,4 +1,4 @@
-package com.tansen.government.documentverification.dto;
+package com.tansen.admin.complaints.dto;
 
 import com.tansen.common.dto.ModelBase;
 import lombok.Getter;
@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ViewUserDocumentUniqueId extends ModelBase {
+public class ComplaintUniqueDto  extends ModelBase {
     private String uniqueId;
 }
-

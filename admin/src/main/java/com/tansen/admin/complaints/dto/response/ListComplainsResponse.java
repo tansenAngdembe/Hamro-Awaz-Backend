@@ -1,7 +1,6 @@
-package com.tansen.government.complaints.dto.response;
+package com.tansen.admin.complaints.dto.response;
 
-import com.tansen.entity.Escalation;
-import com.tansen.government.complaints.dto.*;
+import com.tansen.admin.complaints.dto.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +18,5 @@ public class ListComplainsResponse {
     private LocalDateTime resolvedAt;
     private PriorityDto priority;
     private LocalDateTime createdDate;
-    private EscalationDto escalation;
 
 }

@@ -47,8 +47,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ObjectMapper objectMapper;
     private final NearByComplaintSearchRepository nearByComplaintSearchRepository;
     private final SearchResponse searchResponse;
+    private final EscalationRepository escalationRepository;
 
-    public ComplaintServiceImpl(UserRepository userRepository, CategoryRepository categoryRepository, MunicipalityRepository municipalityRepository, ComplainStatusRepository complainStatusRepository, ComplaintMapper complaintMapper, ComplaintRepository complaintRepository, ComplaintCoordinatesRepository complaintCoordinatesRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, NearByComplaintSearchRepository nearByComplaintSearchRepository, SearchResponse searchResponse) {
+    public ComplaintServiceImpl(UserRepository userRepository, CategoryRepository categoryRepository, MunicipalityRepository municipalityRepository, ComplainStatusRepository complainStatusRepository, ComplaintMapper complaintMapper, ComplaintRepository complaintRepository, ComplaintCoordinatesRepository complaintCoordinatesRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, NearByComplaintSearchRepository nearByComplaintSearchRepository, SearchResponse searchResponse, EscalationRepository escalationRepository) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.municipalityRepository = municipalityRepository;
@@ -60,6 +61,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.objectMapper = objectMapper;
         this.nearByComplaintSearchRepository = nearByComplaintSearchRepository;
         this.searchResponse = searchResponse;
+        this.escalationRepository = escalationRepository;
     }
     @Override
     public ApiResponse<?> listNearByComplains(
@@ -175,6 +177,8 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
 
         Complaint complaint = complaintMapper.mapToComplaint(createComplaint, complaintStatus, category, municipality.get(), user, phots);
+        Escalation escalation = resolveEscalation(complaint.getMunicipality(), complaint.getCategory());
+        complaint.setEscalation(escalation); // null-safe: sets null if no rule found
         complaintRepository.save(complaint);
 
         ComplaintCoordinates complaintCoordinates = new ComplaintCoordinates();
@@ -224,4 +228,14 @@ public class ComplaintServiceImpl implements ComplaintService {
 
   }
 
+    private Escalation resolveEscalation(Municipality municipality, Category category) {
+        // 1. Try exact match first (category + municipality)
+        return escalationRepository
+                .findByMunicipalityAndCategoryAndActiveTrue(municipality, category)
+                // 2. Fallback to municipality-wide rule
+                .or(() -> escalationRepository
+                        .findByMunicipalityAndCategoryIsNullAndActiveTrue(municipality))
+                // 3. No rule found — complaint proceeds without escalation
+                .orElse(null);
+    }
 }
