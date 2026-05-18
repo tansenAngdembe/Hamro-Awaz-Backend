@@ -24,37 +24,37 @@ public class AdminController {
     }
 
     @PostMapping(ApiConstant.CREATE)
-    @PreAuthorize("hasAuthority('CREATE_ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> createAdmin(@RequestBody @Valid CreateAdminRequest createAdminRequest, Principal admin, HttpServletRequest httpServletRequest) {
         return adminService.createAdmin(createAdminRequest, admin, httpServletRequest);
     }
 
     @PostMapping(ApiConstant.LIST)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> listAllAdmins(@RequestBody @Valid SearchParam searchParam) {
         return adminService.listAllAdmins(searchParam);
     }
 
     @PostMapping(ApiConstant.BLOCK)
-    @PreAuthorize("hasAnyAuthority('BLOCK_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('BLOCK_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> blockAdmin(@RequestBody @Valid BlockAdminRequest blockAdminRequest, HttpServletRequest request, Principal admin) {
         return adminService.blockAdmin(blockAdminRequest, request, admin);
     }
 
     @PostMapping(ApiConstant.UPDATE)
-    @PreAuthorize("hasAuthority('EDIT_ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> updateAdmin(@RequestBody @Valid UpdateAdminDetailRequest updateAdminDetailRequest, HttpServletRequest request, Principal admin) {
         return adminService.updateAdmin(updateAdminDetailRequest, request, admin);
     }
 
     @PostMapping(ApiConstant.DELETE)
-    @PreAuthorize("hasAuthority('DELETE_ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> deleteAdmin(@RequestBody @Valid DeleteAdminRequest request, Principal principal, HttpServletRequest httpServletRequest) {
         return adminService.deleteAdmin(request, principal, httpServletRequest);
     }
 
     @PostMapping(ApiConstant.VIEW)
-    @PreAuthorize("hasAuthority('VIEW_ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> viewAdminDetails(@RequestBody @Valid ViewAdminDetailRequest viewAdminDetailRequest, Principal loggedIn) {
         return adminService.viewAdminDetails(viewAdminDetailRequest, loggedIn);
     }
@@ -65,7 +65,7 @@ public class AdminController {
     }
 
     @PostMapping(ApiConstant.EDIT_PROFILE)
-    @PreAuthorize("hasAuthority('EDIT_ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> editProfile(
             @RequestPart(value = "details") EditProfileRequest editProfileRequest,
             @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture,
@@ -80,13 +80,13 @@ public class AdminController {
     }
 
     @PostMapping(ApiConstant.PASSWORD_RESET_LINK)
-    @PreAuthorize("hasAuthority('SEND_ADMIN_PASSWORD_RESET_LINK')")
+    @PreAuthorize("hasAuthority('SEND_SYSTEM_ADMINISTRATOR_PASSWORD_RESET_LINK')")
     public ApiResponse<?> passwordReset(@RequestBody @Valid SendPasswordResetLinkRequest sendPasswordResetLinkRequest, HttpServletRequest request) {
         return adminService.sendPasswordResetLink(sendPasswordResetLinkRequest, request);
     }
 
     @PostMapping(ApiConstant.UNBLOCK)
-    @PreAuthorize("hasAuthority('UNBLOCK_ADMIN')")
+    @PreAuthorize("hasAuthority('UNBLOCK_SYSTEM_ADMINISTRATOR')")
     public ApiResponse<?> unblockAdmin(@RequestBody @Valid UnblockAdminRequest unblockAdminRequest, HttpServletRequest request, Principal loggedIn) {
         return adminService.unblockAdmin(unblockAdminRequest, request, loggedIn);
     }

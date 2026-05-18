@@ -28,7 +28,7 @@ public class AuthorityUserController {
     }
 
     @PostMapping(ApiConstant.CREATE)
-    @PreAuthorize("hasAuthority('CREATE_AUTHORITY')")
+    @PreAuthorize("hasAuthority('CREATE_ADMINISTRATIVE')")
     public ApiResponse<?> createAuthorityUser(
             @Valid @RequestPart(value = "authorityUser") CreateMunicipalityUserRequest createMunicipalityUserRequest,
             @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture,
@@ -38,7 +38,7 @@ public class AuthorityUserController {
     }
 
     @PostMapping(ApiConstant.UPDATE)
-    @PreAuthorize("hasAuthority('EDIT_AUTHORITY')")
+    @PreAuthorize("hasAuthority('EDIT_ADMINISTRATIVE')")
     public ApiResponse<?> editAuthorityUser(
             @Valid @RequestPart(value = "authorityUser") EditMunicipalityUserRequest editMunicipalityUserRequest,
             @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture,
@@ -48,31 +48,31 @@ public class AuthorityUserController {
     }
 
     @PostMapping(ApiConstant.LIST)
-    @PreAuthorize("hasAuthority('VIEW_ALL_AUTHORITY')")
+    @PreAuthorize("hasAuthority('VIEW_ALL_ADMINISTRATIVE')")
     public ApiResponse<?> getAuthorityUserList(@RequestBody SearchParam searchParam) {
         return authorityUserService.getAuthorityUserList(searchParam);
     }
 
     @PostMapping(ApiConstant.VIEW)
-    @PreAuthorize("hasAuthority('VIEW_ALL_AUTHORITY')")
+    @PreAuthorize("hasAuthority('VIEW_ALL_ADMINISTRATIVE')")
     public ApiResponse<?> viewAuthorityUser(@Valid @RequestBody MunicipalityUserRequest request) {
         return authorityUserService.viewAuthorityUser(request);
     }
 
     @PostMapping(ApiConstant.BLOCK)
-    @PreAuthorize("hasAuthority('BLOCK_AUTHORITY')")
+    @PreAuthorize("hasAuthority('BLOCK_ADMINISTRATIVE')")
     public ApiResponse<?> blockAuthorityUser(@Valid @RequestBody MunicipalityUserActionRequest municipalityUserActionRequest, Principal loggedInUser, HttpServletRequest request) {
         return authorityUserService.blockAuthorityUser(municipalityUserActionRequest, loggedInUser, request);
     }
 
     @PostMapping(ApiConstant.UNBLOCK)
-    @PreAuthorize("hasAuthority('UNBLOCK_AUTHORITY')")
+    @PreAuthorize("hasAuthority('UNBLOCK_ADMINISTRATIVE')")
     public ApiResponse<?> unblockAuthorityUser(@Valid @RequestBody MunicipalityUserActionRequest municipalityUserActionRequest, Principal loggedInUser, HttpServletRequest request) {
         return authorityUserService.unblockAuthorityUser(municipalityUserActionRequest, loggedInUser, request);
     }
 
     @PostMapping(ApiConstant.DELETE)
-    @PreAuthorize("hasAuthority('DELETE_AUTHORITY')")
+    @PreAuthorize("hasAuthority('DELETE_ADMINISTRATIVE')")
     public ApiResponse<?> deleteAuthorityUser(@Valid @RequestBody MunicipalityUserActionRequest municipalityUserActionRequest, Principal loggedInUser, HttpServletRequest request) {
         return authorityUserService.deleteAuthorityUser(municipalityUserActionRequest, loggedInUser, request);
     }

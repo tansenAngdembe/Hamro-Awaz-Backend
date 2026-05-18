@@ -75,16 +75,24 @@ public class ComplaintController {
 
         return complaintService.createComplaint(createComplaint, loggedUser, httpServletRequest, photos);
     }
-    @PostMapping(ApiConstant.UPDATE)
+
+
+   @PostMapping(ApiConstant.UPDATE)
    public  ApiResponse<?> updateComplaint(@RequestBody UpdateComplaintRequest updateComplaintRequest, MultipartFile photos, Principal loggedUser, HttpServletRequest httpServletRequest ) throws IOException{
        return  complaintService.updateComplaint(updateComplaintRequest,photos,loggedUser,httpServletRequest);
    }
    @PostMapping(ApiConstant.LIST + ApiConstant.SLASH + ApiConstant.NEARBY)
     public ApiResponse<?> listNearByComplains(
-           SearchParam searchParam,
            @RequestBody NearByComplaintRequest nearByComplaintRequest
    ) throws JsonProcessingException{
-        return complaintService.listNearByComplains(searchParam,nearByComplaintRequest);
+        return complaintService.listNearByComplains(nearByComplaintRequest);
+   }
+   @PostMapping(ApiConstant.MYCOMPLAINTS+ ApiConstant.SLASH + ApiConstant.LIST)
+   public ApiResponse<?> listMyComplaints(
+           @RequestBody(required = false) SearchParam searchParam,
+           Principal loggedInUser) {
+       if (searchParam == null) searchParam = new SearchParam();
+       return  complaintService.listMyComplaints(searchParam,loggedInUser);
    }
 
 }

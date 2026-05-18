@@ -1,0 +1,27 @@
+package com.tansen.administrative.municipality.dto;
+
+import com.tansen.common.dto.ModelBase;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
+
+
+@Getter
+@Setter
+public class SetPasswordRequest extends ModelBase {
+    @NotBlank(message = "Password is required")
+    @Pattern(
+            regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>])(?=.*\\d)(?=.*[a-z]).{8,15}$",
+            message = "Invalid password format"
+    )
+    private String password;
+    @NotBlank(message = "Confirm password is required")
+    @Pattern(
+            regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>])(?=.*\\d)(?=.*[a-z]).{8,15}$",
+            message = "Invalid password format"
+    )
+    private String confirmPassword;
+    @NotBlank(message = "Unique token is missing")
+    private String uuid;
+}

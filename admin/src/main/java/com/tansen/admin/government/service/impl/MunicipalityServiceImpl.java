@@ -2,7 +2,6 @@ package com.tansen.admin.government.service.impl;
 
 import com.tansen.admin.actionlog.mapper.ActionLogMapper;
 import com.tansen.admin.emaillog.mapper.AuthorityUserEmailLogMapper;
-import com.tansen.admin.government.controller.MunicipalityController;
 import com.tansen.admin.government.dto.request.CreateMunicipalityRequest;
 import com.tansen.admin.government.dto.request.EditMunicipalityRequest;
 import com.tansen.admin.government.dto.request.MunicipalityActionRequest;
@@ -17,17 +16,16 @@ import com.tansen.common.dto.*;
 import com.tansen.common.dto.model.SendEmailRequest;
 import com.tansen.common.service.MailService;
 import com.tansen.common.service.SearchResponse;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.AuthorityUserEmailLog;
-import com.tansen.entity.Municipality;
 import com.tansen.repository.AuthorityUserRepository;
-import com.tansen.repository.MunicipalityRepository;
+import com.tansen.repository.AdministrativeUnitRepository;
 import com.tansen.repository.searchrepo.MunicipalitySearchRepository;
 import com.tansen.repository.searchrepo.impl.MunicipalitySearchRepositoryImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +38,7 @@ import java.util.Optional;
 public class MunicipalityServiceImpl implements MunicipalityService {
     private static final Logger LOG = LoggerFactory.getLogger(MunicipalityServiceImpl.class);
 
-    private final MunicipalityRepository municipalityRepository;
+    private final AdministrativeUnitRepository municipalityRepository;
     private final AuthorityUserRepository authorityUserRepository;
     private final MunicipalityMapper municipalityMapper;
     private final AuthorityUserMapper authorityUserMapper;
@@ -50,7 +48,7 @@ public class MunicipalityServiceImpl implements MunicipalityService {
     private final AuthorityUserEmailLogMapper authorityUserEmailLogMapper;
     private final MailService mailService;
 
-    public MunicipalityServiceImpl(MunicipalityRepository municipalityRepository, AuthorityUserRepository authorityUserRepository, MunicipalityMapper municipalityMapper, AuthorityUserMapper authorityUserMapper, ActionLogMapper actionLogMapper, MunicipalitySearchRepositoryImpl municipalitySearchRepository, SearchResponse searchResponse, AuthorityUserEmailLogMapper authorityUserEmailLogMapper, MailService mailService) {
+    public MunicipalityServiceImpl(AdministrativeUnitRepository municipalityRepository, AuthorityUserRepository authorityUserRepository, MunicipalityMapper municipalityMapper, AuthorityUserMapper authorityUserMapper, ActionLogMapper actionLogMapper, MunicipalitySearchRepositoryImpl municipalitySearchRepository, SearchResponse searchResponse, AuthorityUserEmailLogMapper authorityUserEmailLogMapper, MailService mailService) {
         this.municipalityRepository = municipalityRepository;
         this.authorityUserRepository = authorityUserRepository;
         this.municipalityMapper = municipalityMapper;
@@ -76,8 +74,8 @@ public class MunicipalityServiceImpl implements MunicipalityService {
             LOG.error("Authority user already exists with email {}", createMunicipalityRequest.getAuthorityAdminEmail());
             return ResponseUtil.getFailureResponse("Authority user already exists with email " + createMunicipalityRequest.getAuthorityAdminEmail());
         }
-        Municipality municipality = municipalityMapper.mapToMunicipality(createMunicipalityRequest, documentFile);
-        Municipality savedMunicipality = municipalityRepository.save(municipality);
+        AdministrativeUnit municipality = municipalityMapper.mapToMunicipality(createMunicipalityRequest, documentFile);
+        AdministrativeUnit savedMunicipality = municipalityRepository.save(municipality);
         LOG.info("Saved Municipality {}", savedMunicipality.getId());
         AuthorityUser authorityUser = authorityUserMapper.mapToAuthorityUser(createMunicipalityRequest, savedMunicipality);
         AuthorityUser savedAuthorityUser = authorityUserRepository.save(authorityUser);
@@ -99,7 +97,7 @@ public class MunicipalityServiceImpl implements MunicipalityService {
 
     @Override
     public ApiResponse<?> editMunicipality(EditMunicipalityRequest editMunicipalityRequest, MultipartFile documentFile, Principal loggedInUser, HttpServletRequest httpServletRequest) throws IOException {
-        Optional<Municipality> existingMunicipality = municipalityRepository.findByUniqueId(editMunicipalityRequest.getUniqueId());
+        Optional<AdministrativeUnit> existingMunicipality = municipalityRepository.findByUniqueId(editMunicipalityRequest.getUniqueId());
         if (existingMunicipality.isEmpty()) {
             LOG.error("Failed to update Municipality. Municipality with unique ID {} not found", editMunicipalityRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality not found");
@@ -109,8 +107,8 @@ public class MunicipalityServiceImpl implements MunicipalityService {
             return ResponseUtil.getFailureResponse("Government with this code number already exists");
         }
 
-        Municipality municipality = existingMunicipality.get();
-        Municipality updatedMunicipality = municipalityMapper.updateMunicipality(municipality, editMunicipalityRequest, documentFile, loggedInUser, httpServletRequest);
+        AdministrativeUnit municipality = existingMunicipality.get();
+        AdministrativeUnit updatedMunicipality = municipalityMapper.updateMunicipality(municipality, editMunicipalityRequest, documentFile, loggedInUser, httpServletRequest);
         municipalityRepository.save(updatedMunicipality);
         LOG.info("Government with unique ID {} updated successfully", editMunicipalityRequest.getUniqueId());
         return ResponseUtil.getSuccessfulApiResponse("Government updated successfully.");
@@ -118,7 +116,7 @@ public class MunicipalityServiceImpl implements MunicipalityService {
 
     @Override
     public ApiResponse<?> getMunicipalityList(SearchParam searchParam) {
-        SearchResponseWithMapperBuilder<Municipality, MunicipalityResponse> responseBuilder = SearchResponseWithMapperBuilder.<Municipality, MunicipalityResponse>builder()
+        SearchResponseWithMapperBuilder<AdministrativeUnit, MunicipalityResponse> responseBuilder = SearchResponseWithMapperBuilder.<AdministrativeUnit, MunicipalityResponse>builder()
                 .count(municipalitySearchRepository::count).searchData(municipalitySearchRepository::getAll)
                 .mapperFunction(this.municipalityMapper::getMunicipalityResponseList).searchParam(searchParam)
                 .build();
@@ -128,19 +126,19 @@ public class MunicipalityServiceImpl implements MunicipalityService {
     }
     @Override
     public ApiResponse<?> viewMunicipalityDetails(MunicipalityRequest request) {
-        Optional<Municipality> existingVendor = municipalityRepository.findByUniqueId(request.getUniqueId());
+        Optional<AdministrativeUnit> existingVendor = municipalityRepository.findByUniqueId(request.getUniqueId());
         if (existingVendor.isEmpty()){
             LOG.error("Failed to view municipality details. Municipality with unique ID {} not found", request.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality not found");
         }
-        Municipality municipality = existingVendor.get();
+        AdministrativeUnit municipality = existingVendor.get();
         MunicipalityResponse vendorResponse = municipalityMapper.mapToMunicipalityResponse(municipality);
         return ResponseUtil.getSuccessfulApiResponseWithData(vendorResponse, "Municipality details retrieved successfully.");
     }
 
     @Override
     public ApiResponse<?> blockMunicipality(MunicipalityActionRequest blockMunicipalityRequest, HttpServletRequest request, Principal loggedInUser) {
-        Optional<Municipality> existingMunicipalityByUniqueId = municipalityRepository.findByUniqueId(blockMunicipalityRequest.getUniqueId());
+        Optional<AdministrativeUnit> existingMunicipalityByUniqueId = municipalityRepository.findByUniqueId(blockMunicipalityRequest.getUniqueId());
         if (existingMunicipalityByUniqueId.isEmpty()) {
             LOG.error("Failed to block municipality. Municipality with unique ID {} not found", blockMunicipalityRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Vendor not found");
@@ -157,8 +155,8 @@ public class MunicipalityServiceImpl implements MunicipalityService {
             LOG.error("Failed to block municipality. Municipality with unique ID {} is still pending.", blockMunicipalityRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality is still in pending state. Cannot block a pending  municipality.");
         }
-        Municipality municipality = existingMunicipalityByUniqueId.get();
-        Municipality updatedMunicipality = municipalityMapper.blockMunicipality(municipality, blockMunicipalityRequest.getRemarks(), loggedInUser, request);
+        AdministrativeUnit municipality = existingMunicipalityByUniqueId.get();
+        AdministrativeUnit updatedMunicipality = municipalityMapper.blockMunicipality(municipality, blockMunicipalityRequest.getRemarks(), loggedInUser, request);
         municipalityRepository.save(updatedMunicipality);
         LOG.info("Municipality with unique ID {} blocked successfully", blockMunicipalityRequest.getUniqueId());
         return ResponseUtil.getSuccessfulApiResponse("Municipality blocked successfully.");
@@ -166,12 +164,12 @@ public class MunicipalityServiceImpl implements MunicipalityService {
 
     @Override
     public ApiResponse<?> unblockMunicipality(MunicipalityActionRequest municipalityActionRequest, HttpServletRequest request, Principal loggedInUser) {
-        Optional<Municipality> existingMunicipalityByUniqueId = municipalityRepository.findByUniqueId(municipalityActionRequest.getUniqueId());
+        Optional<AdministrativeUnit> existingMunicipalityByUniqueId = municipalityRepository.findByUniqueId(municipalityActionRequest.getUniqueId());
         if (existingMunicipalityByUniqueId.isEmpty()) {
             LOG.error("Failed to unblock municipality. Municipality with unique ID {} not found", municipalityActionRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality not found");
         }
-        Municipality municipality = existingMunicipalityByUniqueId.get();
+        AdministrativeUnit municipality = existingMunicipalityByUniqueId.get();
         if (!Objects.equals(StatusConstant.BLOCKED.getName(), municipality.getStatus().getName())) {
             LOG.error("Failed to unblock municipality. Municipality with unique ID {} is not blocked", municipalityActionRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality is not blocked");
@@ -180,7 +178,7 @@ public class MunicipalityServiceImpl implements MunicipalityService {
             LOG.error("Failed to unblock municipality. Municipality with unique ID {} is deleted.", municipalityActionRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality is deleted. Cannot unblock a deleted municipality.");
         }
-        Municipality updatedMunicipality = municipalityMapper.unblockMunicipality(municipality, municipalityActionRequest.getRemarks(), loggedInUser, request);
+        AdministrativeUnit updatedMunicipality = municipalityMapper.unblockMunicipality(municipality, municipalityActionRequest.getRemarks(), loggedInUser, request);
         municipalityRepository.save(updatedMunicipality);
         LOG.info("Municipality with unique ID {} unblocked successfully", municipalityActionRequest.getUniqueId());
         return ResponseUtil.getSuccessfulApiResponse("Municipality unblocked successfully.");
@@ -188,18 +186,18 @@ public class MunicipalityServiceImpl implements MunicipalityService {
 
     @Override
     public ApiResponse<?> deleteMunicipality(MunicipalityActionRequest municipalityActionRequest, HttpServletRequest request, Principal loggedInUser) {
-        Optional<Municipality> existingMunicipalityByUniqueId = municipalityRepository.findByUniqueId(municipalityActionRequest.getUniqueId());
+        Optional<AdministrativeUnit> existingMunicipalityByUniqueId = municipalityRepository.findByUniqueId(municipalityActionRequest.getUniqueId());
         if (existingMunicipalityByUniqueId.isEmpty()) {
             LOG.error("Failed to delete municipality. Municipality with unique ID {} not found", municipalityActionRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality not found");
         }
-        Municipality municipality = existingMunicipalityByUniqueId.get();
+        AdministrativeUnit municipality = existingMunicipalityByUniqueId.get();
         if (Objects.equals(StatusConstant.DELETED.getName(), municipality.getStatus().getName())) {
             LOG.error("Failed to delete municipality. Municipality with unique ID {} is already deleted", municipalityActionRequest.getUniqueId());
             return ResponseUtil.getFailureResponse("Municipality is already deleted");
         }
 
-        Municipality updatedMunicipality = municipalityMapper.deleteMunicipality(municipality, municipalityActionRequest.getRemarks(), loggedInUser, request);
+        AdministrativeUnit updatedMunicipality = municipalityMapper.deleteMunicipality(municipality, municipalityActionRequest.getRemarks(), loggedInUser, request);
         municipalityRepository.save(updatedMunicipality);
         LOG.info("Municipality with unique ID {} deleted successfully", municipalityActionRequest.getUniqueId());
         return ResponseUtil.getSuccessfulApiResponse("Municipality deleted successfully.");

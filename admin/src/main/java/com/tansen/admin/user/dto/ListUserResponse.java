@@ -3,7 +3,6 @@ package com.tansen.admin.user.dto;
 import com.tansen.common.dto.ModelBase;
 import com.tansen.common.dto.MunicipalityDto;
 import com.tansen.common.dto.StatusDto;
-import com.tansen.entity.Municipality;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,0 +1,23 @@
+package com.tansen.administrative.documentverification.dto;
+
+import com.tansen.common.dto.ModelBase;
+import com.tansen.entity.enums.RejectionCategory;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class RejectUserDocumentRequest  extends ModelBase {
+    @NotBlank(message = "Unique ID is required")
+    private String uniqueId;
+
+    @NotNull(message = "Rejection category is required")
+    private RejectionCategory rejectionCategory;
+
+    @NotBlank(message = "Rejection reason is required")
+    @Size(max = 1000, message = "Rejection reason must not exceed 1000 characters")
+    private String rejectionReason;
+}

@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +28,7 @@ public class UserDocumentServiceImpl implements UserDocumentService {
     private static final Logger LOG = LoggerFactory.getLogger(UserDocumentServiceImpl.class);
 
     private final UserDocumentsRepository userDocumentsRepository;
-    private final MunicipalityRepository municipalityRepository;
+    private final AdministrativeUnitRepository municipalityRepository;
     private final UserRepository userRepository;
     private final UserDocumentMapper userDocumentMapper;
     private final ProvinceRepository provinceRepository;
@@ -37,7 +36,7 @@ public class UserDocumentServiceImpl implements UserDocumentService {
 
     private final UploadFileService uploadFileService;
 
-    public UserDocumentServiceImpl(UserDocumentsRepository userDocumentsRepository, MunicipalityRepository municipalityRepository, UserRepository userRepository, UserDocumentMapper userDocumentMapper, ProvinceRepository provinceRepository, DistrictRepository districtRepository, UploadFileService uploadFileService) {
+    public UserDocumentServiceImpl(UserDocumentsRepository userDocumentsRepository, AdministrativeUnitRepository municipalityRepository, UserRepository userRepository, UserDocumentMapper userDocumentMapper, ProvinceRepository provinceRepository, DistrictRepository districtRepository, UploadFileService uploadFileService) {
         this.userDocumentsRepository = userDocumentsRepository;
         this.municipalityRepository = municipalityRepository;
         this.userRepository = userRepository;
@@ -64,14 +63,15 @@ public class UserDocumentServiceImpl implements UserDocumentService {
                 return ResponseUtil.getFailureResponse("User not found");
             }
 
-            // 2️⃣ Fetch Location Data
-            Municipality municipality = municipalityRepository
-                    .findByUniqueId(uploadDocumentRequest.getMunicipalityUniqueId())
-                    .orElseThrow(() -> new RuntimeException("Municipality not found"));
-
             Province province = provinceRepository
                     .findById(uploadDocumentRequest.getProvinceUniqueId())
                     .orElseThrow(() -> new RuntimeException("Province not found"));
+
+            // 2️⃣ Fetch Location Data
+            AdministrativeUnit administrativeUnit = municipalityRepository
+                    .findByProvince_Id(uploadDocumentRequest.getProvinceUniqueId())
+                    .orElseThrow(() ->
+                            new RuntimeException("No administrative unit account found for this province"));
 
             District district = districtRepository
                     .findById(uploadDocumentRequest.getDistrictUniqueId())
@@ -90,7 +90,12 @@ public class UserDocumentServiceImpl implements UserDocumentService {
                 userDocuments.setNationalIdentityNumber(
                         uploadDocumentRequest.getNationalIdentityNumber());
                 userDocuments.setProvince(province);
-                userDocuments.setMunicipality(municipality);
+                if(administrativeUnit != null) {
+                    userDocuments.setMunicipality(administrativeUnit);
+                }else{
+                    userDocuments.setMunicipality(null);
+                    return ResponseUtil.getFailureResponse("No administrative unit account found");
+                }
                 userDocuments.setDistrict(district);
                 userDocuments.setUpdatedAt(LocalDateTime.now());
                 userDocuments.setVerificationStatus(DocumentVerificationStatus.PENDING);
@@ -128,17 +133,21 @@ public class UserDocumentServiceImpl implements UserDocumentService {
 
                 userDocuments.setUser(user);
                 userDocuments.setProvince(province);
-                userDocuments.setMunicipality(municipality);
-                userDocuments.setDistrict(district);
+                if(administrativeUnit != null) {
+                    userDocuments.setMunicipality(administrativeUnit);
+                }else{
+                    userDocuments.setMunicipality(null);
+                    return ResponseUtil.getFailureResponse("No administrative unit account found");
+                }                userDocuments.setDistrict(district);
                 userDocuments.setVerificationStatus(DocumentVerificationStatus.PENDING);
             }
 
             userDocumentsRepository.save(userDocuments);
 
-            user.setMunicipality(municipality);
+            user.setMunicipality(administrativeUnit);
             userRepository.save(user);
 
-            return ResponseUtil.getSuccessfulApiResponse("Document uploaded successfully");
+            return ResponseUtil.getSuccessfulApiResponse("Document uploaded successfully. Wait for verification.");
 
         } catch (Exception e) {
             return ResponseUtil.getFailureResponse("Upload failed: " + e.getMessage());

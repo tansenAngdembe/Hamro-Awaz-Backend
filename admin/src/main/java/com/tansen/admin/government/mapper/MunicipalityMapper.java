@@ -9,9 +9,9 @@ import com.tansen.common.constant.FilePathConstant;
 import com.tansen.common.constant.StatusConstant;
 import com.tansen.common.service.UploadFileService;
 import com.tansen.common.utility.UuidUtil;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.AuthorityUserToken;
-import com.tansen.entity.Municipality;
 import com.tansen.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.mapstruct.Mapper;
@@ -47,8 +47,8 @@ public abstract class MunicipalityMapper {
     @Autowired
     private  AuthorityUserTokenRepository authorityUserTokenRepository;
 
-    public Municipality mapToMunicipality(CreateMunicipalityRequest createMunicipalityRequest, MultipartFile documentFile) throws IOException {
-        Municipality municipality = new Municipality();
+    public AdministrativeUnit mapToMunicipality(CreateMunicipalityRequest createMunicipalityRequest, MultipartFile documentFile) throws IOException {
+        AdministrativeUnit municipality = new AdministrativeUnit();
         municipality.setGovernmentName(createMunicipalityRequest.getGovernmentName());
         municipality.setEmail(createMunicipalityRequest.getEmail());
         municipality.setCode(createMunicipalityRequest.getCode());
@@ -71,7 +71,7 @@ public abstract class MunicipalityMapper {
 
     }
 
-    public Municipality updateMunicipality(Municipality municipality, EditMunicipalityRequest request, MultipartFile documentFile, Principal loggedInUser, HttpServletRequest httpServletRequest) throws IOException {
+    public AdministrativeUnit updateMunicipality(AdministrativeUnit municipality, EditMunicipalityRequest request, MultipartFile documentFile, Principal loggedInUser, HttpServletRequest httpServletRequest) throws IOException {
         municipality.setGovernmentName(request.getGovernmentName());
         municipality.setCode(request.getCode());
         municipality.setDescription(request.getDescription());
@@ -96,14 +96,14 @@ public abstract class MunicipalityMapper {
         return municipality;
     }
 
-    public abstract MunicipalityResponse mapToMunicipalityResponse(Municipality municipality);
+    public abstract MunicipalityResponse mapToMunicipalityResponse(AdministrativeUnit municipality);
 
-    public List<MunicipalityResponse> getMunicipalityResponseList(List<Municipality> municipalities) {
+    public List<MunicipalityResponse> getMunicipalityResponseList(List<AdministrativeUnit> municipalities) {
 
         return municipalities.stream().map(this::mapToMunicipalityResponse).toList();
     }
 
-    public Municipality blockMunicipality(Municipality municipality, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public AdministrativeUnit blockMunicipality(AdministrativeUnit municipality, String remark, Principal loggedInUser, HttpServletRequest request) {
         loggingOutMunicipalityUser(municipality);
         municipality.setStatus(statusRepository.findByName(StatusConstant.BLOCKED.getName()));
         municipality.setUpdatedAt(LocalDateTime.now());
@@ -111,14 +111,14 @@ public abstract class MunicipalityMapper {
         return municipality;
     }
 
-    public Municipality unblockMunicipality(Municipality municipality, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public AdministrativeUnit unblockMunicipality(AdministrativeUnit municipality, String remark, Principal loggedInUser, HttpServletRequest request) {
         municipality.setStatus(statusRepository.findByName(StatusConstant.ACTIVE.getName()));
         municipality.setUpdatedAt(LocalDateTime.now());
         actionLogMapper.unblockMunicipality(Long.valueOf(municipality.getId()), remark, loggedInUser, request);
         return municipality;
     }
 
-    public Municipality deleteMunicipality(Municipality municipality, String remark, Principal loggedInUser, HttpServletRequest request) {
+    public AdministrativeUnit deleteMunicipality(AdministrativeUnit municipality, String remark, Principal loggedInUser, HttpServletRequest request) {
         loggingOutMunicipalityUser(municipality);
         municipality.setStatus(statusRepository.findByName(StatusConstant.DELETED.getName()));
         municipality.setUpdatedAt(LocalDateTime.now());
@@ -126,7 +126,7 @@ public abstract class MunicipalityMapper {
         return municipality;
     }
 
-    private void loggingOutMunicipalityUser(Municipality municipality) {
+    private void loggingOutMunicipalityUser(AdministrativeUnit municipality) {
         List<AuthorityUser> authorityUsers = authorityUserRepository.findByMunicipality(municipality);
         if (!authorityUsers.isEmpty()) {
             for (AuthorityUser authorityUser : authorityUsers) {

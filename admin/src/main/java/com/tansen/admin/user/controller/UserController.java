@@ -27,7 +27,7 @@ public class UserController {
         }
 
         @PostMapping(ApiConstant.CITIZEN + ApiConstant.SLASH + ApiConstant.LIST)
-        @PreAuthorize("hasAuthority('CREATE_ADMIN')")
+        @PreAuthorize("hasAuthority('USERS')")
         public ApiResponse<?> listAllUsers(SearchParam searchParam){
             return userService.listAllUsers(searchParam);
         }

@@ -26,8 +26,8 @@ public class MunicipalityController {
         this.municipalityService = vendorService;
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.CREATE)
-    @PreAuthorize("hasAuthority('CREATE_AUTHORITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.CREATE)
+    @PreAuthorize("hasAuthority('CREATE_ADMINISTRATIVE')")
     public ApiResponse<?> createMunicipality(
             @Valid @RequestPart("municipality") CreateMunicipalityRequest request,
             @RequestPart(value = "documentFile",required = false) MultipartFile documentFile,
@@ -36,8 +36,8 @@ public class MunicipalityController {
         return municipalityService.createMunicipality(request, documentFile, loggedInUser, httpServletRequest);
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.UPDATE)
-    @PreAuthorize("hasAuthority('EDIT_AUTHORITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.UPDATE)
+    @PreAuthorize("hasAuthority('EDIT_ADMINISTRATIVE')")
     public ApiResponse<?> editMunicipality(
             @Valid @RequestPart("municipality") EditMunicipalityRequest request,
             @RequestPart(value = "logoFile", required = false) MultipartFile logoFile,
@@ -47,21 +47,21 @@ public class MunicipalityController {
         return municipalityService.editMunicipality(request, documentFile, loggedInUser, httpServletRequest);
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.LIST)
-    @PreAuthorize("hasAuthority('VIEW_ALL_AUTHORITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.LIST)
+    @PreAuthorize("hasAuthority('VIEW_ALL_ADMINISTRATIVE')")
     public ApiResponse<?> listAllMunicipality(@Valid @RequestBody SearchParam searchParam) {
         return municipalityService.getMunicipalityList(searchParam);
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.VIEW)
-    @PreAuthorize("hasAuthority('VIEW_ALL_AUTHORITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.VIEW)
+    @PreAuthorize("hasAuthority('VIEW_ALL_ADMINISTRATIVE')")
     public ApiResponse<?> viewMunicipalityDetails(
             @Valid @RequestBody MunicipalityRequest request) {
         return municipalityService.viewMunicipalityDetails(request);
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.BLOCK)
-    @PreAuthorize("hasAuthority('BLOCK_AUTHORITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.BLOCK)
+    @PreAuthorize("hasAuthority('BLOCK_ADMINISTRATIVE')")
     public ApiResponse<?> blockMunicipality(
             @Valid @RequestBody MunicipalityActionRequest actionRequest,
             HttpServletRequest request,
@@ -69,8 +69,8 @@ public class MunicipalityController {
         return municipalityService.blockMunicipality(actionRequest, request, loggedInUser);
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.UNBLOCK)
-    @PreAuthorize("hasAuthority('UNBLOCK_AUTHORITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.UNBLOCK)
+    @PreAuthorize("hasAuthority('UNBLOCK_ADMINISTRATIVE')")
     public ApiResponse<?> unblockMunicipality(
             @Valid @RequestBody MunicipalityActionRequest actionRequest,
             HttpServletRequest request,
@@ -78,8 +78,8 @@ public class MunicipalityController {
         return municipalityService.unblockMunicipality(actionRequest, request, loggedInUser);
     }
 
-    @PostMapping(ApiConstant.MUNICIPALITY + ApiConstant.SLASH + ApiConstant.DELETE)
-    @PreAuthorize("hasAuthority('DELETE_MUNICIPALITY')")
+    @PostMapping(ApiConstant.ADMINISTRATIVE + ApiConstant.SLASH + ApiConstant.DELETE)
+    @PreAuthorize("hasAuthority('DELETE_ADMINISTRATIVE')")
     public ApiResponse<?> deleteMunicipality(
             @Valid @RequestBody MunicipalityActionRequest actionRequest,
             HttpServletRequest request,

@@ -2,7 +2,7 @@ package com.tansen.repository.searchrepo.impl;
 
 import com.tansen.common.dto.SearchParam;
 import com.tansen.common.utility.SearchParamUtil;
-import com.tansen.entity.Municipality;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.entity.User;
 import com.tansen.repository.searchrepo.UserSearchTestRepository;
 import jakarta.persistence.EntityManager;
@@ -42,7 +42,7 @@ public class UserSearchTestRepositoryImpl implements UserSearchTestRepository {
                         "where ";
 
         @Override
-        public Long count(SearchParam searchParam, Municipality municipality) {
+        public Long count(SearchParam searchParam, AdministrativeUnit municipality) {
             return (Long) buildQuery(
                     "select COUNT(u.id) " + BASE_FROM + BASE_WHERE,
                     searchParam,
@@ -52,7 +52,7 @@ public class UserSearchTestRepositoryImpl implements UserSearchTestRepository {
         }
 
         @Override
-        public List<User> getAll(SearchParam searchParam, Municipality municipality) {
+        public List<User> getAll(SearchParam searchParam, AdministrativeUnit municipality) {
             return buildQuery(
                     "select u " + BASE_FROM + BASE_WHERE,
                     searchParam,
@@ -64,7 +64,7 @@ public class UserSearchTestRepositoryImpl implements UserSearchTestRepository {
                     .getResultList();
         }
 
-        private <T> TypedQuery<T> buildQuery(String jpql, SearchParam searchParam, Municipality municipality, Class<T> resultClass) {
+        private <T> TypedQuery<T> buildQuery(String jpql, SearchParam searchParam, AdministrativeUnit municipality, Class<T> resultClass) {
             return em.createQuery(jpql, resultClass)
                     .setParameter("fullName",        SearchParamUtil.getString(searchParam, FULL_NAME))
                     .setParameter("uniqueId",        SearchParamUtil.getString(searchParam, UNIQUE_ID))

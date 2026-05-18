@@ -28,5 +28,5 @@ public class Category extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipality_id", nullable = false)
-    private Municipality municipality;
+    private AdministrativeUnit municipality;
 }

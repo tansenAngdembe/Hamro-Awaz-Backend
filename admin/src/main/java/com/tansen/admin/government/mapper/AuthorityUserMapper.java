@@ -11,10 +11,9 @@ import com.tansen.common.constant.FilePathConstant;
 import com.tansen.common.constant.StatusConstant;
 import com.tansen.common.service.UploadFileService;
 import com.tansen.common.utility.UuidUtil;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.entity.AuthorityUser;
-import com.tansen.entity.AuthorityUserEmailLog;
 import com.tansen.entity.AuthorityUserToken;
-import com.tansen.entity.Municipality;
 import com.tansen.repository.AuthorityAccessGroupRepository;
 import com.tansen.repository.AuthorityUserTokenRepository;
 import com.tansen.repository.StatusRepository;
@@ -49,7 +48,7 @@ public abstract class AuthorityUserMapper {
     private AuthorityUserEmailLogMapper authorityUserEmailLogMapper;
 
 
-    public AuthorityUser mapToAuthorityUser(CreateMunicipalityRequest authorityUserRequest, Municipality municipality) {
+    public AuthorityUser mapToAuthorityUser(CreateMunicipalityRequest authorityUserRequest, AdministrativeUnit municipality) {
         AuthorityUser authorityUser = new AuthorityUser();
         authorityUser.setName(authorityUserRequest.getAuthorityAdminFullName());
         authorityUser.setEmail(authorityUserRequest.getAuthorityAdminEmail());
@@ -70,7 +69,7 @@ public abstract class AuthorityUserMapper {
         return authorityUser;
     }
 
-    public AuthorityUser mapCreateAuthorityUserToEntity(CreateMunicipalityUserRequest request, Municipality municipality, MultipartFile profilePicture) throws IOException {
+    public AuthorityUser mapCreateAuthorityUserToEntity(CreateMunicipalityUserRequest request, AdministrativeUnit municipality, MultipartFile profilePicture) throws IOException {
         AuthorityUser authorityUser = new AuthorityUser();
         authorityUser.setName(request.getFullName());
         authorityUser.setEmail(request.getEmail());

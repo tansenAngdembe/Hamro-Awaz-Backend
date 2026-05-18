@@ -7,7 +7,9 @@ import com.tansen.app.constant.RedisConstant;
 import com.tansen.app.dto.request.CreateComplaintRequest;
 import com.tansen.app.dto.request.NearByComplaintRequest;
 import com.tansen.app.dto.request.UpdateComplaintRequest;
+import com.tansen.app.dto.response.ListComplainsResponse;
 import com.tansen.app.dto.response.ListNearByComplainsResponse;
+import com.tansen.app.dto.response.NearByComplainsResponse;
 import com.tansen.app.mapper.ComplaintMapper;
 import com.tansen.app.service.ComplaintService;
 import com.tansen.app.util.redisutil.RedisHelper;
@@ -16,8 +18,9 @@ import com.tansen.common.dto.*;
 import com.tansen.common.service.SearchResponse;
 import com.tansen.entity.*;
 import com.tansen.repository.*;
+import com.tansen.repository.searchrepo.MyComplaintSearchRepository;
 import com.tansen.repository.searchrepo.NearByComplaintSearchRepository;
-import com.tansen.repository.searchrepo.impl.NearByComplaintSearchRepositoryImpl;
+import com.tansen.repository.searchrepo.impl.MyComplaintSearchRepositoryImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +28,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+
+import static com.tansen.app.constant.AppConstant.DEFAULT_RADIUS_KM;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
@@ -38,7 +42,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final MunicipalityRepository municipalityRepository;
+    private final AdministrativeUnitRepository municipalityRepository;
     private final ComplainStatusRepository complainStatusRepository;
     private final ComplaintMapper complaintMapper;
     private final ComplaintRepository complaintRepository;
@@ -48,8 +52,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final NearByComplaintSearchRepository nearByComplaintSearchRepository;
     private final SearchResponse searchResponse;
     private final EscalationRepository escalationRepository;
+    private final MyComplaintSearchRepository myComplaintSearchRepository;
 
-    public ComplaintServiceImpl(UserRepository userRepository, CategoryRepository categoryRepository, MunicipalityRepository municipalityRepository, ComplainStatusRepository complainStatusRepository, ComplaintMapper complaintMapper, ComplaintRepository complaintRepository, ComplaintCoordinatesRepository complaintCoordinatesRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, NearByComplaintSearchRepository nearByComplaintSearchRepository, SearchResponse searchResponse, EscalationRepository escalationRepository) {
+    public ComplaintServiceImpl(UserRepository userRepository, CategoryRepository categoryRepository, AdministrativeUnitRepository municipalityRepository, ComplainStatusRepository complainStatusRepository, ComplaintMapper complaintMapper, ComplaintRepository complaintRepository, ComplaintCoordinatesRepository complaintCoordinatesRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, NearByComplaintSearchRepository nearByComplaintSearchRepository, SearchResponse searchResponse, EscalationRepository escalationRepository, MyComplaintSearchRepositoryImpl myComplaintSearchRepository) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.municipalityRepository = municipalityRepository;
@@ -62,20 +67,19 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.nearByComplaintSearchRepository = nearByComplaintSearchRepository;
         this.searchResponse = searchResponse;
         this.escalationRepository = escalationRepository;
+        this.myComplaintSearchRepository = myComplaintSearchRepository;
     }
     @Override
     public ApiResponse<?> listNearByComplains(
-            SearchParam searchParam,
             NearByComplaintRequest nearByComplaintRequest
     ) throws JsonProcessingException {
 
-            double effectiveRadius = (nearByComplaintRequest.getRadiusKm() == null ||nearByComplaintRequest.getRadiusKm() <= 0)
-                ? 12.0
+            Double effectiveRadius = (nearByComplaintRequest.getRadiusKm() == null ||nearByComplaintRequest.getRadiusKm() <= 0)
+                ? DEFAULT_RADIUS_KM
                 : nearByComplaintRequest.getRadiusKm();
 
         // REDIS CACHE KEY
         String cacheKey = RedisHelper.buildNearComplaintCacheKey(
-                searchParam,
                 nearByComplaintRequest.getLatitude(),
                 nearByComplaintRequest.getLongitude(),
                 effectiveRadius
@@ -83,57 +87,69 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         String cachedJson =
                 (String) redisTemplate.opsForValue().get(cacheKey);
+//
+//        if (cachedJson != null) {
+//            List<ListNearByComplainsResponse> cached =
+//                    objectMapper.readValue(
+//                            cachedJson,
+//                            new TypeReference<PageableResponse<ListNearByComplainsResponse>>() {}
+//                    );
+//
+//            LOG.info("Complaints fetched from redis for key {}", cacheKey);
+//
+//            return ResponseUtil.getSuccessfulApiResponse(
+//                    cached, "Complaints listed successfully");
+//        }
 
-        if (cachedJson != null) {
-            PageableResponse<ListNearByComplainsResponse> cached =
-                    objectMapper.readValue(
-                            cachedJson,
-                            new TypeReference<PageableResponse<ListNearByComplainsResponse>>() {}
-                    );
-
-            LOG.info("Complaints fetched from redis for key {}", cacheKey);
-
-            return ResponseUtil.getSuccessfulApiResponse(
-                    cached, "Complaints listed successfully");
+        // Validate request
+        if (nearByComplaintRequest.getLatitude() == null ||
+                nearByComplaintRequest.getLongitude() == null) {
+            return ResponseUtil.getFailureResponse("Latitude and longitude are required");
         }
 
-        SearchResponseWithMapperBuilder<Complaint, ListNearByComplainsResponse> responseBuilder;
-            responseBuilder =
-                    SearchResponseWithMapperBuilder
-                            .<Complaint, ListNearByComplainsResponse>builder()
-                            .count(param ->
-                                    nearByComplaintSearchRepository.countNearby(
-                                            param,
-                                            nearByComplaintRequest.getLatitude(),
-                                            nearByComplaintRequest.getLongitude(),
-                                            effectiveRadius
-                                    )
-                            )
-                            .searchData(param ->
-                                    nearByComplaintSearchRepository.findNearby(
-                                            param,
-                                            nearByComplaintRequest.getLatitude(),
-                                            nearByComplaintRequest.getLongitude(),
-                                            effectiveRadius
-                                    )
-                            )
-                            .mapperFunction(this.complaintMapper::listNearByComplainsResponses)
-                            .searchParam(searchParam)
-                            .build();
-        PageableResponse<ListNearByComplainsResponse> response =
-                searchResponse.getSearchResponse(responseBuilder);
+
+// Fetch data directly
+        List<Complaint> complaints = nearByComplaintSearchRepository.findNearby(
+                nearByComplaintRequest.getLatitude(),
+                nearByComplaintRequest.getLongitude(),
+                effectiveRadius,
+                nearByComplaintRequest.getStatusId(),     // null if not provided
+                nearByComplaintRequest.getCategoryId()
+        );
+
+        if (complaints == null || complaints.isEmpty()) {
+            return ResponseUtil.getSuccessfulApiResponse("Complaints not found");
+        }
+
+        Long count = nearByComplaintSearchRepository.countNearby(
+                nearByComplaintRequest.getLatitude(),
+                nearByComplaintRequest.getLongitude(),
+                effectiveRadius,
+                nearByComplaintRequest.getStatusId(),     // null if not provided
+                nearByComplaintRequest.getCategoryId()
+        );
+
+// Map to response
+        List<ListNearByComplainsResponse> mappedResponse =
+                complaintMapper.listNearByComplainsResponses(complaints);
+
+        NearByComplainsResponse mappedComplaintResponse = NearByComplainsResponse.builder()
+                .listNearByComplainsResponse(mappedResponse)
+                        .count(count)
+                                .build();
+
+
 
         // CACHE RESULT
         redisTemplate.opsForValue().set(
                 cacheKey,
-                objectMapper.writeValueAsString(response),
+                objectMapper.writeValueAsString(mappedComplaintResponse),
                 Duration.ofMinutes(2)
         );
 
         LOG.info("Complaints fetched from DB & cached for key {}", cacheKey);
+        return ResponseUtil.getSuccessfulApiResponse(mappedComplaintResponse, "Complaint listed near by" );
 
-        return ResponseUtil.getSuccessfulApiResponse(
-                response, "Complaints listed successfully");
     }
 
 
@@ -163,7 +179,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 
         Category category = categoryRepository.findByUniqueId(createComplaint.getCategoryId());
-        Optional<Municipality> municipality = municipalityRepository.findByUniqueId(createComplaint.getMunicipalityUniqueId());
+        Optional<AdministrativeUnit> municipality = municipalityRepository.findByUniqueId(createComplaint.getMunicipalityUniqueId());
         LOG.info("Municipality UniqueId from request: {}", createComplaint.getMunicipalityUniqueId());
 
         if (municipality.isEmpty()) {
@@ -191,6 +207,42 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         return ResponseUtil.getSuccessfulApiResponse("Complaint register successfully");
     }
+
+    @Override
+    public ApiResponse<?> listMyComplaints(SearchParam searchParam, Principal loggedInUser) {
+
+        // 1. Find logged-in user
+        Optional<User> userOpt = Optional.ofNullable(userRepository.findByEmail(loggedInUser.getName()));
+
+        if (userOpt.isEmpty()) {
+            LOG.error("Failed to find user by email {}", loggedInUser.getName());
+            return ResponseUtil.getFailureResponse("Logged in User Not Found.");
+        }
+
+        User user = userOpt.get();
+        Long userId = user.getId();
+
+        SearchResponseWithMapperBuilder<Complaint, ListComplainsResponse> responseBuilder =
+                SearchResponseWithMapperBuilder
+                        .<Complaint, ListComplainsResponse>builder()
+                        .count(param -> myComplaintSearchRepository.count(param, userId))
+                        .searchData(param -> myComplaintSearchRepository.getAll(param, userId))
+                        .mapperFunction(complaintMapper::listMyComplainsResponses)
+                        .searchParam(searchParam)
+                        .build();
+
+        PageableResponse<ListComplainsResponse> response =
+                searchResponse.getSearchResponse(responseBuilder);
+
+        if (response == null) {
+            return ResponseUtil.getFailureResponse("No complaints found.");
+        }
+
+        return ResponseUtil.getSuccessfulApiResponse(response, "My complaints listed successfully.");
+    }
+
+
+
     @Override
     public  ApiResponse<?> updateComplaint(UpdateComplaintRequest updateComplaintRequest, MultipartFile photos,  Principal loggedUser, HttpServletRequest httpServletRequest )throws IOException{
       User user = userRepository.findByEmail(loggedUser.getName());
@@ -214,7 +266,7 @@ public class ComplaintServiceImpl implements ComplaintService {
       }
 
       if (updateComplaintRequest.getMunicipality() != null) {
-          Optional<Municipality> municipality = municipalityRepository
+          Optional<AdministrativeUnit> municipality = municipalityRepository
                   .findByUniqueId(updateComplaintRequest.getMunicipality());
 
           if (municipality.isEmpty()) {
@@ -228,7 +280,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
   }
 
-    private Escalation resolveEscalation(Municipality municipality, Category category) {
+    private Escalation resolveEscalation(AdministrativeUnit municipality, Category category) {
         // 1. Try exact match first (category + municipality)
         return escalationRepository
                 .findByMunicipalityAndCategoryAndActiveTrue(municipality, category)
@@ -238,4 +290,6 @@ public class ComplaintServiceImpl implements ComplaintService {
                 // 3. No rule found — complaint proceeds without escalation
                 .orElse(null);
     }
+
+
 }

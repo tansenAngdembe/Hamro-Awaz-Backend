@@ -18,10 +18,10 @@ public class RedisHelper {
     public static String buildCommentCacheKey(String complaintUniqueId) {
         return  RedisConstant.COMMENT_CACHE_KEY + complaintUniqueId;
     }
-    public static String buildNearComplaintCacheKey( SearchParam searchParam, BigDecimal latitude,
+    public static String buildNearComplaintCacheKey( BigDecimal latitude,
                                                     BigDecimal longitude,
                                                     Double radiusKm) {
-        return RedisConstant.COMPLAINT_CACHE_KEY + ":" + searchParam.toCacheKey() + ":" + latitude + ":" + longitude + ":" + radiusKm;
+        return RedisConstant.COMPLAINT_CACHE_KEY + ":" + "nearBy"+ ":" + latitude + ":" + longitude + ":" + radiusKm;
     }
 
     public static boolean isComplaintLimitExceeded(User user, RedisTemplate<String,Object> redisTemplate) {

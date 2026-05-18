@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -64,7 +63,7 @@ public class User extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipality_id")
-    private Municipality municipality;
+    private AdministrativeUnit municipality;
 
 
 //    ---- validation check

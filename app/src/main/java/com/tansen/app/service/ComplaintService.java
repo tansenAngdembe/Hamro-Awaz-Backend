@@ -17,7 +17,7 @@ public interface ComplaintService {
     ApiResponse<?> createComplaint(CreateComplaintRequest createComplaint, Principal loggedUser, HttpServletRequest httpServletRequest, MultipartFile photos ) throws IOException;
     ApiResponse<?> updateComplaint(UpdateComplaintRequest updateComplaintRequest,MultipartFile photos, Principal loggedUser, HttpServletRequest httpServletRequest ) throws IOException;
     ApiResponse<?> listNearByComplains(
-            SearchParam searchParam,
             NearByComplaintRequest nearByComplaintRequest
     ) throws JsonProcessingException;
+    ApiResponse<?> listMyComplaints(SearchParam searchParam, Principal loggedInUser);
 }

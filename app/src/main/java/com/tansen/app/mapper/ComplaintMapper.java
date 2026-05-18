@@ -2,6 +2,7 @@ package com.tansen.app.mapper;
 
 import com.tansen.app.dto.request.CreateComplaintRequest;
 import com.tansen.app.dto.request.UpdateComplaintRequest;
+import com.tansen.app.dto.response.ListComplainsResponse;
 import com.tansen.app.dto.response.ListNearByComplainsResponse;
 import com.tansen.common.constant.FilePathConstant;
 import com.tansen.common.service.UploadFileService;
@@ -13,7 +14,6 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.IIOException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,13 +26,13 @@ public abstract class ComplaintMapper {
     private UploadFileService uploadFileService;
 
     public abstract ListNearByComplainsResponse entityToResponse(Complaint complaint);
-    public List<ListNearByComplainsResponse> listNearByComplainsResponses(List<Complaint> actionLog) {
-        return actionLog.stream().map(this::entityToResponse).collect(Collectors.toList());
+    public List<ListNearByComplainsResponse> listNearByComplainsResponses(List<Complaint> complaintList) {
+        return complaintList.stream().map(this::entityToResponse).collect(Collectors.toList());
     }
 
 
 
-    public Complaint mapToComplaint(CreateComplaintRequest createComplaint,  ComplaintStatus status, Category category, Municipality municipality, User user, MultipartFile photos) throws IOException {
+    public Complaint mapToComplaint(CreateComplaintRequest createComplaint, ComplaintStatus status, Category category, AdministrativeUnit municipality, User user, MultipartFile photos) throws IOException {
         Complaint newComplaint = new Complaint();
         newComplaint.setUniqueId(UUID.randomUUID().toString());
 
@@ -79,5 +79,10 @@ public abstract class ComplaintMapper {
         return  complaint;
 
 
+    }
+
+    public abstract ListComplainsResponse myComplaintResponse(Complaint complaint);
+    public List<ListComplainsResponse> listMyComplainsResponses(List<Complaint> complaintList) {
+        return complaintList.stream().map(this::myComplaintResponse).collect(Collectors.toList());
     }
 }

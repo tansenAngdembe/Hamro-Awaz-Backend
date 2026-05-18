@@ -7,6 +7,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface NearByComplaintSearchRepository {
-    Long countNearby(SearchParam searchParam, BigDecimal latitude, BigDecimal longitude, Double radiusKm);
-    List<Complaint> findNearby(SearchParam searchParam, BigDecimal latitude, BigDecimal longitude, Double radiusKm);
+    Long countNearby( BigDecimal latitude, BigDecimal longitude, Double radiusKm,Long statusId, Long categoryId);
+    List<Complaint> findNearby( BigDecimal latitude, BigDecimal longitude, Double radiusKm,Long statusId, Long categoryId);
 }

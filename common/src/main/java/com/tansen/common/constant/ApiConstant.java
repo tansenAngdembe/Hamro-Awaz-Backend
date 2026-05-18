@@ -51,6 +51,8 @@ public class ApiConstant {
 
     public static final String COMPLAINT = "complaint";
     public static final String MUNICIPALITY = "municipality";
+    public static final String ADMINISTRATIVE = "administrative";
+
     public static final String AUTHORITY_USER = "authorityUser";
     public static final String TYPE ="type";
     public static final String SERVICE = "service";
@@ -94,5 +96,6 @@ public class ApiConstant {
     public static final String REJECT    = "reject";
     public static final String RESOLVE   = "resolve";
     public static final String USER = "user" ;
+    public static final String MYCOMPLAINTS = "myComplaints";
 }
 

@@ -57,5 +57,9 @@ public class SearchParamConstant {
     // Add these to wherever your search key constants are defined
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_USER_VERIFIED = "isUserVerified";
+    public static final String COMPLAINT_TITLE       = "title";
+    public static final String COMPLAINT_DESCRIPTION = "description";
+    public static final String CATEGORY              = "category";
+    public static final String PRIORITY              = "priority";
 }
 

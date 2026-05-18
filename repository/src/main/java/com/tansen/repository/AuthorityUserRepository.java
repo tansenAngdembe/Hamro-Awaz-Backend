@@ -1,7 +1,7 @@
 package com.tansen.repository;
 
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.entity.AuthorityUser;
-import com.tansen.entity.Municipality;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +14,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ import java.util.Optional;
 public interface AuthorityUserRepository extends JpaRepository<AuthorityUser,Long> {
     boolean existsByEmail(@NotBlank(message = "Email is required") @Email(message = "Email must be valid") String authorityAdminEmail);
 
-    List<AuthorityUser> findByMunicipality(Municipality municipality);
+    List<AuthorityUser> findByMunicipality(AdministrativeUnit municipality);
 
     boolean existsByPhoneNumber(@NotBlank(message = "Mobile number is required") String mobileNumber);
 

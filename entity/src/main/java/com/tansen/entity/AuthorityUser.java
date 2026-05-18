@@ -12,9 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 @Getter
@@ -24,7 +22,7 @@ import java.util.stream.Collectors;
 public class AuthorityUser extends AbstractEntity implements UserDetails{
     @ManyToOne(optional = true)
     @JoinColumn(name = "municipality_id", nullable = true)
-    private Municipality municipality;
+    private AdministrativeUnit municipality;
 
 
     @Column(name="name", nullable = false)

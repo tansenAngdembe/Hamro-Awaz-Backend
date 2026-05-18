@@ -12,11 +12,11 @@ import com.tansen.common.dto.*;
 import com.tansen.common.dto.model.SendEmailRequest;
 import com.tansen.common.service.MailService;
 import com.tansen.common.service.SearchResponse;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.AuthorityUserEmailLog;
-import com.tansen.entity.Municipality;
 import com.tansen.repository.AuthorityUserRepository;
-import com.tansen.repository.MunicipalityRepository;
+import com.tansen.repository.AdministrativeUnitRepository;
 import com.tansen.repository.searchrepo.AuthorityUserSearchRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -35,7 +35,7 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthorityUserServiceImpl.class);
 
     private final AuthorityUserRepository authorityUserRepository;
-    private final MunicipalityRepository municipalityRepository;
+    private final AdministrativeUnitRepository municipalityRepository;
     private final MailService mailService;
     private final ActionLogMapper actionLogMapper;
     private final AuthorityUserMapper authorityUserMapper;
@@ -43,7 +43,7 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
     private final AuthorityUserSearchRepository authorityUserSearchRepository;
     private final SearchResponse searchResponse;
 
-    public AuthorityUserServiceImpl(AuthorityUserRepository authorityUserRepository, MunicipalityRepository municipalityRepository, MailService mailService, ActionLogMapper actionLogMapper, AuthorityUserMapper authorityUserMapper, AuthorityUserEmailLogMapper authorityUserEmailLogMapper, AuthorityUserSearchRepository authorityUserSearchRepository, SearchResponse searchResponse){
+    public AuthorityUserServiceImpl(AuthorityUserRepository authorityUserRepository, AdministrativeUnitRepository municipalityRepository, MailService mailService, ActionLogMapper actionLogMapper, AuthorityUserMapper authorityUserMapper, AuthorityUserEmailLogMapper authorityUserEmailLogMapper, AuthorityUserSearchRepository authorityUserSearchRepository, SearchResponse searchResponse){
         this.authorityUserRepository = authorityUserRepository;
         this.municipalityRepository = municipalityRepository;
         this.mailService = mailService;
@@ -64,7 +64,7 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
             LOG.error("Failed to create municipality user. Municipality user with mobile number {} already exists", createVendorUserRequest.getPhoneNumber());
             return ResponseUtil.getFailureResponse("Municipality user with this mobile number already exists");
         }
-        Optional<Municipality> municipality = municipalityRepository.findByUniqueId(createVendorUserRequest.getVendorUniqueId());
+        Optional<AdministrativeUnit> municipality = municipalityRepository.findByUniqueId(createVendorUserRequest.getVendorUniqueId());
         if (municipality.isEmpty()) {
             LOG.info("Failed to create municipality user. Municipality with uniqueId {} not found", createVendorUserRequest.getVendorUniqueId());
             return ResponseUtil.getFailureResponse("Municipality not found");

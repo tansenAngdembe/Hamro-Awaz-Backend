@@ -37,7 +37,7 @@ public class Complaint  extends  AbstractEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipality_id", nullable = false)
-    private Municipality municipality;
+    private AdministrativeUnit municipality;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to")
@@ -68,13 +68,6 @@ public class Complaint  extends  AbstractEntity{
 
     @Column( name = "escalated_at")
     private LocalDateTime escalatedAt;
-
-    @OneToMany(
-            mappedBy = "complaint",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Vote> votes = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "complaint",

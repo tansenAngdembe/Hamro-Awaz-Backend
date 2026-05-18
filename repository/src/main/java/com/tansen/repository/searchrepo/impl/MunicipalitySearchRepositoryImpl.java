@@ -2,7 +2,7 @@ package com.tansen.repository.searchrepo.impl;
 
 import com.tansen.common.dto.SearchParam;
 import com.tansen.common.utility.SearchParamUtil;
-import com.tansen.entity.Municipality;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.repository.searchrepo.MunicipalitySearchRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,7 +22,7 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
     public Long count(SearchParam searchParam) {
         return (Long) em.createQuery("""
                 SELECT COUNT(m.id)
-                FROM Municipality m
+                FROM AdministrativeUnit m
                 JOIN Status s on s.id=m.status.id
                 JOIN m.province p
                 JOIN m.district d
@@ -43,10 +43,10 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
     }
 
     @Override
-    public List<Municipality> getAll(SearchParam searchParam) {
+    public List<AdministrativeUnit> getAll(SearchParam searchParam) {
         return em.createQuery("""
                 SELECT m
-                FROM Municipality m
+                FROM AdministrativeUnit m
                 JOIN Status s on s.id=m.status.id
                 JOIN m.province p 
                 JOIN m.district d 
@@ -57,7 +57,7 @@ public class MunicipalitySearchRepositoryImpl implements MunicipalitySearchRepos
                     (:province IS NULL OR p.province = :province) AND
                     (:district IS NULL OR d.districtName = :district) AND 
                     (:status is null or s.description = :status)
-                """, Municipality.class)
+                """, AdministrativeUnit.class)
                 .setParameter("governmentName", SearchParamUtil.getString(searchParam, "governmentName"))
                 .setParameter("code", SearchParamUtil.getString(searchParam, "code"))
                 .setParameter("province", SearchParamUtil.getString(searchParam, "province"))

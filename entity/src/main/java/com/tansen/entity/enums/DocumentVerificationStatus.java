@@ -9,7 +9,8 @@ public enum DocumentVerificationStatus {
     PENDING ("PENDING"),
     APPROVED ("APPROVED"),
     REJECTED ("REJECTED"),
-    RESUBMITTED ("RESUBMITTED");
+    RESUBMITTED ("RESUBMITTED"),
+    VERIFIED ("VERIFIED");
     private String name;
 
 }

@@ -163,4 +163,41 @@ public class ResponseUtil {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+    public static ApiResponse<?> getNotFoundApiResponse(String message) {
+        return ApiResponse.builder()
+                .code(404)
+                .message(message)
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    public static ApiResponse<?> getConflictApiResponse(String message) {
+        return ApiResponse.builder()
+                .code(409)
+                .message(message)
+                .httpStatus(HttpStatus.CONFLICT)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    public static ApiResponse<?> getInternalErrorApiResponse(String message) {
+        return ApiResponse.builder()
+                .code(500)
+                .message(message)
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    public static ApiResponse getSuccessfulApiResponseNearBy(Object data, String message,Double count) {
+        return ApiResponse.builder()
+                .code(ServerResponseCodeConstant.SUCCESS)
+                .message(message)
+                .data(data)
+                .httpStatus(HttpStatus.OK)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }

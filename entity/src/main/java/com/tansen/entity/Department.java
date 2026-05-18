@@ -17,5 +17,5 @@ public class Department extends  AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipality_id" , nullable = false, referencedColumnName = "id")
-    private Municipality municipality;
+    private AdministrativeUnit municipality;
 }

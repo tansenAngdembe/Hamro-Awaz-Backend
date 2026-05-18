@@ -8,7 +8,7 @@ import com.tansen.common.dto.ComplaintUniqueIdDto;
 import com.tansen.common.dto.ResponseUtil;
 import com.tansen.entity.AuthorityUser;
 import com.tansen.entity.Comment;
-import com.tansen.entity.Municipality;
+import com.tansen.entity.AdministrativeUnit;
 import com.tansen.repository.AuthorityUserRepository;
 import com.tansen.repository.CommentRepository;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         AuthorityUser authorityUser = authorityUserOpt.get();
-        Municipality municipality = authorityUser.getMunicipality();
+        AdministrativeUnit municipality = authorityUser.getMunicipality();
 
         if (municipality == null) {
             return ResponseUtil.getFailureResponse("Authority user is not assigned to any municipality.");

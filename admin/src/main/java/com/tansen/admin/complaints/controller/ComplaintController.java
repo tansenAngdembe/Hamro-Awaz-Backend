@@ -36,6 +36,7 @@ public class ComplaintController {
     public ApiResponse<?> closedComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest) {
         return complaintService.closedComplaint(complaintUniqueIdDto, loggedInAdmin, httpServletRequest);
     }
+
     @PostMapping(ApiConstant.INPROGRESS)
     @PreAuthorize("hasAuthority('UPDATE_COMPLAINT_STATUS')")
     public ApiResponse<?> inProgressComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
@@ -52,5 +53,10 @@ public class ComplaintController {
     public ApiResponse<?> rejectComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
         return complaintService.rejectComplaint(complaintUniqueIdDto, loggedInAdmin);
     }
+    @PostMapping(ApiConstant.LIST)
+    public  ApiResponse<?> listComplains(SearchParam searchParam){
+        return complaintService.listComplains(searchParam);
+    }
+
 
 }

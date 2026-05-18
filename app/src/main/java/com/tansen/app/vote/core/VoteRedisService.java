@@ -27,8 +27,8 @@ public class VoteRedisService {
         String voterKey = VoteRedisKeys.voterSet(complaintId);
         String countKey = VoteRedisKeys.voteCount(complaintId);
 
-        // SADD returns 1 if added, 0 if already exists — atomic in Redis
-        Boolean added = redisTemplate.opsForSet().add(voterKey, userId.toString()) == 1;
+        //  returns 1 if added, 0 if already exists — atomic in Redis
+        boolean added = redisTemplate.opsForSet().add(voterKey, userId.toString()) == 1;
 
         if (!added) {
             return false; // Already voted
@@ -80,7 +80,7 @@ public class VoteRedisService {
     /**
      * Get vote count from Redis.
      */
-    public long getVoteCount(Long complaintId) {
+    public long     getVoteCount(Long complaintId) {
         String countKey = VoteRedisKeys.voteCount(complaintId);
         Object value = redisTemplate.opsForValue().get(countKey);
         if (value == null) return 0L;
