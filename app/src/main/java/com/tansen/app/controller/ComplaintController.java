@@ -29,15 +29,15 @@ public class ComplaintController {
         this.complaintService = complaintService;
     }
 
-//    @PostMapping(value = ApiConstant.CREATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ApiResponse<?> createComplaint(
-//            @Valid @RequestPart("data") CreateComplaintRequest createComplaint,
-//            @RequestPart(value = "photos", required = false) MultipartFile photos,
-//            Principal loggedUser,
-//            HttpServletRequest httpServletRequest) throws IOException {
-//
-//        return complaintService.createComplaint(createComplaint, loggedUser, httpServletRequest, photos);
-//    }
+    @PostMapping(value = ApiConstant.CREATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<?> createComplaint(
+            @Valid @RequestPart("data") CreateComplaintRequest createComplaint,
+            @RequestPart(value = "photos", required = false) MultipartFile photos,
+            Principal loggedUser,
+            HttpServletRequest httpServletRequest) throws IOException {
+
+        return complaintService.createComplaint(createComplaint, loggedUser, httpServletRequest, photos);
+    }
 
 //    @PostMapping(value = ApiConstant.CREATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public ApiResponse<?> createComplaint(
@@ -63,18 +63,18 @@ public class ComplaintController {
 //        return complaintService.createComplaint(createComplaint, photos, loggedUser, httpServletRequest);
 //    }
 
-    @PostMapping(value = ApiConstant.CREATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<?> createComplaint(
-            @RequestParam("data") String data,
-            @RequestPart(value = "photos", required = false) MultipartFile photos,
-            Principal loggedUser,
-            HttpServletRequest httpServletRequest) throws IOException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        CreateComplaintRequest createComplaint = objectMapper.readValue(data, CreateComplaintRequest.class);
-
-        return complaintService.createComplaint(createComplaint, loggedUser, httpServletRequest, photos);
-    }
+//    @PostMapping(value = ApiConstant.CREATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ApiResponse<?> createComplaint(
+//            @RequestParam("data") String data,
+//            @RequestPart(value = "photos", required = false) MultipartFile photos,
+//            Principal loggedUser,
+//            HttpServletRequest httpServletRequest) throws IOException {
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        CreateComplaintRequest createComplaint = objectMapper.readValue(data, CreateComplaintRequest.class);
+//
+//        return complaintService.createComplaint(createComplaint, loggedUser, httpServletRequest, photos);
+//    }
 
 
    @PostMapping(ApiConstant.UPDATE)

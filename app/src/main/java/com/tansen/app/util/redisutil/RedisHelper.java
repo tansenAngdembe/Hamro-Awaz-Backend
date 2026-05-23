@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,18 +25,21 @@ public class RedisHelper {
         return RedisConstant.COMPLAINT_CACHE_KEY + ":" + "nearBy"+ ":" + latitude + ":" + longitude + ":" + radiusKm;
     }
 
-    public static boolean isComplaintLimitExceeded(User user, RedisTemplate<String,Object> redisTemplate) {
-        String redisKey = RedisConstant.COMPLAINT_LIMIT + user.getId() + "::" + LocalDateTime.now();
+    public static boolean isComplaintLimitExceeded(User user, RedisTemplate<String, Object> redisTemplate) {
+        // ✅ Use only the date so all complaints today share the same key
+        String today = LocalDate.now().toString(); // e.g. "2026-05-23"
+        String redisKey = RedisConstant.COMPLAINT_LIMIT + user.getId() + "::" + today;
+
         Long count = redisTemplate.opsForValue().increment(redisKey);
 
-        if(count == null) {return true;}
-        if(count == 1){
-            LocalDateTime tomorrow = LocalDateTime.now().plusDays(1).toLocalDate().atStartOfDay();
-            long seconds = Duration.between(LocalDateTime.now(),tomorrow).getSeconds();
-            redisTemplate.expire(redisKey,Duration.ofSeconds(seconds));
+        if (count == null) { return true; }
+        if (count == 1) {
+            // Set TTL to expire at midnight
+            LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();
+            long seconds = Duration.between(LocalDateTime.now(), tomorrow).getSeconds();
+            redisTemplate.expire(redisKey, Duration.ofSeconds(seconds));
         }
         return count > 4;
-
     }
     public static boolean isCooldownActive(User user, RedisTemplate<String,Object> redisTemplate) {
         String key = RedisConstant.COMPLAINT_COOLDOWN + user.getId() ;

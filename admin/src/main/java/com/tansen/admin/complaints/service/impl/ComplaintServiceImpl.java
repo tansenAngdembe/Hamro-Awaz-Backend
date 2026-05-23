@@ -126,7 +126,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         Admin admin = getSuperAdmin(loggedInAdmin);
         if (admin == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint is already rejected. It cannot be resolved.");
@@ -157,7 +157,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         Admin admin = getSuperAdmin(loggedInAdmin);
         if (admin == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint is already rejected.");
@@ -187,7 +187,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         Admin admin = getSuperAdmin(loggedInAdmin);
         if (admin == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint rejected. It cannot be closed.");
@@ -218,7 +218,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         Admin admin = getSuperAdmin(loggedInAdmin);
         if (admin == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Rejected complaint cannot be moved to In Progress.");

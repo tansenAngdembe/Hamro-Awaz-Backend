@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
             return ResponseUtil.getFailureResponse("Authority user is not assigned to any administrativeUnit.");
         }
         Long municipalityId = administrativeUnit.getId();
-        List<Comment> comments = commentRepository.findAllByComplaintUniqueIdAndMunicipality(complaintUniqueIdDto.getUniqueId(), municipalityId);
+        List<Comment> comments = commentRepository.findAllByComplaintUniqueIdAndMunicipality(complaintUniqueIdDto.getComplaintUniqueId(), municipalityId);
 
         List<ListCommentResponse> responses =    commentMapper.listAllComment(comments);
         return ResponseUtil.getSuccessfulApiResponse(responses,"Comments listed.");

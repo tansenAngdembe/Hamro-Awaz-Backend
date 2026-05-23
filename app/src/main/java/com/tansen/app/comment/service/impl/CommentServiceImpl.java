@@ -52,20 +52,20 @@ public class CommentServiceImpl implements CommentService {
     // Public api
     @Override
     public ApiResponse<?>  getCommentBy(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedUser, HttpServletRequest httpServletRequest) throws IOException {
-        String complaintCacheKey = RedisHelper.buildCommentCacheKey(complaintUniqueIdDto.getUniqueId());
+        String complaintCacheKey = RedisHelper.buildCommentCacheKey(complaintUniqueIdDto.getComplaintUniqueId());
         String cachedJson = (String)  redisTemplate.opsForValue().get(complaintCacheKey);
         if (cachedJson != null) {
             List<ListCommentResponse> cached = objectMapper.readValue(
-                    complaintCacheKey,
+                    cachedJson,
                     new TypeReference<List<ListCommentResponse>>() {}
             );
             LOG.info("Comments fetched from redis for key {}", complaintCacheKey);
             return ResponseUtil.getSuccessfulApiResponse(cached,"Comments listed.");
         }
 
-        List<Comment> comments = commentRepository.findByComplaintUniqueIdAndIsDeleteFalse(complaintUniqueIdDto.getUniqueId());
+        List<Comment> comments = commentRepository.findByComplaintUniqueIdAndIsDeleteFalse(complaintUniqueIdDto.getComplaintUniqueId());
         if (comments == null || comments.isEmpty()) {
-            LOG.error("Comment not found with id {}", complaintUniqueIdDto.getUniqueId());
+            LOG.error("Comment not found with id {}", complaintUniqueIdDto.getComplaintUniqueId());
             return ResponseUtil.getFailureResponse("No Comments on this Complaint.");
         }
         List<ListCommentResponse> responses = commentMapper.listAllComment(comments);
@@ -151,7 +151,7 @@ public class CommentServiceImpl implements CommentService {
                 );
         if(indComment.isPresent()) {
             commentRepository.save(commentMapper.updateComment(indComment.get(),updateCommentRequest));
-            String cacheKey = RedisHelper.buildCommentCacheKey(updateCommentRequest.getCommentUniqueId());
+            String cacheKey = RedisHelper.buildCommentCacheKey(updateCommentRequest.getComplaintUniqueId());
             redisTemplate.delete(cacheKey);
             return ResponseUtil.getSuccessfulApiResponse("Comment updated successfully.");
         }else{
@@ -179,7 +179,7 @@ public class CommentServiceImpl implements CommentService {
         if(delComment.isPresent()) {
             delComment.get().setIsDelete(true);
             commentRepository.save(delComment.get());
-            String cacheKey = RedisHelper.buildCommentCacheKey(deleteCommentRequest.getCommentUniqueId());
+            String cacheKey = RedisHelper.buildCommentCacheKey(deleteCommentRequest.getComplaintUniqueId());
             redisTemplate.delete(cacheKey);
             return ResponseUtil.getSuccessfulApiResponse("Comment deleted successfully.");
         }else {

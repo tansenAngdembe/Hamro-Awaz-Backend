@@ -179,20 +179,15 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 
         Category category = categoryRepository.findByUniqueId(createComplaint.getCategoryId());
-        Optional<AdministrativeUnit> municipality = municipalityRepository.findByUniqueId(createComplaint.getMunicipalityUniqueId());
-        LOG.info("Municipality UniqueId from request: {}", createComplaint.getMunicipalityUniqueId());
 
-        if (municipality.isEmpty()) {
-            LOG.info("Municipality Not Found");
-            return ResponseUtil.getFailureResponse("Municipality Not Found");
-        }
+
         ComplaintStatus complaintStatus = complainStatusRepository.findByName(ComplaintStatusConstant.NEW.getName());
         if (complaintStatus == null) {
             LOG.info("ComplaintStatus Not Found");
             return ResponseUtil.getFailureResponse("ComplaintStatus Not Found");
         }
 
-        Complaint complaint = complaintMapper.mapToComplaint(createComplaint, complaintStatus, category, municipality.get(), user, phots);
+        Complaint complaint = complaintMapper.mapToComplaint(createComplaint, complaintStatus, category, user, phots);
         Escalation escalation = resolveEscalation(complaint.getMunicipality(), complaint.getCategory());
         complaint.setEscalation(escalation); // null-safe: sets null if no rule found
         complaintRepository.save(complaint);

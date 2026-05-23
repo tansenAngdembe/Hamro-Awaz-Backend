@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(ApiConstant.ADMIN_API)
+@RequestMapping(ApiConstant.USER_API)
 public class AdministrativeLevelController {
     private final AdministrativeLevelService administrativeLevelService;
 

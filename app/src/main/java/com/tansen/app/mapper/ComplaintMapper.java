@@ -32,15 +32,14 @@ public abstract class ComplaintMapper {
 
 
 
-    public Complaint mapToComplaint(CreateComplaintRequest createComplaint, ComplaintStatus status, Category category, AdministrativeUnit municipality, User user, MultipartFile photos) throws IOException {
+    public Complaint mapToComplaint(CreateComplaintRequest createComplaint, ComplaintStatus status, Category category, User user, MultipartFile photos) throws IOException {
         Complaint newComplaint = new Complaint();
         newComplaint.setUniqueId(UUID.randomUUID().toString());
 
         newComplaint.setComplaintTitle(createComplaint.getComplaintTitle());
         newComplaint.setComplaintDescription(createComplaint.getComplaintDescription());
-
+        newComplaint.setMunicipality(user.getMunicipality());
         newComplaint.setCategory(category);
-        newComplaint.setMunicipality(municipality);
         newComplaint.setStatus(status);
 
         newComplaint.setReportedBy(user);

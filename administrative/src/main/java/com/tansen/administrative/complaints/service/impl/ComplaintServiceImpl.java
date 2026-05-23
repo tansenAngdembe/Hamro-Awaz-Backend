@@ -3,6 +3,7 @@ package com.tansen.administrative.complaints.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tansen.administrative.complaints.dto.request.ComplaintAdministrativeUniqueId;
 import com.tansen.common.constant.ComplaintStatusConstant;
 import com.tansen.common.constant.EmailSubjectConstant;
 import com.tansen.common.dto.*;
@@ -11,7 +12,6 @@ import com.tansen.common.service.MailService;
 import com.tansen.common.service.SearchResponse;
 import com.tansen.entity.*;
 import com.tansen.administrative.actionlog.mapper.ActionLogMapper;
-import com.tansen.administrative.complaints.dto.ComplaintUniqueDto;
 import com.tansen.administrative.complaints.dto.request.ComplaintAssignRequest;
 import com.tansen.administrative.complaints.dto.response.ComplaintResponse;
 import com.tansen.administrative.complaints.dto.response.ListComplainsResponse;
@@ -197,6 +197,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         if((complaint.getAssignedTo() == null)){
             Complaint toBeAssgnedComplaint = complaintMapper.assignedTo(complaint,assignToAuthorityUserOpt.get());
             AuthorityUserEmailLog  userEmailLog = complaintMapper.assignedEmailContent(assignToAuthorityUserOpt.get(),complaint);
+
             SendEmailRequest sendEmailRequest = new SendEmailRequest();
             sendEmailRequest.setRecipient(assignToAuthorityUserOpt.get().getEmail());
             sendEmailRequest.setSubject(EmailSubjectConstant.ASSIGN_ESCALATION_TO_STAFF);
@@ -214,7 +215,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public ApiResponse<?> getComplaint(ComplaintUniqueDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> getComplaint(ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin) {
         Optional<AuthorityUser> authorityUserOpt =
                 authorityUserRepository.findByEmail(loggedInAdmin.getName());
 
@@ -226,7 +227,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         String municipalityUniqueId = authorityUser.getMunicipality().getUniqueId();
 
         Complaint complaint = complaintRepository
-                .findByIdAndMunicipalityId(complaintUniqueIdDto.getUniqueId(), municipalityUniqueId)
+                .findByIdAndMunicipalityId(complaintUniqueIdDto.getComplaintUniqueId(), municipalityUniqueId)
                 .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));
         ComplaintResponse complaintResponse = complaintMapper.entityToComplaintResponse(complaint);
         return ResponseUtil.getSuccessfulApiResponse(complaintResponse, "Complaint fetched by Id");
@@ -242,13 +243,13 @@ public class ComplaintServiceImpl implements ComplaintService {
     // ─────────────────────────────────────────────
 
     @Override
-    public ApiResponse<?> resolveComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> resolveComplaint(ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin) {
 
         AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
         if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
         AdministrativeUnit municipality = authorityUser.getMunicipality();
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint is already rejected. It cannot be resolved.");
@@ -273,13 +274,13 @@ public class ComplaintServiceImpl implements ComplaintService {
     // ─────────────────────────────────────────────
 
     @Override
-    public ApiResponse<?> rejectComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> rejectComplaint(ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin) {
 
         AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
         if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
         AdministrativeUnit municipality = authorityUser.getMunicipality();
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint is already rejected.");
@@ -304,13 +305,13 @@ public class ComplaintServiceImpl implements ComplaintService {
     // ─────────────────────────────────────────────
 
     @Override
-    public ApiResponse<?> closedComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest) {
+    public ApiResponse<?> closedComplaint(ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin, HttpServletRequest httpServletRequest) {
 
         AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
         if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
         AdministrativeUnit municipality = authorityUser.getMunicipality();
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Complaint rejected. It cannot be closed.");
@@ -338,13 +339,13 @@ public class ComplaintServiceImpl implements ComplaintService {
     // ─────────────────────────────────────────────
 
     @Override
-    public ApiResponse<?> inProgressComplaint(ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> inProgressComplaint(ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin) {
 
         AuthorityUser authorityUser = getAuthorityUser(loggedInAdmin);
         if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
         AdministrativeUnit municipality = authorityUser.getMunicipality();
-        Complaint complaint = getComplaint(complaintUniqueIdDto.getUniqueId(), municipality.getUniqueId());
+        Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
             return ResponseUtil.getFailureResponse("Rejected complaint cannot be moved to In Progress.");

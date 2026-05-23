@@ -16,8 +16,7 @@ public class CreateComplaintRequest extends ModelBase {
     @NotBlank(message = "Complaint description shouldn't be blank.")
     @Size(min = 20, max = 500, message = "Complaint description should at-least  20 characters.")
     private String complaintDescription;
-    @NotBlank(message = "District ID is required")
-    private String municipalityUniqueId;
+
     @NotBlank(message = "Category shouldn't be blank")
     private String categoryId;
 

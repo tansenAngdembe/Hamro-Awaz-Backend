@@ -1,6 +1,7 @@
 package com.tansen.administrative.complaints.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.tansen.administrative.complaints.dto.request.ComplaintAdministrativeUniqueId;
 import com.tansen.common.constant.ApiConstant;
 import com.tansen.common.dto.ApiResponse;
 import com.tansen.common.dto.ComplaintUniqueIdDto;
@@ -32,12 +33,12 @@ public class ComplaintController {
     }
     @PostMapping(ApiConstant.VIEW)
     @PreAuthorize("hasAuthority('VIEW_COMPLAINTS')")
-    public ApiResponse<?> getComplaint(@RequestBody ComplaintUniqueDto complaintUniqueIdDto, Principal principal) {
+    public ApiResponse<?> getComplaint(@RequestBody ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal principal) {
         return complaintService.getComplaint(complaintUniqueIdDto, principal);
     }
     @PostMapping(ApiConstant.CLOSED)
     @PreAuthorize("hasAuthority('CLOSE_COMPLAINT')")
-    public ApiResponse<?> closedComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin,HttpServletRequest httpServletRequest) {
+    public ApiResponse<?> closedComplaint(@RequestBody ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin,HttpServletRequest httpServletRequest) {
         return complaintService.closedComplaint(complaintUniqueIdDto, loggedInAdmin, httpServletRequest);
     }
 
@@ -49,7 +50,7 @@ public class ComplaintController {
 
     @PostMapping(ApiConstant.INPROGRESS)
     @PreAuthorize("hasAuthority('UPDATE_COMPLAINT_STATUS')")
-    public ApiResponse<?> inProgressComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin) {
+    public ApiResponse<?> inProgressComplaint(@RequestBody ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin) {
         return complaintService.inProgressComplaint(complaintUniqueIdDto, loggedInAdmin);
     }
     @PostMapping(ApiConstant.ASSIGNTO + ApiConstant.SLASH + ApiConstant.LIST)
@@ -59,12 +60,12 @@ public class ComplaintController {
     }
     @PostMapping(ApiConstant.RESOLVE)
     @PreAuthorize("hasAuthority('UPDATE_COMPLAINT_STATUS')")
-    public  ApiResponse<?> resolveComplaint(@RequestBody  ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
+    public  ApiResponse<?> resolveComplaint(@RequestBody  ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin){
         return complaintService.resolveComplaint(complaintUniqueIdDto, loggedInAdmin);
    }
     @PostMapping(ApiConstant.REJECT)
     @PreAuthorize("hasAuthority('REJECT_COMPLAINT')")
-    public ApiResponse<?> rejectComplaint(@RequestBody ComplaintUniqueIdDto complaintUniqueIdDto, Principal loggedInAdmin){
+    public ApiResponse<?> rejectComplaint(@RequestBody ComplaintAdministrativeUniqueId complaintUniqueIdDto, Principal loggedInAdmin){
         return complaintService.rejectComplaint(complaintUniqueIdDto, loggedInAdmin);
    }
 

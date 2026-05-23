@@ -21,7 +21,7 @@ public class NearByComplaintSearchRepositoryImpl implements NearByComplaintSearc
 
     @Override
     public Long countNearby(BigDecimal latitude, BigDecimal longitude,
-                            Double radiusKm, Long statusId, Long categoryId) {
+                            Double radiusKm, String statusId, Long categoryId) {
 
         return em.createQuery("""
             SELECT COUNT(c.id)
@@ -34,7 +34,7 @@ public class NearByComplaintSearchRepositoryImpl implements NearByComplaintSearc
                     sin(radians(:lat)) * sin(radians(cc.latitude))
                 )
             ) <= :radius
-            AND (:statusId IS NULL OR c.status.id = :statusId)
+            AND (:statusId IS NULL OR c.status.name = :statusId)
             AND (:categoryId IS NULL OR c.category.id = :categoryId)
             AND c.active = true
             """, Long.class)
@@ -48,7 +48,7 @@ public class NearByComplaintSearchRepositoryImpl implements NearByComplaintSearc
 
     @Override
     public List<Complaint> findNearby(BigDecimal latitude, BigDecimal longitude,
-                                      Double radiusKm, Long statusId, Long categoryId) {
+                                      Double radiusKm, String statusId, Long categoryId) {
 
         return em.createQuery("""
             SELECT c
@@ -61,7 +61,7 @@ public class NearByComplaintSearchRepositoryImpl implements NearByComplaintSearc
                     sin(radians(:lat)) * sin(radians(cc.latitude))
                 )
             ) <= :radius
-            AND (:statusId IS NULL OR c.status.id = :statusId)
+            AND (:statusId IS NULL OR c.status.name = :statusId)
             AND (:categoryId IS NULL OR c.category.id = :categoryId)
             AND c.active = true
             ORDER BY c.createdDate DESC

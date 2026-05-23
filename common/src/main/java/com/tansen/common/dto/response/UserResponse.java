@@ -11,5 +11,6 @@ public class UserResponse extends ModelBase {
     private String email;
     private String phoneNumber;
     private String profilePictureLink;
+    private Boolean isUserVerified;
 
 }

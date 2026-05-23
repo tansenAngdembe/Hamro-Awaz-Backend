@@ -11,4 +11,5 @@ public class UserDto extends ModelBase {
     private String phoneNumber;
     private String uniqueId;
     private String profilePictureLink;
+    private Boolean isUserVerified;
 }

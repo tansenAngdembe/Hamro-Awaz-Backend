@@ -10,6 +10,6 @@ public class NearByComplaintRequest {
     BigDecimal latitude;
     BigDecimal longitude;
     Double radiusKm;
-    Long statusId;
+    String statusId;
     Long categoryId;
 }
