@@ -1,4 +1,4 @@
--- liquibase formatted sql
+    -- liquibase formatted sql
 -- changeset tansen:1
 -- preconditions onFail:CONTINUE onError:HALT
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM email_templates WHERE name = 'USER_ACCOUNT_VERIFICATION_AWAZ';
@@ -227,3 +227,63 @@ VALUES
         NOW(),
         0
     );
+-- changeset tansen:2
+    INSERT INTO `email_templates` (name, content, created_date, version)
+    VALUES    (
+        'USER_FORGOT_PASSWORD',
+        '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>HAMRO AWAZ</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f6f8;">
+            <div style="width: 100%; padding: 40px 0; display: flex; justify-content: center;">
+                <div style="max-width: 500px; width: 90%; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 30px; text-align: center;">
+
+                    <h1 style="color: #1a73e8; font-size: 28px; margin-bottom: 10px;">HAMRO AWAZ</h1>
+
+                    <h4 style="color: #333333; font-size: 18px; font-weight: normal; margin-bottom: 25px;">
+                        Password Reset Request
+                    </h4>
+
+                    <p style="color: #555555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+                        Hello <strong>${userName}</strong>,
+                    </p>
+
+                    <p style="color: #555555; font-size: 16px; line-height: 1.5; margin-bottom: 30px;">
+                        We received a request to reset your HAMRO AWAZ account password.
+                        Use the verification code below to continue:
+                    </p>
+
+                    <div style="display: inline-block; padding: 20px 30px; background-color: #f1f5fb; border-radius: 8px; border: 1px solid #d1e3ff; margin-bottom: 25px;">
+                        <span style="font-size: 32px; font-weight: bold; color: #1a73e8; letter-spacing: 4px;">
+                            ${otp}
+                        </span>
+                    </div>
+
+                    <p style="color: #d93025; font-size: 14px; margin-bottom: 25px;">
+                        This code will expire in ${expirationTime}.
+                    </p>
+
+                    <p style="color: #777777; font-size: 14px; line-height: 1.5; margin-bottom: 10px;">
+                        If you did not request a password reset, please ignore this email.
+                        Your account will remain secure.
+                    </p>
+
+                    <p style="color: #1a73e8; font-weight: bold; font-size: 16px; margin-top: 30px;">
+                        The HAMRO AWAZ Team
+                    </p>
+
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #eeeeee;">
+
+                    <p style="color: #999999; font-size: 12px;">
+                        © ${currentYear} HAMRO AWAZ. All rights reserved.
+                    </p>
+
+                </div>
+            </div>
+        </body>
+        </html>',
+        NOW(),
+        0);

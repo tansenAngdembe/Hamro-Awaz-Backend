@@ -39,5 +39,23 @@ public class EmailContentUtil {
         }
         return emailContent;
     }
+    public String prepareUserOtpEmailContent(EmailOtpSendDto prepareEmailContentDto) {
+        EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName(prepareEmailContentDto.getTemplateName());
+
+        Map<String, Object> model = new HashMap<>();
+        model.put(FreeMarkerTemplateConstant.USERNAME, prepareEmailContentDto.getUserFullName());
+        model.put(FreeMarkerTemplateConstant.OTP, prepareEmailContentDto.getOtp());
+        model.put(FreeMarkerTemplateConstant.EXPIRATION_TIME, prepareEmailContentDto.getExpirationTime());
+        model.put(FreeMarkerTemplateConstant.CURRENT_YEAR, Year.now().getValue());
+
+        String emailContent;
+        try{
+            Template template = new Template("emailTemplate", emailTemplate.getTemplate(), configuration);
+            emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing email template: " + e.getMessage());
+        }
+        return emailContent;
+    }
 
 }

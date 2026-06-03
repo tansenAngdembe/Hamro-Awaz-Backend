@@ -345,6 +345,8 @@ public class ComplaintServiceImpl implements ComplaintService {
         if (authorityUser == null) return ResponseUtil.getFailureResponse("Logged in User Not Found.");
 
         AdministrativeUnit municipality = authorityUser.getMunicipality();
+        LOG.error("Complaint id {}, Administrtive id {}", complaintUniqueIdDto.getComplaintUniqueId(), municipality.getUniqueId());
+
         Complaint complaint = getComplaint(complaintUniqueIdDto.getComplaintUniqueId(), municipality.getUniqueId());
 
         if (Objects.equals(complaint.getStatus().getName(), ComplaintStatusConstant.REJECTED.getName())) {
@@ -420,6 +422,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      * Throws RuntimeException if not found or access denied.
      */
     private Complaint getComplaint(String uniqueId, String municipalityUniqueId) {
+        LOG.error("Complaint id {}, Administrtive id {}",  uniqueId, municipalityUniqueId);
         return complaintRepository
                 .findByIdAndMunicipalityId(uniqueId, municipalityUniqueId)
                 .orElseThrow(() -> new RuntimeException("Complaint not found or access denied"));

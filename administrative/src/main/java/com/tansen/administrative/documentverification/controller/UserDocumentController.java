@@ -29,12 +29,12 @@ public class UserDocumentController {
         }
 
        @PostMapping(ApiConstant.USER + ApiConstant.SLASH + ApiConstant.VERIFY)
-       public ApiResponse<?> verifyUserDocument(VerifyUserDocumentRequest request,
+       public ApiResponse<?> verifyUserDocument(@RequestBody VerifyUserDocumentRequest request,
                                       Principal loggedInAdmin){
             return documentVerificationService.verifyUserDocument(request, loggedInAdmin);
        }
        @PostMapping(ApiConstant.USER + ApiConstant.SLASH + ApiConstant.REJECT)
-       public ApiResponse<?> rejectUserDocument(RejectUserDocumentRequest request,
+       public ApiResponse<?> rejectUserDocument(@RequestBody RejectUserDocumentRequest request,
                                       Principal loggedInAdmin){
             return documentVerificationService.rejectUserDocument(request, loggedInAdmin);
        }

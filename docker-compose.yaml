@@ -10,9 +10,9 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/hamro_awaz?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kathmandu
+      SPRING_DATASOURCE_URL: jdbc:mysql://zephyr.proxy.rlwy.net:34209/railway
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_PASSWORD: rmGracBICSIiFzTmxOBCYINNEqvFIabF
 
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_LIQUIBASE_ENABLED: true

@@ -41,7 +41,7 @@ public abstract class EmailMapper {
         emailOtpSendDto.setExpirationTime(expirationTime);
         emailOtpSendDto.setTemplateName(EmailTemplateNameConstant.USER_FORGOT_PASSWORD);
 
-        String emailContent = emailContentUtil.prepareOtpEmailContent(emailOtpSendDto);
+        String emailContent = emailContentUtil.prepareUserOtpEmailContent(emailOtpSendDto);
 
         UserEmailLog userEmailLog = new UserEmailLog();
         userEmailLog.setEmail(user.getEmail());

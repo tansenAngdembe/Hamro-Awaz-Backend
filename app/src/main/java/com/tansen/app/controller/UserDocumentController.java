@@ -6,6 +6,7 @@ import com.tansen.common.constant.ApiConstant;
 import com.tansen.common.dto.ApiResponse;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,7 +27,7 @@ public class UserDocumentController{
     }
 
 
-    @PostMapping(ApiConstant.SLASH + ApiConstant.UPLOAD)
+    @PostMapping(value = ApiConstant.SLASH + ApiConstant.UPLOAD, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<?> uploadDocuments(
             @RequestPart("data") UploadDocumentRequest request,
             @RequestPart(value = "citizenshipFront", required = false) MultipartFile citizenshipFront,

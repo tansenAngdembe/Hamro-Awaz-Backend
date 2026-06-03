@@ -1,0 +1,26 @@
+server:
+  port: 9081
+spring:
+  application:
+    name: HAMRO-AWAZ ADMIN PANEL BACKEND
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://zephyr.proxy.rlwy.net:34209/railway
+    username: root
+    password: rmGracBICSIiFzTmxOBCYINNEqvFIabF
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: false
+    database: mysql
+
+  web:
+    resources:
+      static-locations: file:/app/uploads/   # or cloud storage later
+
+
+
+jwt:
+  secret: rt6yhg56iopkjd42fgYijhGFR56gsjiy23efhiLaq27
